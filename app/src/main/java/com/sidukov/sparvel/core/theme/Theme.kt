@@ -1,6 +1,5 @@
 package com.sidukov.sparvel.core.theme
 
-import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.*
 
 object SparvelTheme {
