@@ -3,6 +3,7 @@
 Technology stack:
 * Jetpack Compose
 * Navigation Compose
+* Material Design 3
 * Room
 * MediaPlayer
 * TalkBack
