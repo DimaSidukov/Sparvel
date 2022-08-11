@@ -1,33 +1,32 @@
 package com.sidukov.sparvel.core.theme
 
-import androidx.compose.runtime.*
+import androidx.compose.material3.ColorScheme
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Typography
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.ReadOnlyComposable
+import androidx.compose.runtime.staticCompositionLocalOf
 
 object SparvelTheme {
-    val colors: SparvelColors
+    val colors: ColorScheme
         @Composable
         @ReadOnlyComposable
         get() = LocalColors.current
 
-    val typography: SparvelTypography
+    val typography: Typography
         @Composable
         @ReadOnlyComposable
         get() = LocalTypography.current
 }
 
-internal val LocalColors = staticCompositionLocalOf { lightColors() }
-internal val LocalTypography = staticCompositionLocalOf { SparvelTypography() }
+internal val LocalColors = staticCompositionLocalOf { lightColors }
+internal val LocalTypography = staticCompositionLocalOf { SparvelTypography }
 
 @Composable
 fun SparvelTheme(
-    colors: SparvelColors = SparvelTheme.colors,
-    typography: SparvelTypography = SparvelTheme.typography,
+    colors: ColorScheme = SparvelTheme.colors,
+    typography: Typography = SparvelTheme.typography,
     content: @Composable () -> Unit
-) {
-    val rememberedColors = remember { colors.copy() }.apply { updateColorsFrom(colors) }
-    CompositionLocalProvider(
-        LocalColors provides rememberedColors,
-        LocalTypography provides typography
-    ) {
-        content()
-    }
+) = MaterialTheme(colorScheme = colors, typography = typography) {
+    content()
 }
