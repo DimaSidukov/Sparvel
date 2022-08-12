@@ -11,9 +11,9 @@ val backgroundLight = Color(0xFFFFFFFF)
 val backgroundDark = Color(0xFF000000)
 
 val lightColors = lightColorScheme(
-
+    background = backgroundLight
 )
 
 val darkColors = darkColorScheme(
-
+    background = backgroundDark
 )

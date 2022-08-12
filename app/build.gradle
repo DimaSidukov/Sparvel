@@ -73,4 +73,6 @@ dependencies {
     // Material Design 3
     implementation "androidx.compose.material3:material3:$material_version"
     implementation "androidx.compose.material3:material3-window-size-class:$material_version"
+
+    debugImplementation "androidx.compose.ui:ui-tooling:1.2.1"
 }
