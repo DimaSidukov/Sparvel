@@ -1,14 +1,14 @@
 package com.sidukov.sparvel.core.theme
 
-import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Typography
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.staticCompositionLocalOf
 
 object SparvelTheme {
-    val colors: ColorScheme
+    val colors: SparvelColors
         @Composable
         @ReadOnlyComposable
         get() = LocalColors.current
@@ -19,14 +19,20 @@ object SparvelTheme {
         get() = LocalTypography.current
 }
 
-internal val LocalColors = staticCompositionLocalOf { lightColors }
+internal val LocalColors = staticCompositionLocalOf { LightColors }
 internal val LocalTypography = staticCompositionLocalOf { SparvelTypography }
 
 @Composable
 fun SparvelTheme(
-    colors: ColorScheme = SparvelTheme.colors,
     typography: Typography = SparvelTheme.typography,
     content: @Composable () -> Unit
-) = MaterialTheme(colorScheme = colors, typography = typography) {
-    content()
+) {
+    val colors = LightColors
+    CompositionLocalProvider(LocalColors provides colors) {
+        MaterialTheme(
+            colorScheme = colors.material,
+            typography = typography,
+            content = content
+        )
+    }
 }
