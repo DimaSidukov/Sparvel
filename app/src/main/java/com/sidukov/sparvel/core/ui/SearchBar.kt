@@ -3,6 +3,7 @@ package com.sidukov.sparvel.core.ui
 import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -17,6 +18,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import com.sidukov.sparvel.R
@@ -26,6 +28,7 @@ import com.sidukov.sparvel.core.theme.SparvelTheme
 @Composable
 fun SearchBar(
     modifier: Modifier = Modifier,
+    hint: String = stringResource(R.string.search_bar_hint),
     onTextUpdated: (String) -> Unit
 ) {
     val text = remember { mutableStateOf("") }
@@ -39,6 +42,7 @@ fun SearchBar(
         },
         modifier = Modifier
             .fillMaxWidth()
+            .height(46.dp)
             .then(modifier)
             .background(Color.Transparent),
         decorationBox = @Composable { textField ->
@@ -51,9 +55,9 @@ fun SearchBar(
                 interactionSource = interactionSource,
                 placeholder = {
                     Text(
-                        text = "Search for music",
+                        text = hint,
                         color = SparvelTheme.colors.textPlaceholder,
-                        style = SparvelTheme.typography.bodyMedium
+                        style = SparvelTheme.typography.searchBar
                     )
                 },
                 leadingIcon = {
@@ -81,6 +85,6 @@ fun SearchBar(
 
             )
         },
-        textStyle = SparvelTheme.typography.bodyMedium.copy(color = SparvelTheme.colors.text)
+        textStyle = SparvelTheme.typography.searchBar.copy(color = SparvelTheme.colors.text)
     )
 }

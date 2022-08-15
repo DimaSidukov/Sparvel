@@ -74,5 +74,10 @@ dependencies {
     implementation "androidx.compose.material3:material3:$material_version"
     implementation "androidx.compose.material3:material3-window-size-class:$material_version"
 
+    // Accompanist
+    implementation "com.google.accompanist:accompanist-systemuicontroller:0.26.1-alpha"
+
+    // This one adds @Preview
+    // remove when won't be needed
     debugImplementation "androidx.compose.ui:ui-tooling:1.2.1"
 }

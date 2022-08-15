@@ -1,3 +1,21 @@
 <resources>
     <string name="app_name">Sparvel</string>
+
+    // Common
+    <string name="playlists_label">Playlists</string>
+    <string name="albums_label">Albums</string>
+    <string name="library_label">Library</string>
+
+    // Search bar
+    <string name="search_bar_hint">Search for music</string>
+    <string name="search_bar_album_hint">Search for an album</string>
+    <string name="search_bar_playlist_hint">Search for a playlist</string>
+    
+    // Home Screen
+    <string name="add_new_playlist">Add new playlist</string>
+    <string name="app_language_action">App language</string>
+    <string name="sound_settings_action">Sound settings</string>
+    <string name="color_theme_action">Color theme</string>
+    <string name="version_label">Version 1.0</string>
+
 </resources>

@@ -25,20 +25,26 @@ internal fun TextStyle(weight: FontWeight, size: TextUnit = 16.sp) = TextStyle(
     fontSize = size
 )
 
-val SparvelTypography = Typography(
-    displayLarge = TextStyle(FontWeight.Black, 32.sp),
-    displayMedium = TextStyle(FontWeight.Black, 24.sp),
-    displaySmall = TextStyle(FontWeight.Black, 20.sp),
-    headlineLarge = TextStyle(FontWeight.Bold, 18.sp),
-    headlineMedium = TextStyle(FontWeight.Bold),
-    headlineSmall = TextStyle(FontWeight.Bold, 14.sp),
-    titleLarge = TextStyle(FontWeight.Bold, 24.sp),
-    titleMedium = TextStyle(FontWeight.Medium, 20.sp),
-    titleSmall = TextStyle(FontWeight.Medium, 16.sp),
-    bodyLarge = TextStyle(FontWeight.Normal, 14.sp),
-    bodyMedium = TextStyle(FontWeight.Normal, 14.sp),
-    bodySmall = TextStyle(FontWeight.Light, 14.sp),
-    labelLarge = TextStyle(FontWeight.Normal),
-    labelMedium = TextStyle(FontWeight.Medium, 14.sp),
-    labelSmall = TextStyle(FontWeight.Light, 12.sp)
-)
+data class SparvelTypography(
+    val material: Typography = Typography(),
+    val searchBar: TextStyle = TextStyle(FontWeight.Normal, 14.sp),
+    val collectionTitleLarge: TextStyle = TextStyle(FontWeight.Bold, 20.sp),
+    val collectionTitleSmall: TextStyle = TextStyle(FontWeight.SemiBold, 12.sp)
+
+) {
+    val displayLarge = material.displayLarge
+    val displayMedium = material.displayMedium
+    val displaySmall = material.displaySmall
+    val headlineLarge = material.headlineLarge
+    val headlineMedium = material.headlineMedium
+    val headlineSmall = material.headlineSmall
+    val titleLarge = material.titleLarge
+    val titleMedium = material.titleMedium
+    val titleSmall = material.titleSmall
+    val bodyLarge = material.bodyLarge
+    val bodyMedium = material.bodyMedium
+    val bodySmall = material.bodySmall
+    val labelLarge = material.labelLarge
+    val labelMedium = material.labelMedium
+    val labelSmall = material.labelSmall
+}

@@ -31,7 +31,7 @@ object Route {
 
 @Composable
 fun ScreenNavigation(navController: NavHostController) {
-    NavHost(navController, startDestination = Route.SPLASH) {
+    NavHost(navController, startDestination = Route.HOME) {
         composable(Route.HOME) {
             HomeScreen()
         }

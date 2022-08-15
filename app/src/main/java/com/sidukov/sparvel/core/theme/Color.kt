@@ -5,23 +5,25 @@ import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.ui.graphics.Color
 
-val black = Color.Black
-val white = Color.White
-val lightBlue = Color(0xFF748CAB)
-val darkestBlue = Color(0xFF00081C)
-val lightGrey = Color(0xFFBEC4CC)
-val lightGrey2 = Color(0xFFE6E6E6)
-val darkGrey = Color(0xFF5F5F5F)
+private val black = Color.Black
+private val white = Color.White
+private val lightBlue = Color(0xFF748CAB)
+private val darkestBlue = Color(0xFF00081C)
+private val lightGrey = Color(0xFFBEC4CC)
+private val lightGrey2 = Color(0xFFE6E6E6)
+private val darkGrey = Color(0xFF5F5F5F)
 
 data class SparvelColors(
     val material: ColorScheme,
     val text: Color,
     val textPlaceholder: Color,
-    val searchBorder: Color
+    val searchBorder: Color,
+    private val secondaryMaterial: Color,
+    private val backgroundMaterial: Color
 ) {
     val primary: Color get() = material.primary
-    val secondary: Color get() = material.secondary
-    val background: Color get() = material.background
+    val secondary: Color get() = secondaryMaterial
+    val background: Color get() = backgroundMaterial
     val surface: Color get() = material.surface
     val error: Color get() = material.error
     val onPrimary: Color get() = material.onPrimary
@@ -35,12 +37,16 @@ val LightColors = SparvelColors(
     material = lightColorScheme(),
     text = black,
     textPlaceholder = lightBlue,
-    searchBorder = lightGrey
+    searchBorder = lightGrey,
+    secondaryMaterial = black,
+    backgroundMaterial = white
 )
 
 val DarkColors = SparvelColors(
     material = darkColorScheme(),
     text = white,
     textPlaceholder = darkGrey,
-    searchBorder = lightGrey2
+    searchBorder = lightGrey2,
+    secondaryMaterial = white,
+    backgroundMaterial = darkestBlue
 )
