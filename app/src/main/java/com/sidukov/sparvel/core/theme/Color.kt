@@ -18,6 +18,7 @@ data class SparvelColors(
     val text: Color,
     val textPlaceholder: Color,
     val searchBorder: Color,
+    val drawerText: Color,
     private val secondaryMaterial: Color,
     private val backgroundMaterial: Color
 ) {
@@ -38,6 +39,7 @@ val LightColors = SparvelColors(
     text = black,
     textPlaceholder = lightBlue,
     searchBorder = lightGrey,
+    drawerText = white,
     secondaryMaterial = black,
     backgroundMaterial = white
 )
@@ -47,6 +49,7 @@ val DarkColors = SparvelColors(
     text = white,
     textPlaceholder = darkGrey,
     searchBorder = lightGrey2,
+    drawerText = white,
     secondaryMaterial = white,
     backgroundMaterial = darkestBlue
 )

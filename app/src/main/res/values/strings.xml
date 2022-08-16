@@ -5,6 +5,7 @@
     <string name="playlists_label">Playlists</string>
     <string name="albums_label">Albums</string>
     <string name="library_label">Library</string>
+    <string name="composer_album_label">%s \u2022 %s</string>
 
     // Search bar
     <string name="search_bar_hint">Search for music</string>

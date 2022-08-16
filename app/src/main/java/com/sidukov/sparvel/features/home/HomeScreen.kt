@@ -1,26 +1,30 @@
 package com.sidukov.sparvel.features.home
 
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.LocalOverscrollConfiguration
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
+import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.sidukov.sparvel.R
+import com.sidukov.sparvel.core.model.TrackItem
 import com.sidukov.sparvel.core.theme.SparvelTheme
 import com.sidukov.sparvel.core.ui.AddPlaylistItem
-import com.sidukov.sparvel.core.ui.CollectionItem
+import com.sidukov.sparvel.core.ui.CollectionSection
 import com.sidukov.sparvel.core.ui.SearchBar
+import com.sidukov.sparvel.core.ui.TrackList
 import kotlinx.coroutines.launch
 
 @Preview
@@ -28,7 +32,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun HomeScreen() {
 
-    val drawerState = rememberDrawerState(DrawerValue.Closed)
+    val drawerState = rememberDrawerState(DrawerValue.Open)
     val scope = rememberCoroutineScope()
 
     ModalNavigationDrawer(
@@ -43,7 +47,7 @@ fun HomeScreen() {
                     horizontalAlignment = Alignment.Start,
                     verticalArrangement = Arrangement.Center
                 ) {
-                    Text("test")
+                    DrawerContent()
                 }
             }
         },
@@ -57,63 +61,112 @@ fun HomeScreen() {
     )
 }
 
-@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun DrawerContent() {
+    Box {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(start = 35.dp, end = 30.dp),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            // spacing 30dp
+            DrawerSheetItem(img = R.drawable.ic_globe, text = R.string.app_language_action)
+            DrawerSheetItem(img = R.drawable.ic_equalizer, text = R.string.sound_settings_action)
+            DrawerSheetItem(img = R.drawable.ic_crescent, text = R.string.color_theme_action)
+        }
+    }
+}
+
+@Composable
+fun DrawerSheetItem(img: Int, text: Int) {
+    Row(
+        modifier = Modifier
+            .clickable(
+                indication = rememberRipple(),
+                interactionSource = remember {
+                    MutableInteractionSource()
+                },
+                role = Role.Button,
+                onClick = {
+
+                }
+            )
+    ) {
+        Image(painterResource(img), null)
+        Text(
+            modifier = Modifier.padding(start = 20.dp),
+            text = stringResource(text),
+            style = SparvelTheme.typography.drawerText,
+            color = SparvelTheme.colors.drawerText
+        )
+    }
+}
+
 @Composable
 fun HomeScreenContent(
     onMenuClicked: () -> Unit
 ) {
-    Column(modifier = Modifier.fillMaxSize()) {
+    Column(verticalArrangement = Arrangement.Top) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(30.dp)
+                .padding(start = 30.dp, end = 30.dp, bottom = 30.dp, top = 30.dp)
         ) {
             IconButton(
                 modifier = Modifier
-                    .then(Modifier.size(26.dp, 23.dp))
                     .align(Alignment.CenterVertically),
                 onClick = {
                     onMenuClicked()
                 },
             ) {
                 Icon(
+                    modifier = Modifier.scale(1.0f),
                     painter = painterResource(R.drawable.ic_menu),
                     contentDescription = null,
                     tint = SparvelTheme.colors.secondary
                 )
             }
 
-            SearchBar(modifier = Modifier.padding(start = 30.dp)) {
+            SearchBar(modifier = Modifier.padding(start = 20.dp)) {
                 // do something when text updated
             }
         }
-
-        Text(
-            modifier = Modifier.padding(start = 30.dp),
-            text = stringResource(R.string.playlists_label),
-            style = SparvelTheme.typography.collectionTitleLarge,
-            color = SparvelTheme.colors.secondary
-        )
-
-        CompositionLocalProvider(LocalOverscrollConfiguration provides null) {
-            LazyRow(
-                modifier = Modifier.padding(start = 30.dp, top = 15.dp),
-                horizontalArrangement = Arrangement.spacedBy(25.dp)
-            ) {
-                items(mockPlaylists) { item ->
-                    CollectionItem(
-                        playlistName = item,
-                        // temporary measure
-                        playlistImage = painterResource(R.drawable.ic_launcher_background),
-                        needGradient = true
-                    )
-                }
-                item {
+        TrackList(
+            modifier = Modifier.padding(start = 30.dp, end = 30.dp),
+            itemList = mockTracks,
+            onItemClicked = {
+                // open player fragment and start track
+            }
+        ) {
+            Column {
+                CollectionSection(
+                    sectionName = stringResource(R.string.playlists_label),
+                    itemList = mockPlaylists,
+                    onItemClicked = {
+                        // on playlist clicked
+                    }
+                ) {
                     AddPlaylistItem {
-
+                        // on add playlist Clicked
                     }
                     Spacer(modifier = Modifier.padding(end = 30.dp))
                 }
+                Spacer(modifier = Modifier.height(30.dp))
+                CollectionSection(
+                    sectionName = stringResource(R.string.albums_label),
+                    itemList = mockAlbums,
+                    onItemClicked = {
+                        // on album clicked
+                    }
+                )
+                Text(
+                    modifier = Modifier.padding(bottom = 20.dp, top = 30.dp),
+                    text = stringResource(R.string.library_label),
+                    style = SparvelTheme.typography.collectionTitleLarge,
+                    color = SparvelTheme.colors.secondary
+                )
             }
         }
     }
@@ -121,3 +174,8 @@ fun HomeScreenContent(
 
 // Mock data
 val mockPlaylists = listOf("Happiness", "In bad mood", "Relentless", "Vivid")
+val mockAlbums =
+    listOf("Revival", "One step further", "X_X", "n u m b", "Pieces of non uttered tales")
+val mockTracks = generateSequence {
+    TrackItem("Random", "human", "empty")
+}.take(50).toMutableList()

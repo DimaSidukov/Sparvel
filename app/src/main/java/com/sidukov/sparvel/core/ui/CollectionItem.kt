@@ -2,9 +2,11 @@ package com.sidukov.sparvel.core.ui
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
@@ -29,6 +31,7 @@ fun CollectionItem(
     playlistName: String,
     playlistImage: Painter,
     needGradient: Boolean = false,
+    onItemClicked: () -> Unit
 ) {
 
     var imageSize by remember { mutableStateOf(IntSize.Zero) }
@@ -55,10 +58,13 @@ fun CollectionItem(
                 }
                 .clip(RoundedCornerShape(10.dp))
                 .border(0.dp, Color.Transparent, RoundedCornerShape(10.dp))
+                .clickable { onItemClicked() }
         )
 
         Text(
-            modifier = Modifier.padding(top = 10.dp),
+            modifier = Modifier
+                .width(100.dp)
+                .padding(top = 10.dp),
             text = playlistName,
             style = SparvelTheme.typography.collectionTitleSmall,
             textAlign = TextAlign.Center,

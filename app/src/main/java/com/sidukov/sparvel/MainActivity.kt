@@ -3,13 +3,10 @@ package com.sidukov.sparvel
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
-import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.sidukov.sparvel.core.functionality.ScreenNavigation
 import com.sidukov.sparvel.core.theme.SparvelTheme
 

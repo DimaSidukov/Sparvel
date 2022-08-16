@@ -12,6 +12,7 @@ import com.sidukov.sparvel.features.library.LibraryScreen
 import com.sidukov.sparvel.features.playlist.NewPlaylistScreen
 import com.sidukov.sparvel.features.playlist.PlaylistScreen
 import com.sidukov.sparvel.features.playlist.PlaylistsScreen
+import com.sidukov.sparvel.features.splash.SplashScreen
 import com.sidukov.sparvel.features.track.AddTracksScreen
 import com.sidukov.sparvel.features.track.EditTrackInfoScreen
 
@@ -61,6 +62,9 @@ fun ScreenNavigation(navController: NavHostController) {
         }
         composable(Route.EQUALIZER) {
             EqualizerScreen()
+        }
+        composable(Route.SPLASH) {
+            SplashScreen()
         }
     }
 }
