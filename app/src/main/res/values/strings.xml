@@ -6,6 +6,10 @@
     <string name="albums_label">Albums</string>
     <string name="library_label">Library</string>
     <string name="composer_album_label">%s \u2022 %s</string>
+    <string name="app_language_action">App language</string>
+    <string name="sound_settings_action">Sound settings</string>
+    <string name="color_theme_action">Color theme</string>
+    <string name="version_label">Version 1.0</string>
 
     // Search bar
     <string name="search_bar_hint">Search for music</string>
@@ -14,9 +18,5 @@
     
     // Home Screen
     <string name="add_new_playlist">Add new playlist</string>
-    <string name="app_language_action">App language</string>
-    <string name="sound_settings_action">Sound settings</string>
-    <string name="color_theme_action">Color theme</string>
-    <string name="version_label">Version 1.0</string>
 
 </resources>

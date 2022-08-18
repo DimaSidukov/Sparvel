@@ -1,15 +1,15 @@
 package com.sidukov.sparvel.features.home
 
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
@@ -18,6 +18,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.sidukov.sparvel.R
 import com.sidukov.sparvel.core.model.TrackItem
 import com.sidukov.sparvel.core.theme.SparvelTheme
@@ -32,11 +33,12 @@ import kotlinx.coroutines.launch
 @Composable
 fun HomeScreen() {
 
-    val drawerState = rememberDrawerState(DrawerValue.Open)
+    val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
 
     ModalNavigationDrawer(
         drawerState = drawerState,
+        gesturesEnabled = false,
         drawerContent = {
             ModalDrawerSheet {
                 Column(
@@ -47,7 +49,17 @@ fun HomeScreen() {
                     horizontalAlignment = Alignment.Start,
                     verticalArrangement = Arrangement.Center
                 ) {
-                    DrawerContent()
+                    DrawerContent(
+                        onAppLanguageClicked = {
+
+                        },
+                        onSoundSettingsClicked = {
+
+                        },
+                        onColorThemeClicked = {
+
+                        }
+                    )
                 }
             }
         },
@@ -62,25 +74,51 @@ fun HomeScreen() {
 }
 
 @Composable
-fun DrawerContent() {
+fun DrawerContent(
+    onAppLanguageClicked: () -> Unit,
+    onSoundSettingsClicked: () -> Unit,
+    onColorThemeClicked: () -> Unit
+) {
     Box {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(start = 35.dp, end = 30.dp),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
+                .padding(start = 35.dp, end = 35.dp),
+            verticalArrangement = Arrangement.SpaceBetween,
+            horizontalAlignment = Alignment.Start
         ) {
-            // spacing 30dp
-            DrawerSheetItem(img = R.drawable.ic_globe, text = R.string.app_language_action)
-            DrawerSheetItem(img = R.drawable.ic_equalizer, text = R.string.sound_settings_action)
-            DrawerSheetItem(img = R.drawable.ic_crescent, text = R.string.color_theme_action)
+            Text(
+                modifier = Modifier.padding(top = 125.dp),
+                text = stringResource(R.string.app_name),
+                style = SparvelTheme.typography.drawerTitle,
+                color = SparvelTheme.colors.drawerText
+            )
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(30.dp)
+            ) {
+                DrawerSheetItem(img = R.drawable.ic_globe, text = R.string.app_language_action) {
+                    onAppLanguageClicked()
+                }
+                DrawerSheetItem(img = R.drawable.ic_equalizer, text = R.string.sound_settings_action) {
+                    onSoundSettingsClicked()
+                }
+                DrawerSheetItem(img = R.drawable.ic_crescent, text = R.string.color_theme_action) {
+                    onColorThemeClicked()
+                }
+            }
+            Text(
+                modifier = Modifier.padding(bottom = 50.dp),
+                text = stringResource(R.string.version_label),
+                style = SparvelTheme.typography.appVersion,
+                color = SparvelTheme.colors.drawerText
+            )
         }
     }
 }
 
 @Composable
-fun DrawerSheetItem(img: Int, text: Int) {
+fun DrawerSheetItem(img: Int, text: Int, onItemClicked: () -> Unit) {
     Row(
         modifier = Modifier
             .clickable(
@@ -90,11 +128,15 @@ fun DrawerSheetItem(img: Int, text: Int) {
                 },
                 role = Role.Button,
                 onClick = {
-
+                    onItemClicked()
                 }
             )
     ) {
-        Image(painterResource(img), null)
+        Image(
+            modifier = Modifier.size(25.dp),
+            painter = painterResource(img),
+            contentDescription = null
+        )
         Text(
             modifier = Modifier.padding(start = 20.dp),
             text = stringResource(text),

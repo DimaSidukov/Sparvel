@@ -31,7 +31,9 @@ data class SparvelTypography(
     val collectionTitleLarge: TextStyle = TextStyle(FontWeight.Bold, 20.sp),
     val collectionTitleSmall: TextStyle = TextStyle(FontWeight.SemiBold, 12.sp),
     val trackTitleSmall: TextStyle = TextStyle(FontWeight.SemiBold, 14.sp),
-    val drawerText: TextStyle = TextStyle(FontWeight.Medium, 18.sp)
+    val drawerTitle: TextStyle = TextStyle(FontWeight.Black, 24.sp),
+    val drawerText: TextStyle = TextStyle(FontWeight.Medium, 18.sp),
+    val appVersion: TextStyle = TextStyle(FontWeight.Light, 15.sp)
 ) {
     val displayLarge = material.displayLarge
     val displayMedium = material.displayMedium
