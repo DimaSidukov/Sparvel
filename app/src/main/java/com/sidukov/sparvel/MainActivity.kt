@@ -7,8 +7,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
-import com.sidukov.sparvel.core.functionality.ScreenNavigation
 import com.sidukov.sparvel.core.theme.SparvelTheme
+import com.sidukov.sparvel.features.main.MainContainerScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -22,7 +22,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = SparvelTheme.colors.background
                 ) {
-                    ScreenNavigation(navController)
+                    MainContainerScreen(navController)
                 }
             }
         }
