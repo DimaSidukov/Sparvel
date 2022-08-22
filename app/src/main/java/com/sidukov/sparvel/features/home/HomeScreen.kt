@@ -12,6 +12,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.sidukov.sparvel.R
+import com.sidukov.sparvel.core.functionality.Route
 import com.sidukov.sparvel.core.model.TrackItem
 import com.sidukov.sparvel.core.theme.SparvelTheme
 import com.sidukov.sparvel.core.ui.AddPlaylistItem
@@ -62,11 +63,11 @@ fun HomeScreen(
                     sectionName = stringResource(R.string.playlists_label),
                     itemList = mockPlaylists,
                     onItemClicked = {
-                        // on playlist clicked
+                        navController.navigate(Route.PLAYLISTS)
                     }
                 ) {
                     AddPlaylistItem {
-                        // on add playlist Clicked
+                        navController.navigate(Route.NEW_PLAYLIST)
                     }
                     Spacer(modifier = Modifier.padding(end = 30.dp))
                 }
@@ -75,7 +76,7 @@ fun HomeScreen(
                     sectionName = stringResource(R.string.albums_label),
                     itemList = mockAlbums,
                     onItemClicked = {
-                        // on album clicked
+                        navController.navigate(Route.ALBUMS)
                     }
                 )
                 Text(
@@ -92,7 +93,7 @@ fun HomeScreen(
 // Mock data
 val mockPlaylists = listOf("Happiness", "In bad mood", "Relentless", "Vivid")
 val mockAlbums =
-    listOf("Revival", "One step further", "X_X", "n u m b", "Pieces of non uttered tales")
+    listOf("Revival", "One step further", "X_X", "n u m b", "Pieces of non uttered tales sdlfj ksdfkjhsdfkjh sdjfhj")
 val mockTracks = generateSequence {
-    TrackItem("Random", "human", "empty")
+    TrackItem("Random", "human", "empty", null)
 }.take(50).toMutableList()

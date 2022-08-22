@@ -1,6 +1,7 @@
 package com.sidukov.sparvel.core.ui
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -12,6 +13,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -41,15 +46,32 @@ fun TrackList(
                     .clickable { onItemClicked() },
                 horizontalArrangement = Arrangement.Start
             ) {
+                item.cover?.let { cover ->
+                    Image(
+                        modifier = Modifier
+                            .size(50.dp)
+                            .clip(RoundedCornerShape(10.dp))
+                            .border(0.dp, Color.Transparent, RoundedCornerShape(10.dp)),
+                        bitmap = cover.asImageBitmap(),
+                        contentDescription = null
+                    )
+                } ?:
                 Image(
+                    painter = painterResource(R.drawable.ic_melody),
+                    contentDescription = null,
                     modifier = Modifier
-                        .size(50.dp)
                         .clip(RoundedCornerShape(10.dp))
-                        .border(0.dp, Color.Transparent, RoundedCornerShape(10.dp)),
-                    // temporary measure
-                    painter = painterResource(R.drawable.ic_launcher_background),
-                    contentDescription = null
+                        .background(SparvelTheme.colors.background)
+                        .border(
+                            1.dp,
+                            SparvelTheme.colors.textPlaceholder,
+                            RoundedCornerShape(10.dp)
+                        )
+                        .padding(15.dp)
+                        .size(20.dp),
+                    colorFilter = ColorFilter.tint(SparvelTheme.colors.secondary)
                 )
+
                 Column(
                     modifier = Modifier
                         .height(50.dp)
@@ -62,7 +84,11 @@ fun TrackList(
                         color = SparvelTheme.colors.secondary
                     )
                     Text(
-                        stringResource(R.string.composer_album_label, item.composer, item.album),
+                        text = stringResource(
+                            R.string.composer_album_label,
+                            item.composer,
+                            item.album
+                        ),
                         style = SparvelTheme.typography.collectionTitleSmall,
                         color = SparvelTheme.colors.secondary
                     )
