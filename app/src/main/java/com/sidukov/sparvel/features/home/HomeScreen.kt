@@ -58,8 +58,9 @@ fun HomeScreen(
                 // open player fragment and start track
             }
         ) {
-            Column {
+            Column(modifier = Modifier.padding(start = 30.dp)) {
                 CollectionSection(
+                    modifier = Modifier.padding(end = 30.dp),
                     sectionName = stringResource(R.string.playlists_label),
                     itemList = mockPlaylists,
                     onItemClicked = {
@@ -69,10 +70,11 @@ fun HomeScreen(
                     AddPlaylistItem {
                         navController.navigate(Route.NEW_PLAYLIST)
                     }
-                    Spacer(modifier = Modifier.padding(end = 30.dp))
+                    Spacer(modifier = Modifier.width(30.dp))
                 }
                 Spacer(modifier = Modifier.height(30.dp))
                 CollectionSection(
+                    modifier = Modifier.padding(end = 30.dp),
                     sectionName = stringResource(R.string.albums_label),
                     itemList = mockAlbums,
                     onItemClicked = {

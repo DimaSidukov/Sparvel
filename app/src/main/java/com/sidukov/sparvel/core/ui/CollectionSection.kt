@@ -2,6 +2,7 @@ package com.sidukov.sparvel.core.ui
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.lazy.LazyRow
@@ -32,8 +33,8 @@ fun CollectionSection(
 
     LazyRow(
         modifier = Modifier
-            .padding(top = 15.dp)
-            .then(modifier),
+            .fillMaxWidth()
+            .padding(top = 15.dp),
         horizontalArrangement = Arrangement.spacedBy(25.dp)
     ) {
         items(itemList) { item ->

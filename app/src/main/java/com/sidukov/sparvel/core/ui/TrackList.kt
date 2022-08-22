@@ -34,7 +34,6 @@ fun TrackList(
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
-            .then(modifier)
     ) {
         item {
             additionalContent()
@@ -43,7 +42,8 @@ fun TrackList(
             Row(
                 modifier = Modifier
                     .fillMaxSize()
-                    .clickable { onItemClicked() },
+                    .clickable { onItemClicked() }
+                    .then(modifier),
                 horizontalArrangement = Arrangement.Start
             ) {
                 item.cover?.let { cover ->
