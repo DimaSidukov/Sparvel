@@ -3,6 +3,7 @@ package com.sidukov.sparvel.core.theme
 import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 
 private val black = Color.Black
@@ -10,15 +11,22 @@ private val white = Color.White
 private val lightBlue = Color(0xFF748CAB)
 private val darkestBlue = Color(0xFF00081C)
 private val lightGrey = Color(0xFFBEC4CC)
-private val lightGrey2 = Color(0xFFE6E6E6)
+private val lightGrey2 = Color(0xFF999999)
 private val darkGrey = Color(0xFF5F5F5F)
+private val gloomyBlue = Color(0xFF01232E)
+private val dimGrey = Color(0xFFE3E3E3)
 
 data class SparvelColors(
     val material: ColorScheme,
+    val navigation: Color,
     val text: Color,
     val textPlaceholder: Color,
+    val searchText: Color,
     val searchBorder: Color,
+    val cursor: Color,
+    val drawer: Color,
     val drawerText: Color,
+    val backgroundGradient: Brush?,
     private val secondaryMaterial: Color,
     private val backgroundMaterial: Color
 ) {
@@ -36,20 +44,30 @@ data class SparvelColors(
 
 val LightColors = SparvelColors(
     material = lightColorScheme(),
+    navigation = black,
     text = black,
     textPlaceholder = lightBlue,
+    searchText = lightBlue,
     searchBorder = lightGrey,
+    cursor = black,
+    drawer = lightBlue,
     drawerText = white,
+    backgroundGradient = null,
     secondaryMaterial = black,
     backgroundMaterial = white
 )
 
 val DarkColors = SparvelColors(
     material = darkColorScheme(),
+    navigation = dimGrey,
     text = white,
     textPlaceholder = darkGrey,
+    searchText = lightGrey2,
     searchBorder = lightGrey2,
+    cursor = white,
+    drawer = darkestBlue,
     drawerText = white,
+    backgroundGradient = Brush.verticalGradient(listOf(darkestBlue, gloomyBlue)),
     secondaryMaterial = white,
     backgroundMaterial = darkestBlue
 )

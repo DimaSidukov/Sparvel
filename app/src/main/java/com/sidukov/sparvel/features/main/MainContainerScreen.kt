@@ -1,5 +1,6 @@
 package com.sidukov.sparvel.features.main
 
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -7,13 +8,16 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -25,6 +29,7 @@ import com.sidukov.sparvel.features.album.AlbumScreen
 import com.sidukov.sparvel.features.album.AlbumsScreen
 import com.sidukov.sparvel.features.equalizer.EqualizerScreen
 import com.sidukov.sparvel.features.home.HomeScreen
+import com.sidukov.sparvel.features.home.HomeViewModel
 import com.sidukov.sparvel.features.library.LibraryScreen
 import com.sidukov.sparvel.features.playlist.NewPlaylistScreen
 import com.sidukov.sparvel.features.playlist.PlaylistScreen
@@ -37,7 +42,8 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainContainerScreen(
-    navController: NavHostController
+    navController: NavHostController,
+    viewModelProvider: ViewModelProvider
 ) {
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
@@ -51,7 +57,7 @@ fun MainContainerScreen(
                     modifier = Modifier
                         .fillMaxHeight()
                         .fillMaxWidth(0.8f)
-                        .background(SparvelTheme.colors.textPlaceholder),
+                        .background(SparvelTheme.colors.drawer),
                     horizontalAlignment = Alignment.Start,
                     verticalArrangement = Arrangement.Center
                 ) {
@@ -63,14 +69,14 @@ fun MainContainerScreen(
 
                         },
                         onColorThemeClicked = {
-
+                            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
                         }
                     )
                 }
             }
         },
         content = {
-            AppNavigationGraph(navController) {
+            AppNavigationGraph(navController, viewModelProvider) {
                 scope.launch {
                     drawerState.open()
                 }
@@ -80,12 +86,16 @@ fun MainContainerScreen(
 }
 
 @Composable
-fun AppNavigationGraph(navController: NavHostController, onMenuClicked: () -> Unit) {
+fun AppNavigationGraph(
+    navController: NavHostController,
+    viewModelProvider: ViewModelProvider,
+    onMenuClicked: () -> Unit
+) {
     NavHost(navController, startDestination = Route.DRAWER_CONTAINER) {
         composable(Route.SPLASH) {
             SplashScreen()
         }
-        drawerContainerGraph(navController, onMenuClicked)
+        drawerContainerGraph(navController, viewModelProvider, onMenuClicked)
         composable(Route.NEW_PLAYLIST) {
             NewPlaylistScreen()
         }
@@ -103,11 +113,12 @@ fun AppNavigationGraph(navController: NavHostController, onMenuClicked: () -> Un
 
 fun NavGraphBuilder.drawerContainerGraph(
     navController: NavHostController,
+    viewModelProvider: ViewModelProvider,
     onMenuClicked: () -> Unit
 ) {
     navigation(startDestination = Route.HOME, route = Route.DRAWER_CONTAINER) {
         composable(Route.HOME) {
-            HomeScreen(navController, onMenuClicked)
+            HomeScreen(viewModelProvider[HomeViewModel::class.java], navController, onMenuClicked)
         }
         composable(Route.PLAYLISTS) {
             PlaylistsScreen()

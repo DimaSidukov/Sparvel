@@ -22,8 +22,9 @@ import com.sidukov.sparvel.core.ui.TrackList
 
 @Composable
 fun HomeScreen(
+    homeViewModel: HomeViewModel,
     navController: NavHostController,
-    onMenuClicked: () -> Unit
+    onMenuClicked: () -> Unit,
 ) {
     Column(verticalArrangement = Arrangement.Top) {
         Row(
@@ -43,7 +44,7 @@ fun HomeScreen(
                     modifier = Modifier.size(23.dp),
                     painter = painterResource(R.drawable.ic_menu),
                     contentDescription = null,
-                    tint = SparvelTheme.colors.secondary
+                    tint = SparvelTheme.colors.navigation
                 )
             }
 
@@ -95,7 +96,13 @@ fun HomeScreen(
 // Mock data
 val mockPlaylists = listOf("Happiness", "In bad mood", "Relentless", "Vivid")
 val mockAlbums =
-    listOf("Revival", "One step further", "X_X", "n u m b", "Pieces of non uttered tales sdlfj ksdfkjhsdfkjh sdjfhj")
+    listOf(
+        "Revival",
+        "One step further",
+        "X_X",
+        "n u m b",
+        "Pieces of non uttered tales sdlfj ksdfkjhsdfkjh sdjfhj"
+    )
 val mockTracks = generateSequence {
     TrackItem("Random", "human", "empty", null)
 }.take(50).toMutableList()
