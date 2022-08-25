@@ -9,8 +9,10 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -23,6 +25,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
+import com.sidukov.sparvel.SparvelApplication
+import com.sidukov.sparvel.core.functionality.AppTheme
 import com.sidukov.sparvel.core.functionality.Route
 import com.sidukov.sparvel.core.theme.SparvelTheme
 import com.sidukov.sparvel.features.album.AlbumScreen
@@ -43,7 +47,8 @@ import kotlinx.coroutines.launch
 @Composable
 fun MainContainerScreen(
     navController: NavHostController,
-    viewModelProvider: ViewModelProvider
+    viewModelProvider: ViewModelProvider,
+    onAppThemeChanged: () -> Unit
 ) {
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
@@ -68,9 +73,7 @@ fun MainContainerScreen(
                         onSoundSettingsClicked = {
 
                         },
-                        onColorThemeClicked = {
-                            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-                        }
+                        onColorThemeClicked = onAppThemeChanged
                     )
                 }
             }
@@ -118,7 +121,11 @@ fun NavGraphBuilder.drawerContainerGraph(
 ) {
     navigation(startDestination = Route.HOME, route = Route.DRAWER_CONTAINER) {
         composable(Route.HOME) {
-            HomeScreen(viewModelProvider[HomeViewModel::class.java], navController, onMenuClicked)
+            HomeScreen(
+                viewModelProvider[HomeViewModel::class.java],
+                navController,
+                onMenuClicked
+            )
         }
         composable(Route.PLAYLISTS) {
             PlaylistsScreen()

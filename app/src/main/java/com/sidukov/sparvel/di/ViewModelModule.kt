@@ -6,6 +6,7 @@ import com.sidukov.sparvel.features.home.HomeViewModel
 import dagger.Binds
 import dagger.MapKey
 import dagger.Module
+import dagger.Provides
 import dagger.multibindings.IntoMap
 import javax.inject.Inject
 import javax.inject.Provider

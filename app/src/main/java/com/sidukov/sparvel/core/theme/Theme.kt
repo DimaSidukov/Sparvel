@@ -2,17 +2,14 @@ package com.sidukov.sparvel.core.theme
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.LocalOverscrollConfiguration
-import androidx.compose.foundation.OverscrollConfiguration
-import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.staticCompositionLocalOf
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.dp
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import com.sidukov.sparvel.SparvelApplication
+import com.sidukov.sparvel.core.functionality.AppTheme
 
 object SparvelTheme {
     val colors: SparvelColors
@@ -32,9 +29,10 @@ internal val LocalTypography = staticCompositionLocalOf { SparvelTypography() }
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun SparvelTheme(
+    darkTheme: Boolean = SparvelApplication.preferences.appTheme == AppTheme.DARK.code,
     content: @Composable () -> Unit
 ) {
-    val colors = if (isSystemInDarkTheme()) DarkColors else LightColors
+    val colors = if (darkTheme) DarkColors else LightColors
     val typography = SparvelTypography()
 
     val systemUiController = rememberSystemUiController()
