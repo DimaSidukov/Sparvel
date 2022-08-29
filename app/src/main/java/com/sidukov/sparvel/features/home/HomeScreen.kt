@@ -1,8 +1,10 @@
 package com.sidukov.sparvel.features.home
 
-import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.gestures.draggable
-import androidx.compose.foundation.gestures.rememberDraggableState
+import android.annotation.SuppressLint
+import android.graphics.Color
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -10,27 +12,38 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color.Companion.Red
+import androidx.compose.ui.graphics.Color.Companion.Transparent
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.sidukov.sparvel.R
 import com.sidukov.sparvel.core.functionality.Route
+import com.sidukov.sparvel.core.functionality.GetStoragePermission
 import com.sidukov.sparvel.core.model.TrackItem
 import com.sidukov.sparvel.core.theme.SparvelTheme
 import com.sidukov.sparvel.core.ui.AddPlaylistItem
 import com.sidukov.sparvel.core.ui.CollectionSection
 import com.sidukov.sparvel.core.ui.SearchBar
 import com.sidukov.sparvel.core.ui.TrackList
-import kotlinx.coroutines.delay
+import java.lang.Math.hypot
+import kotlin.math.hypot
 
+@SuppressLint("RememberReturnType")
 @Composable
 fun HomeScreen(
     homeViewModel: HomeViewModel,
     navController: NavHostController,
     onMenuClicked: () -> Unit,
 ) {
+
+    GetStoragePermission()
+
     Column(verticalArrangement = Arrangement.Top) {
         Row(
             modifier = Modifier

@@ -19,6 +19,7 @@ import androidx.compose.ui.platform.LocalView
 import androidx.core.graphics.applyCanvas
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.compose.rememberNavController
+import com.jraska.falcon.Falcon
 import com.sidukov.sparvel.core.functionality.AppTheme
 import com.sidukov.sparvel.core.functionality.background
 import com.sidukov.sparvel.core.theme.SparvelTheme
@@ -43,6 +44,8 @@ class MainActivity : ComponentActivity() {
             val viewModelProvider = ViewModelProvider(this, viewModelFactory)
 
             var theme by remember { mutableStateOf(SparvelApplication.preferences.appTheme) }
+            var windowBitmap by remember { mutableStateOf<Bitmap?>(null) }
+
             val useDarkColors = when (theme) {
                 AppTheme.DARK.code -> {
 //                    val view = LocalView.current
@@ -74,10 +77,14 @@ class MainActivity : ComponentActivity() {
                         ),
                     color = Color.Transparent
                 ) {
-                    MainContainerScreen(navController, viewModelProvider) {
+                    MainContainerScreen(navController, viewModelProvider, windowBitmap) {
                         SparvelApplication.preferences.appTheme =
                             if (theme == AppTheme.LIGHT.code) AppTheme.DARK.code else AppTheme.LIGHT.code
                         theme = if (theme == AppTheme.LIGHT.code) AppTheme.DARK.code else AppTheme.LIGHT.code
+
+                        windowBitmap = Falcon.takeScreenshotBitmap(this)
+
+
                     }
                 }
             }

@@ -1,23 +1,37 @@
 package com.sidukov.sparvel.features.main
 
+import android.graphics.Bitmap
+import android.view.ViewAnimationUtils
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavGraphBuilder
@@ -28,6 +42,7 @@ import androidx.navigation.navigation
 import com.sidukov.sparvel.SparvelApplication
 import com.sidukov.sparvel.core.functionality.AppTheme
 import com.sidukov.sparvel.core.functionality.Route
+import com.sidukov.sparvel.core.functionality.background
 import com.sidukov.sparvel.core.theme.SparvelTheme
 import com.sidukov.sparvel.features.album.AlbumScreen
 import com.sidukov.sparvel.features.album.AlbumsScreen
@@ -42,12 +57,14 @@ import com.sidukov.sparvel.features.splash.SplashScreen
 import com.sidukov.sparvel.features.track.AddTracksScreen
 import com.sidukov.sparvel.features.track.EditTrackInfoScreen
 import kotlinx.coroutines.launch
+import kotlin.math.hypot
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainContainerScreen(
     navController: NavHostController,
     viewModelProvider: ViewModelProvider,
+    windowBitmap: Bitmap?,
     onAppThemeChanged: () -> Unit
 ) {
     val drawerState = rememberDrawerState(DrawerValue.Closed)
@@ -86,6 +103,37 @@ fun MainContainerScreen(
             }
         }
     )
+
+    windowBitmap?.let { screenshot ->
+
+        val (width, height) = with(LocalConfiguration.current) {
+            with(LocalDensity.current) { screenWidthDp.dp.toPx() to screenHeightDp.dp.toPx() }
+        }
+        val maxRadiusPx = hypot(width, height)
+        var radius by remember { mutableStateOf(maxRadiusPx) }
+        val animatedRadius = remember { Animatable(maxRadiusPx) }
+
+        LaunchedEffect(false) {
+            animatedRadius.animateTo(0f, animationSpec = tween()) {
+                radius = value/2
+            }
+            // reset the initial value after finishing animation
+            // animatedRadius.snapTo(maxRadiusPx)
+        }
+        Card(
+            modifier = Modifier
+                .size(Dp(radius)),
+            shape = RoundedCornerShape(size = radius),
+        ) {
+            Image(
+                bitmap = screenshot.asImageBitmap(),
+                contentDescription = null,
+                modifier = Modifier.fillMaxSize(),
+                contentScale = ContentScale.FillBounds,
+                alpha = radius / maxRadiusPx
+            )
+        }
+    }
 }
 
 @Composable
