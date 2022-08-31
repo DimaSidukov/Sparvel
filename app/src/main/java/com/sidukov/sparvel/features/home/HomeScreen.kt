@@ -37,12 +37,14 @@ import kotlin.math.hypot
 @SuppressLint("RememberReturnType")
 @Composable
 fun HomeScreen(
-    homeViewModel: HomeViewModel,
+    viewModel: HomeViewModel,
     navController: NavHostController,
     onMenuClicked: () -> Unit,
 ) {
 
     GetStoragePermission()
+
+    val uiState = viewModel.uiState
 
     Column(verticalArrangement = Arrangement.Top) {
         Row(
@@ -72,7 +74,7 @@ fun HomeScreen(
         }
         TrackList(
             modifier = Modifier.padding(start = 30.dp, end = 30.dp),
-            itemList = mockTracks,
+            itemList = uiState.trackList,
             onItemClicked = {
                 // open player fragment and start track
             }
@@ -121,6 +123,3 @@ val mockAlbums =
         "n u m b",
         "Pieces of non uttered tales sdlfj ksdfkjhsdfkjh sdjfhj"
     )
-val mockTracks = generateSequence {
-    TrackItem("Random", "human", "empty", null)
-}.take(50).toMutableList()

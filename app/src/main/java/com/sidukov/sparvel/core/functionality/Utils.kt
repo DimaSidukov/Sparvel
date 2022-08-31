@@ -39,9 +39,7 @@ fun Modifier.background(color: Any): Modifier =
 @SuppressLint("PermissionLaunchedDuringComposition")
 @OptIn(ExperimentalPermissionsApi::class, ExperimentalPermissionsApi::class)
 @Composable
-fun GetStoragePermission(
-
-) {
+fun GetStoragePermission() {
     val permissionState = rememberMultiplePermissionsState(
         permissions = listOf(
             Manifest.permission.READ_EXTERNAL_STORAGE,
@@ -64,6 +62,7 @@ fun GetStoragePermission(
     })
 
 
+    // do something if user pressed "Not Allow"
 //    when {
 //        permissionState.hasPermission -> {
 //            Text(text = "Reading external permission is granted")

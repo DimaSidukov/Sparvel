@@ -83,9 +83,6 @@ dependencies {
     implementation "com.google.accompanist:accompanist-systemuicontroller:0.26.1-alpha"
     implementation 'com.google.accompanist:accompanist-permissions:0.26.2-beta'
 
-    // Falcon
-    implementation 'com.jraska:falcon:2.2.0'
-
     // This one adds @Preview
     // remove when won't be needed
     debugImplementation "androidx.compose.ui:ui-tooling:1.2.1"
