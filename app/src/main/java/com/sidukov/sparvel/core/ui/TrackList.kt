@@ -14,20 +14,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.sidukov.sparvel.R
-import com.sidukov.sparvel.core.model.TrackItem
+import com.sidukov.sparvel.core.model.Track
 import com.sidukov.sparvel.core.theme.SparvelTheme
 
 @Composable
 fun TrackList(
     modifier: Modifier = Modifier,
-    itemList: List<TrackItem>,
+    itemList: List<Track>,
     onItemClicked: () -> Unit = { },
     additionalContent: @Composable () -> Unit = { }
 ) {
@@ -46,32 +45,32 @@ fun TrackList(
                     .then(modifier),
                 horizontalArrangement = Arrangement.Start
             ) {
-                item.cover?.let { cover ->
+                if (item.cover != null) {
                     Image(
                         modifier = Modifier
                             .size(50.dp)
                             .clip(RoundedCornerShape(10.dp))
                             .border(0.dp, Color.Transparent, RoundedCornerShape(10.dp)),
-                        bitmap = cover.asImageBitmap(),
+                        bitmap = item.cover!!.asImageBitmap(),
                         contentDescription = null
                     )
-                } ?:
-                Image(
-                    painter = painterResource(R.drawable.ic_melody),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(10.dp))
-                        .background(SparvelTheme.colors.background)
-                        .border(
-                            1.dp,
-                            SparvelTheme.colors.textPlaceholder,
-                            RoundedCornerShape(10.dp)
-                        )
-                        .padding(15.dp)
-                        .size(20.dp),
-                    colorFilter = ColorFilter.tint(SparvelTheme.colors.secondary)
-                )
-
+                } else {
+                    Image(
+                        painter = painterResource(R.drawable.ic_melody),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(10.dp))
+                            .background(SparvelTheme.colors.background)
+                            .border(
+                                1.dp,
+                                SparvelTheme.colors.textPlaceholder,
+                                RoundedCornerShape(10.dp)
+                            )
+                            .padding(15.dp)
+                            .size(20.dp),
+                        colorFilter = ColorFilter.tint(SparvelTheme.colors.secondary)
+                    )
+                }
                 Column(
                     modifier = Modifier
                         .height(50.dp)
@@ -90,7 +89,9 @@ fun TrackList(
                             item.album
                         ),
                         style = SparvelTheme.typography.collectionTitleSmall,
-                        color = SparvelTheme.colors.secondary
+                        color = SparvelTheme.colors.secondary,
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis
                     )
                 }
             }

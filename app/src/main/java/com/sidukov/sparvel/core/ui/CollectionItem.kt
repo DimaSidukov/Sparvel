@@ -1,5 +1,6 @@
 package com.sidukov.sparvel.core.ui
 
+import android.graphics.Bitmap
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -15,16 +16,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawWithCache
-import androidx.compose.ui.graphics.BlendMode
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.graphics.*
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import com.sidukov.sparvel.R
@@ -34,7 +30,7 @@ import com.sidukov.sparvel.core.theme.SparvelTheme
 @Composable
 fun CollectionItem(
     playlistName: String,
-    playlistImage: Painter?,
+    playlistImage: Bitmap?,
     needGradient: Boolean = false,
     onItemClicked: () -> Unit
 ) {
@@ -47,9 +43,9 @@ fun CollectionItem(
     )
 
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        playlistImage?.let { image ->
+        if (playlistImage != null) {
             Image(
-                painter = image,
+                bitmap = playlistImage.asImageBitmap(),
                 contentDescription = null,
                 modifier = Modifier
                     .size(100.dp)
@@ -65,6 +61,22 @@ fun CollectionItem(
                     .clip(RoundedCornerShape(10.dp))
                     .border(0.dp, Color.Transparent, RoundedCornerShape(10.dp))
                     .clickable { onItemClicked() }
+            )
+        } else {
+            Image(
+                painter = painterResource(R.drawable.ic_melody),
+                contentDescription = null,
+                modifier = Modifier
+                    .clip(RoundedCornerShape(10.dp))
+                    .background(SparvelTheme.colors.background)
+                    .border(
+                        1.dp,
+                        SparvelTheme.colors.textPlaceholder,
+                        RoundedCornerShape(10.dp)
+                    )
+                    .padding(30.dp)
+                    .size(40.dp),
+                colorFilter = ColorFilter.tint(SparvelTheme.colors.secondary)
             )
         }
 

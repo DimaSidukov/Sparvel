@@ -2,29 +2,26 @@ package com.sidukov.sparvel.core.functionality
 
 import android.Manifest
 import android.annotation.SuppressLint
-import androidx.compose.animation.core.animateFloat
-import androidx.compose.animation.core.updateTransition
+import android.content.ContentUris
+import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.ImageDecoder
+import android.net.Uri
+import android.os.Build
+import android.provider.MediaStore
 import androidx.compose.foundation.background
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.State
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.composed
-import androidx.compose.ui.draw.drawWithCache
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Rect
-import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Path
-import androidx.compose.ui.graphics.drawscope.clipPath
 import androidx.compose.ui.platform.LocalLifecycleOwner
-import androidx.compose.ui.platform.debugInspectorInfo
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
-import kotlin.math.sqrt
+import com.sidukov.sparvel.core.model.MusicCollection
+import com.sidukov.sparvel.core.model.Track
 
 fun Modifier.applyIf(condition: Boolean, modifier: Modifier.() -> Modifier): Modifier =
     if (condition) then(modifier(this)) else this
@@ -76,4 +73,35 @@ fun GetStoragePermission() {
 //            Text(text = "Permission fully denied. Go to settings to enable")
 //        }
 //    }
+}
+
+fun Context.getBitmapOrNull(contentUri: Uri, id: Long): Bitmap? {
+    return try {
+        when {
+            Build.VERSION.SDK_INT < 28 -> MediaStore.Images.Media.getBitmap(
+                this.contentResolver,
+                ContentUris.withAppendedId(contentUri, id)
+            )
+            else -> {
+                val source = ImageDecoder.createSource(
+                    this.contentResolver,
+                    ContentUris.withAppendedId(contentUri, id)
+                )
+                ImageDecoder.decodeBitmap(source)
+            }
+        }
+    } catch (e: Exception) {
+        null
+    }
+}
+
+fun List<Track>.toMusicCollection() = this.groupBy { it.album }.map {
+    val unnamedArtist = "Unknown artist"
+    val unnamedAlbum = "Unknown album"
+    MusicCollection(
+        it.key,
+        it.value[0].cover,
+        if (it.value[0].composer == unnamedArtist || it.value[0].album == unnamedAlbum) unnamedAlbum else it.value[0].album,
+        it.value
+    )
 }

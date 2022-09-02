@@ -1,16 +1,23 @@
 package com.sidukov.sparvel.core.functionality
 
 import android.content.Context
-import android.graphics.BitmapFactory
-import android.media.MediaMetadataRetriever
+import android.net.Uri
 import android.provider.MediaStore
-import com.sidukov.sparvel.core.model.TrackItem
+import com.sidukov.sparvel.core.model.MusicCollection
+import com.sidukov.sparvel.core.model.Track
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
-class MusicDataProvider @Inject constructor(context: Context) {
 
-    private val artistId = MediaStore.Audio.Media.ARTIST_ID
-    private val dateAdded = MediaStore.Audio.Media.DATE_ADDED
+class MusicDataProvider @Inject constructor(private val context: Context) {
+
+    companion object {
+        private const val UNNAMED_TRACK = "No name"
+        private const val UNNAMED_ARTIST = "Unknown artist"
+        private const val UNNAMED_ALBUM = "Unknown album"
+        private const val ALBUM_URI = "content://media/external/audio/albumart"
+    }
 
     private val cursor = context.contentResolver.query(
         MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
@@ -21,43 +28,38 @@ class MusicDataProvider @Inject constructor(context: Context) {
             MediaStore.Audio.Media.ARTIST,
             MediaStore.Audio.Media.DURATION,
             MediaStore.Audio.Media.ALBUM,
-            MediaStore.Audio.Media.COMPOSER,
             MediaStore.Audio.Media.YEAR,
-            MediaStore.Audio.Media.DATA
+            MediaStore.Audio.Media.ALBUM_ID
         ),
         MediaStore.Audio.Media.IS_MUSIC,
         null,
         null
     )
 
-    fun getAllDeviceTracks(): List<TrackItem> {
-
-        return mutableListOf<TrackItem>().apply {
+    suspend fun getAllDeviceTracks(): Flow<Pair<List<Track>, List<MusicCollection>>> = flow {
+        mutableListOf<Track>().apply {
             cursor?.let { c ->
-                val mediaDataRetriever = MediaMetadataRetriever()
                 while (c.moveToNext()) {
-                    this.add(
-                        TrackItem(
-                            id = c.getString(0),
-                            track = c.getString(1) ?: "undefined",
-                            title = c.getString(2),
-                            composer = c.getString(3) ?: "unknown",
-                            album = c.getString(5) ?: "unknown",
-                            cover = mediaDataRetriever.let {
-                                it.setDataSource(c.getString(8))
-                                val data = it.embeddedPicture
-                                data?.let { byteArray ->
-                                    BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
-                                }
-                            },
-                            duration = c.getString(4).toLong(),
-                            year = (c.getString(7) ?: "-1").toInt()
-
-                        )
+                    val track = Track(
+                        id = c.getString(0),
+                        track = c.getString(1) ?: UNNAMED_TRACK,
+                        title = c.getString(2),
+                        composer = c.getString(3) ?: UNNAMED_ARTIST,
+                        album = c.getString(5) ?: UNNAMED_ALBUM,
+                        cover = context.getBitmapOrNull(
+                            Uri.parse(ALBUM_URI),
+                            c.getLong(c.getColumnIndexOrThrow(MediaStore.Audio.Media.ALBUM_ID))
+                        ),
+                        duration = c.getString(4).toLong(),
+                        year = (c.getString(6) ?: "-1").toInt(),
+                    )
+                    this.add(track)
+                    emit(
+                        Pair(this@apply, this@apply.toMusicCollection())
                     )
                 }
-                mediaDataRetriever.release()
             }
         }
+        cursor?.close()
     }
 }

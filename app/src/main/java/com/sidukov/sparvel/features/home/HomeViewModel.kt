@@ -4,8 +4,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.sidukov.sparvel.core.functionality.MusicDataProvider
-import com.sidukov.sparvel.core.model.TrackItem
+import com.sidukov.sparvel.core.model.MusicCollection
+import com.sidukov.sparvel.core.model.Track
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class HomeViewModel @Inject constructor(
@@ -20,12 +24,20 @@ class HomeViewModel @Inject constructor(
     }
 
     private fun readTracks() {
-        uiState = uiState.copy(
-            trackList = musicDataProvider.getAllDeviceTracks()
-        )
+        viewModelScope.launch(Dispatchers.IO) {
+            musicDataProvider.getAllDeviceTracks().collect {
+                viewModelScope.launch(Dispatchers.Main) {
+                    uiState = uiState.copy(
+                        trackList = it.first,
+                        albums = it.second
+                    )
+                }
+            }
+        }
     }
 }
 
 data class HomeScreenState(
-    val trackList: List<TrackItem> = emptyList()
+    val trackList: List<Track> = emptyList(),
+    val albums: List<MusicCollection> = emptyList()
 )
