@@ -2,13 +2,6 @@ package com.sidukov.sparvel.core.functionality
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.content.ContentUris
-import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.ImageDecoder
-import android.net.Uri
-import android.os.Build
-import android.provider.MediaStore
 import androidx.compose.foundation.background
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -36,7 +29,10 @@ fun Modifier.background(color: Any): Modifier =
 @SuppressLint("PermissionLaunchedDuringComposition")
 @OptIn(ExperimentalPermissionsApi::class, ExperimentalPermissionsApi::class)
 @Composable
-fun GetStoragePermission() {
+fun GetStoragePermission(
+    onPermissionGranted: @Composable () -> Unit,
+    onPermissionDenied: @Composable () -> Unit
+) {
     val permissionState = rememberMultiplePermissionsState(
         permissions = listOf(
             Manifest.permission.READ_EXTERNAL_STORAGE,
@@ -58,40 +54,12 @@ fun GetStoragePermission() {
         }
     })
 
-
-    // do something if user pressed "Not Allow"
-//    when {
-//        permissionState.hasPermission -> {
-//            Text(text = "Reading external permission is granted")
-//        }
-//        permissionState.shouldShowRationale -> {
-//            Column {
-//                Text(text = "Reading external permission is required by this app")
-//            }
-//        }
-//        !permissionState.hasPermission && !permissionState.shouldShowRationale -> {
-//            Text(text = "Permission fully denied. Go to settings to enable")
-//        }
-//    }
-}
-
-fun Context.getBitmapOrNull(contentUri: Uri, id: Long): Bitmap? {
-    return try {
-        when {
-            Build.VERSION.SDK_INT < 28 -> MediaStore.Images.Media.getBitmap(
-                this.contentResolver,
-                ContentUris.withAppendedId(contentUri, id)
-            )
-            else -> {
-                val source = ImageDecoder.createSource(
-                    this.contentResolver,
-                    ContentUris.withAppendedId(contentUri, id)
-                )
-                ImageDecoder.decodeBitmap(source)
-            }
+    when {
+        permissionState.allPermissionsGranted -> onPermissionGranted()
+        permissionState.shouldShowRationale -> onPermissionDenied()
+        !permissionState.allPermissionsGranted && !permissionState.shouldShowRationale -> {
+            // Text(text = "Permission fully denied. Go to settings to enable")
         }
-    } catch (e: Exception) {
-        null
     }
 }
 
@@ -100,7 +68,7 @@ fun List<Track>.toMusicCollection() = this.groupBy { it.album }.map {
     val unnamedAlbum = "Unknown album"
     MusicCollection(
         it.key,
-        it.value[0].cover,
+        it.value[0].coverId,
         if (it.value[0].composer == unnamedArtist || it.value[0].album == unnamedAlbum) unnamedAlbum else it.value[0].album,
         it.value
     )

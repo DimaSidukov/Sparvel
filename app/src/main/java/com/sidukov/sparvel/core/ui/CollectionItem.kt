@@ -1,6 +1,5 @@
 package com.sidukov.sparvel.core.ui
 
-import android.graphics.Bitmap
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -16,13 +15,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawWithCache
-import androidx.compose.ui.graphics.*
+import androidx.compose.ui.graphics.BlendMode
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
 import com.sidukov.sparvel.R
 import com.sidukov.sparvel.core.functionality.applyIf
 import com.sidukov.sparvel.core.theme.SparvelTheme
@@ -30,7 +33,7 @@ import com.sidukov.sparvel.core.theme.SparvelTheme
 @Composable
 fun CollectionItem(
     playlistName: String,
-    playlistImage: Bitmap?,
+    playlistImage: String,
     needGradient: Boolean = false,
     onItemClicked: () -> Unit
 ) {
@@ -43,10 +46,14 @@ fun CollectionItem(
     )
 
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        if (playlistImage != null) {
-            Image(
-                bitmap = playlistImage.asImageBitmap(),
+        var isImagePresent by remember { mutableStateOf(true) }
+        if (isImagePresent) {
+            AsyncImage(
+                model = playlistImage,
                 contentDescription = null,
+                onError = {
+                    isImagePresent = false
+                },
                 modifier = Modifier
                     .size(100.dp)
                     .onGloballyPositioned { imageSize = it.size }

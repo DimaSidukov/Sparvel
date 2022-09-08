@@ -9,16 +9,16 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
 import com.sidukov.sparvel.R
 import com.sidukov.sparvel.core.model.Track
 import com.sidukov.sparvel.core.theme.SparvelTheme
@@ -45,14 +45,18 @@ fun TrackList(
                     .then(modifier),
                 horizontalArrangement = Arrangement.Start
             ) {
-                if (item.cover != null) {
-                    Image(
+                var isImagePresent by remember { mutableStateOf(true) }
+                if (isImagePresent) {
+                    AsyncImage(
+                        model = item.coverId,
                         modifier = Modifier
                             .size(50.dp)
                             .clip(RoundedCornerShape(10.dp))
                             .border(0.dp, Color.Transparent, RoundedCornerShape(10.dp)),
-                        bitmap = item.cover!!.asImageBitmap(),
-                        contentDescription = null
+                        contentDescription = null,
+                        onError = {
+                            isImagePresent = false
+                        }
                     )
                 } else {
                     Image(

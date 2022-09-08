@@ -37,7 +37,7 @@ fun CollectionSection(
         items(itemList) { item ->
             CollectionItem(
                 playlistName = item.title,
-                playlistImage = item.cover,
+                playlistImage = item.coverId,
             ) {
                 onItemClicked()
             }

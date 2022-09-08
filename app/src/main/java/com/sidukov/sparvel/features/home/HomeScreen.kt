@@ -29,73 +29,80 @@ fun HomeScreen(
     onMenuClicked: () -> Unit,
 ) {
 
-    GetStoragePermission()
-
     val uiState = viewModel.uiState
 
-    Column(verticalArrangement = Arrangement.Top) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 30.dp, end = 30.dp, bottom = 30.dp, top = 30.dp)
-        ) {
-            IconButton(
-                modifier = Modifier
-                    .size(25.dp)
-                    .align(Alignment.CenterVertically),
-                onClick = {
-                    onMenuClicked()
-                },
-            ) {
-                Icon(
-                    modifier = Modifier.size(23.dp),
-                    painter = painterResource(R.drawable.ic_menu),
-                    contentDescription = null,
-                    tint = SparvelTheme.colors.navigation
-                )
-            }
+    GetStoragePermission(
+        onPermissionGranted = {
+            viewModel.readTracks()
+            // probably will need to remake it into toolbar
+            Column(verticalArrangement = Arrangement.Top) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 30.dp, end = 30.dp, bottom = 30.dp, top = 30.dp)
+                ) {
+                    IconButton(
+                        modifier = Modifier
+                            .size(25.dp)
+                            .align(Alignment.CenterVertically),
+                        onClick = {
+                            onMenuClicked()
+                        },
+                    ) {
+                        Icon(
+                            modifier = Modifier.size(23.dp),
+                            painter = painterResource(R.drawable.ic_menu),
+                            contentDescription = null,
+                            tint = SparvelTheme.colors.navigation
+                        )
+                    }
 
-            SearchBar(modifier = Modifier.padding(start = 25.dp)) {
-                // do something when text updated
-            }
-        }
-        TrackList(
-            modifier = Modifier.padding(start = 30.dp, end = 30.dp),
-            itemList = uiState.trackList,
-            onItemClicked = {
-                // open player fragment and start track
-            }
-        ) {
-            Column(modifier = Modifier.padding(start = 30.dp)) {
-                CollectionSection(
-                    modifier = Modifier.padding(end = 30.dp),
-                    sectionName = stringResource(R.string.playlists_label),
-                    itemList = emptyList(),
+                    SearchBar(modifier = Modifier.padding(start = 25.dp)) {
+                        // do something when text updated
+                    }
+                }
+                TrackList(
+                    modifier = Modifier.padding(start = 30.dp, end = 30.dp),
+                    itemList = uiState.trackList,
                     onItemClicked = {
-                        navController.navigate(Route.PLAYLISTS)
+                        // open player fragment and start track
                     }
                 ) {
-                    AddPlaylistItem {
-                        navController.navigate(Route.NEW_PLAYLIST)
+                    Column(modifier = Modifier.padding(start = 30.dp)) {
+                        CollectionSection(
+                            modifier = Modifier.padding(end = 30.dp),
+                            sectionName = stringResource(R.string.playlists_label),
+                            itemList = emptyList(),
+                            onItemClicked = {
+                                navController.navigate(Route.PLAYLISTS)
+                            }
+                        ) {
+                            AddPlaylistItem {
+                                navController.navigate(Route.NEW_PLAYLIST)
+                            }
+                            Spacer(modifier = Modifier.width(30.dp))
+                        }
+                        Spacer(modifier = Modifier.height(30.dp))
+                        CollectionSection(
+                            modifier = Modifier.padding(end = 30.dp),
+                            sectionName = stringResource(R.string.albums_label),
+                            itemList = uiState.albums,
+                            onItemClicked = {
+                                navController.navigate(Route.ALBUMS)
+                            }
+                        )
+                        Text(
+                            modifier = Modifier.padding(bottom = 20.dp, top = 30.dp),
+                            text = stringResource(R.string.library_label),
+                            style = SparvelTheme.typography.collectionTitleLarge,
+                            color = SparvelTheme.colors.secondary
+                        )
                     }
-                    Spacer(modifier = Modifier.width(30.dp))
                 }
-                Spacer(modifier = Modifier.height(30.dp))
-                CollectionSection(
-                    modifier = Modifier.padding(end = 30.dp),
-                    sectionName = stringResource(R.string.albums_label),
-                    itemList = uiState.albums,
-                    onItemClicked = {
-                        navController.navigate(Route.ALBUMS)
-                    }
-                )
-                Text(
-                    modifier = Modifier.padding(bottom = 20.dp, top = 30.dp),
-                    text = stringResource(R.string.library_label),
-                    style = SparvelTheme.typography.collectionTitleLarge,
-                    color = SparvelTheme.colors.secondary
-                )
             }
+        },
+        onPermissionDenied = {
+
         }
-    }
+    )
 }
