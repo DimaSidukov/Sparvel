@@ -56,6 +56,7 @@ class MusicDataProvider @Inject constructor(private val context: Context) {
                 )
             }
         } catch (e: Exception) {
+            // either delete or make sense out of it (sending error to the server, for example)
             Log.e("CURSOR ERROR", e.message.toString())
         } finally {
             c?.close()

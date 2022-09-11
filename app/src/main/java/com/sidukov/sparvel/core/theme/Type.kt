@@ -27,6 +27,7 @@ internal fun TextStyle(weight: FontWeight, size: TextUnit = 16.sp) = TextStyle(
 
 data class SparvelTypography(
     val material: Typography = Typography(),
+    val appName: TextStyle = TextStyle(FontWeight.Light, 35.sp),
     val searchBar: TextStyle = TextStyle(FontWeight.Normal, 14.sp),
     val collectionTitleLarge: TextStyle = TextStyle(FontWeight.Bold, 20.sp),
     val collectionTitleSmall: TextStyle = TextStyle(FontWeight.SemiBold, 12.sp),

@@ -89,9 +89,10 @@ fun AppNavigationGraph(
     viewModelProvider: ViewModelProvider,
     onMenuClicked: () -> Unit
 ) {
-    NavHost(navController, startDestination = Route.DRAWER_CONTAINER) {
+    NavHost(navController, startDestination = Route.SPLASH) {
         composable(Route.SPLASH) {
-            SplashScreen()
+            // add images loading there and return list of bitmaps to home screen
+            SplashScreen(navController)
         }
         drawerContainerGraph(navController, viewModelProvider, onMenuClicked)
         composable(Route.NEW_PLAYLIST) {
