@@ -17,12 +17,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavHostController
+import androidx.navigation.*
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.navigation
 import com.sidukov.sparvel.core.functionality.Route
+import com.sidukov.sparvel.core.functionality.toTrackList
 import com.sidukov.sparvel.core.theme.SparvelTheme
 import com.sidukov.sparvel.features.album.AlbumScreen
 import com.sidukov.sparvel.features.album.AlbumsScreen
@@ -34,6 +33,7 @@ import com.sidukov.sparvel.features.playlist.NewPlaylistScreen
 import com.sidukov.sparvel.features.playlist.PlaylistScreen
 import com.sidukov.sparvel.features.playlist.PlaylistsScreen
 import com.sidukov.sparvel.features.splash.SplashScreen
+import com.sidukov.sparvel.features.splash.SplashViewModel
 import com.sidukov.sparvel.features.track.AddTracksScreen
 import com.sidukov.sparvel.features.track.EditTrackInfoScreen
 import kotlinx.coroutines.launch
@@ -91,8 +91,10 @@ fun AppNavigationGraph(
 ) {
     NavHost(navController, startDestination = Route.SPLASH) {
         composable(Route.SPLASH) {
-            // add images loading there and return list of bitmaps to home screen
-            SplashScreen(navController)
+            SplashScreen(
+                viewModelProvider[SplashViewModel::class.java],
+                navController
+            )
         }
         drawerContainerGraph(navController, viewModelProvider, onMenuClicked)
         composable(Route.NEW_PLAYLIST) {
@@ -116,10 +118,14 @@ fun NavGraphBuilder.drawerContainerGraph(
     onMenuClicked: () -> Unit
 ) {
     navigation(startDestination = Route.HOME, route = Route.DRAWER_CONTAINER) {
-        composable(Route.HOME) {
+        composable(
+            route = "${Route.HOME}?tracks={tracks}",
+            arguments = listOf(navArgument("tracks") { type = NavType.StringType })
+        ) { stack ->
             HomeScreen(
                 viewModelProvider[HomeViewModel::class.java],
                 navController,
+                stack.arguments?.getString("tracks").toTrackList(),
                 onMenuClicked
             )
         }

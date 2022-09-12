@@ -1,5 +1,7 @@
 package com.sidukov.sparvel.core.model
 
+import java.io.Serializable
+
 class Track(
     val id: String,
     val track: String,
@@ -8,5 +10,5 @@ class Track(
     val album: String,
     var coverId: String,
     val duration: Long,
-    val year: Int,
-)
+    val year: Int
+) : Serializable

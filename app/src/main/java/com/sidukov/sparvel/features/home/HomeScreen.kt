@@ -15,6 +15,8 @@ import androidx.navigation.NavHostController
 import com.sidukov.sparvel.R
 import com.sidukov.sparvel.core.functionality.GetStoragePermission
 import com.sidukov.sparvel.core.functionality.Route
+import com.sidukov.sparvel.core.functionality.toMusicCollection
+import com.sidukov.sparvel.core.model.Track
 import com.sidukov.sparvel.core.theme.SparvelTheme
 import com.sidukov.sparvel.core.ui.AddPlaylistItem
 import com.sidukov.sparvel.core.ui.CollectionSection
@@ -26,6 +28,7 @@ import com.sidukov.sparvel.core.ui.TrackList
 fun HomeScreen(
     viewModel: HomeViewModel,
     navController: NavHostController,
+    trackList: List<Track>,
     onMenuClicked: () -> Unit,
 ) {
 
@@ -33,7 +36,6 @@ fun HomeScreen(
 
     GetStoragePermission(
         onPermissionGranted = {
-            viewModel.readTracks()
             // probably will need to remake it into toolbar
             Column(verticalArrangement = Arrangement.Top) {
                 Row(
@@ -63,7 +65,7 @@ fun HomeScreen(
                 }
                 TrackList(
                     modifier = Modifier.padding(start = 30.dp, end = 30.dp),
-                    itemList = uiState.trackList,
+                    itemList = trackList,
                     onItemClicked = {
                         // open player fragment and start track
                     }
@@ -86,7 +88,7 @@ fun HomeScreen(
                         CollectionSection(
                             modifier = Modifier.padding(end = 30.dp),
                             sectionName = stringResource(R.string.albums_label),
-                            itemList = uiState.albums,
+                            itemList = trackList.toMusicCollection(),
                             onItemClicked = {
                                 navController.navigate(Route.ALBUMS)
                             }

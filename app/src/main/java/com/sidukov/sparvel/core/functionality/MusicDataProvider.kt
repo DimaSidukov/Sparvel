@@ -5,7 +5,6 @@ import android.content.Context
 import android.net.Uri
 import android.provider.MediaStore
 import android.util.Log
-import com.sidukov.sparvel.core.model.MusicCollection
 import com.sidukov.sparvel.core.model.Track
 import javax.inject.Inject
 
@@ -19,7 +18,7 @@ class MusicDataProvider @Inject constructor(private val context: Context) {
         private val ALBUM_URI = Uri.parse("content://media/external/audio/albumart")
     }
 
-    fun getAllDeviceTracks(): Pair<List<Track>, List<MusicCollection>> {
+    fun getAllDeviceTracks(): List<Track> {
         val c = context.contentResolver.query(
             MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
             arrayOf(
@@ -51,7 +50,7 @@ class MusicDataProvider @Inject constructor(private val context: Context) {
                             c.getLong(c.getColumnIndexOrThrow(MediaStore.Audio.Media.ALBUM_ID))
                         ).toString(),
                         duration = c.getString(4).toLong(),
-                        year = (c.getString(6) ?: "-1").toInt(),
+                        year = (c.getString(6) ?: "-1").toInt()
                     )
                 )
             }
@@ -61,6 +60,6 @@ class MusicDataProvider @Inject constructor(private val context: Context) {
         } finally {
             c?.close()
         }
-        return Pair(list, list.toMusicCollection())
+        return list
     }
 }

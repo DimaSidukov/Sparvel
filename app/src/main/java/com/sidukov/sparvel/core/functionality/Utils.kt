@@ -13,8 +13,11 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
+import com.google.gson.Gson
 import com.sidukov.sparvel.core.model.MusicCollection
 import com.sidukov.sparvel.core.model.Track
+import java.net.URLDecoder
+import java.nio.charset.StandardCharsets
 
 fun Modifier.applyIf(condition: Boolean, modifier: Modifier.() -> Modifier): Modifier =
     if (condition) then(modifier(this)) else this
@@ -73,3 +76,12 @@ fun List<Track>.toMusicCollection() = this.groupBy { it.album }.map {
         it.value
     )
 }
+
+fun List<Track>.toJsonString(): String =
+    Gson().toJson(this.toTypedArray(), Array<Track>::class.java).toString()
+
+fun String?.toTrackList() =
+    Gson().fromJson(
+        URLDecoder.decode(this, StandardCharsets.UTF_8.toString()),
+        Array<Track>::class.java
+    ).toList()
