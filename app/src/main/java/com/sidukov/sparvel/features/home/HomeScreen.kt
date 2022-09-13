@@ -1,11 +1,10 @@
 package com.sidukov.sparvel.features.home
 
-import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -14,7 +13,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.sidukov.sparvel.R
 import com.sidukov.sparvel.core.functionality.GetStoragePermission
-import com.sidukov.sparvel.core.functionality.Route
+import com.sidukov.sparvel.core.functionality.Screens
 import com.sidukov.sparvel.core.functionality.toMusicCollection
 import com.sidukov.sparvel.core.model.Track
 import com.sidukov.sparvel.core.theme.SparvelTheme
@@ -23,7 +22,6 @@ import com.sidukov.sparvel.core.ui.CollectionSection
 import com.sidukov.sparvel.core.ui.SearchBar
 import com.sidukov.sparvel.core.ui.TrackList
 
-@SuppressLint("RememberReturnType")
 @Composable
 fun HomeScreen(
     viewModel: HomeViewModel,
@@ -36,6 +34,12 @@ fun HomeScreen(
 
     GetStoragePermission(
         onPermissionGranted = {
+            var newTrackList by remember { mutableStateOf(trackList) }
+            if (trackList.isEmpty()) {
+                LaunchedEffect(true) {
+                    newTrackList = viewModel.readTracks()
+                }
+            }
             // probably will need to remake it into toolbar
             Column(verticalArrangement = Arrangement.Top) {
                 Row(
@@ -65,7 +69,7 @@ fun HomeScreen(
                 }
                 TrackList(
                     modifier = Modifier.padding(start = 30.dp, end = 30.dp),
-                    itemList = trackList,
+                    itemList = newTrackList,
                     onItemClicked = {
                         // open player fragment and start track
                     }
@@ -76,11 +80,11 @@ fun HomeScreen(
                             sectionName = stringResource(R.string.playlists_label),
                             itemList = emptyList(),
                             onItemClicked = {
-                                navController.navigate(Route.PLAYLISTS)
+                                navController.navigate(Screens.Playlists.route)
                             }
                         ) {
                             AddPlaylistItem {
-                                navController.navigate(Route.NEW_PLAYLIST)
+                                navController.navigate(Screens.NewPlaylist.route)
                             }
                             Spacer(modifier = Modifier.width(30.dp))
                         }
@@ -88,9 +92,9 @@ fun HomeScreen(
                         CollectionSection(
                             modifier = Modifier.padding(end = 30.dp),
                             sectionName = stringResource(R.string.albums_label),
-                            itemList = trackList.toMusicCollection(),
+                            itemList = newTrackList.toMusicCollection(),
                             onItemClicked = {
-                                navController.navigate(Route.ALBUMS)
+                                navController.navigate(Screens.Albums.route)
                             }
                         )
                         Text(
@@ -104,7 +108,20 @@ fun HomeScreen(
             }
         },
         onPermissionDenied = {
-
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                Text(
+                    modifier = Modifier
+                        .fillMaxWidth(0.6f)
+                        .align(Alignment.CenterHorizontally),
+                    text = stringResource(R.string.permission_denied_label),
+                    style = SparvelTheme.typography.permissionDenied,
+                    color = SparvelTheme.colors.permissionDenied
+                )
+            }
         }
     )
 }

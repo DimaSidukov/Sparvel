@@ -20,6 +20,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.sidukov.sparvel.R
+import com.sidukov.sparvel.core.functionality.applyIf
 import com.sidukov.sparvel.core.model.Track
 import com.sidukov.sparvel.core.theme.SparvelTheme
 
@@ -45,34 +46,37 @@ fun TrackList(
                     .then(modifier),
                 horizontalArrangement = Arrangement.Start
             ) {
-                var isImagePresent by remember { mutableStateOf(true) }
-                if (isImagePresent) {
+                Box(
+                    modifier = Modifier.size(50.dp)
+                ) {
+                    var isImageLoaded by remember { mutableStateOf(false) }
+                    if (!isImageLoaded) {
+                        Image(
+                            painter = painterResource(R.drawable.ic_melody),
+                            contentDescription = null,
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(10.dp))
+                                .background(SparvelTheme.colors.background)
+                                .border(
+                                    1.dp,
+                                    SparvelTheme.colors.textPlaceholder,
+                                    RoundedCornerShape(10.dp)
+                                )
+                                .padding(15.dp)
+                                .size(20.dp),
+                            colorFilter = ColorFilter.tint(SparvelTheme.colors.secondary)
+                        )
+                    }
                     AsyncImage(
                         model = item.coverId,
                         modifier = Modifier
-                            .size(50.dp)
-                            .clip(RoundedCornerShape(10.dp))
-                            .border(0.dp, Color.Transparent, RoundedCornerShape(10.dp)),
+                            .applyIf(isImageLoaded) {
+                                size(50.dp)
+                                    .clip(RoundedCornerShape(10.dp))
+                                    .border(0.dp, Color.Transparent, RoundedCornerShape(10.dp))
+                            },
                         contentDescription = null,
-                        onError = {
-                            isImagePresent = false
-                        }
-                    )
-                } else {
-                    Image(
-                        painter = painterResource(R.drawable.ic_melody),
-                        contentDescription = null,
-                        modifier = Modifier
-                            .clip(RoundedCornerShape(10.dp))
-                            .background(SparvelTheme.colors.background)
-                            .border(
-                                1.dp,
-                                SparvelTheme.colors.textPlaceholder,
-                                RoundedCornerShape(10.dp)
-                            )
-                            .padding(15.dp)
-                            .size(20.dp),
-                        colorFilter = ColorFilter.tint(SparvelTheme.colors.secondary)
+                        onSuccess = { isImageLoaded = true }
                     )
                 }
                 Column(

@@ -60,9 +60,6 @@ fun GetStoragePermission(
     when {
         permissionState.allPermissionsGranted -> onPermissionGranted()
         permissionState.shouldShowRationale -> onPermissionDenied()
-        !permissionState.allPermissionsGranted && !permissionState.shouldShowRationale -> {
-            // Text(text = "Permission fully denied. Go to settings to enable")
-        }
     }
 }
 

@@ -20,7 +20,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.*
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.sidukov.sparvel.core.functionality.Route
+import com.sidukov.sparvel.core.functionality.Screens
 import com.sidukov.sparvel.core.functionality.toTrackList
 import com.sidukov.sparvel.core.theme.SparvelTheme
 import com.sidukov.sparvel.features.album.AlbumScreen
@@ -89,24 +89,24 @@ fun AppNavigationGraph(
     viewModelProvider: ViewModelProvider,
     onMenuClicked: () -> Unit
 ) {
-    NavHost(navController, startDestination = Route.SPLASH) {
-        composable(Route.SPLASH) {
+    NavHost(navController, startDestination = Screens.Splash.route) {
+        composable(Screens.Splash.route) {
             SplashScreen(
                 viewModelProvider[SplashViewModel::class.java],
                 navController
             )
         }
         drawerContainerGraph(navController, viewModelProvider, onMenuClicked)
-        composable(Route.NEW_PLAYLIST) {
+        composable(Screens.NewPlaylist.route) {
             NewPlaylistScreen()
         }
-        composable(Route.EDIT_TRACK_INFO) {
+        composable(Screens.EditTrackInfo.route) {
             EditTrackInfoScreen()
         }
-        composable(Route.ADD_TRACKS) {
+        composable(Screens.AddTracks.route) {
             AddTracksScreen()
         }
-        composable(Route.EQUALIZER) {
+        composable(Screens.Equalizer.route) {
             EqualizerScreen()
         }
     }
@@ -117,9 +117,9 @@ fun NavGraphBuilder.drawerContainerGraph(
     viewModelProvider: ViewModelProvider,
     onMenuClicked: () -> Unit
 ) {
-    navigation(startDestination = Route.HOME, route = Route.DRAWER_CONTAINER) {
+    navigation(startDestination = Screens.Home.route, route = Screens.DrawerContainer.route) {
         composable(
-            route = "${Route.HOME}?tracks={tracks}",
+            route = Screens.Home.route,
             arguments = listOf(navArgument("tracks") { type = NavType.StringType })
         ) { stack ->
             HomeScreen(
@@ -129,19 +129,19 @@ fun NavGraphBuilder.drawerContainerGraph(
                 onMenuClicked
             )
         }
-        composable(Route.PLAYLISTS) {
+        composable(Screens.Playlists.route) {
             PlaylistsScreen()
         }
-        composable(Route.PLAYLIST) {
+        composable(Screens.Playlist.route) {
             PlaylistScreen()
         }
-        composable(Route.ALBUMS) {
+        composable(Screens.Albums.route) {
             AlbumsScreen()
         }
-        composable(Route.ALBUM) {
+        composable(Screens.Album.route) {
             AlbumScreen()
         }
-        composable(Route.LIBRARY) {
+        composable(Screens.Library.route) {
             LibraryScreen()
         }
     }

@@ -19,7 +19,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.sidukov.sparvel.R
-import com.sidukov.sparvel.core.functionality.Route
+import com.sidukov.sparvel.core.functionality.Screens
 import com.sidukov.sparvel.core.functionality.toJsonString
 import com.sidukov.sparvel.core.theme.SparvelTheme
 import kotlinx.coroutines.delay
@@ -31,7 +31,7 @@ fun SplashScreen(
     navController: NavHostController
 ) {
 
-    val loadingTime = 3000L
+    val loadingTime = 2000L
     var isDataLoaded by remember { mutableStateOf(false) }
 
     Column(
@@ -42,7 +42,7 @@ fun SplashScreen(
     ) {
         var visible by remember { mutableStateOf(false) }
         val density = LocalDensity.current
-        val duration = 2000
+        val duration = 1500
         val gradient = SparvelTheme.colors.logoGradient
 
         AnimatedVisibility(
@@ -77,7 +77,6 @@ fun SplashScreen(
             )
         }
 
-        // look up which type of side effect I should use
         LaunchedEffect(true) {
             visible = true
             var data = ""
@@ -85,7 +84,7 @@ fun SplashScreen(
                 while (!isDataLoaded) {
                     delay(loadingTime)
                 }
-                if (isDataLoaded) navController.navigate("${Route.HOME}?tracks=$data")
+                if (isDataLoaded) navController.navigate(Screens.Home.passTrackList(data))
             }
             launch {
                 data = viewModel.readTracks().toJsonString()

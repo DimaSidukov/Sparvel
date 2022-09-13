@@ -4,10 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
@@ -46,14 +43,31 @@ fun CollectionItem(
     )
 
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        var isImagePresent by remember { mutableStateOf(true) }
-        if (isImagePresent) {
+        Box(
+            modifier = Modifier.size(100.dp)
+        ) {
+            var isImageLoaded by remember { mutableStateOf(false) }
+            if (!isImageLoaded) {
+                Image(
+                    painter = painterResource(R.drawable.ic_melody),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(10.dp))
+                        .background(SparvelTheme.colors.background)
+                        .border(
+                            1.dp,
+                            SparvelTheme.colors.textPlaceholder,
+                            RoundedCornerShape(10.dp)
+                        )
+                        .padding(30.dp)
+                        .size(40.dp),
+                    colorFilter = ColorFilter.tint(SparvelTheme.colors.secondary)
+                )
+            }
             AsyncImage(
                 model = playlistImage,
                 contentDescription = null,
-                onError = {
-                    isImagePresent = false
-                },
+                onSuccess = { isImageLoaded = true },
                 modifier = Modifier
                     .size(100.dp)
                     .onGloballyPositioned { imageSize = it.size }
@@ -69,24 +83,7 @@ fun CollectionItem(
                     .border(0.dp, Color.Transparent, RoundedCornerShape(10.dp))
                     .clickable { onItemClicked() }
             )
-        } else {
-            Image(
-                painter = painterResource(R.drawable.ic_melody),
-                contentDescription = null,
-                modifier = Modifier
-                    .clip(RoundedCornerShape(10.dp))
-                    .background(SparvelTheme.colors.background)
-                    .border(
-                        1.dp,
-                        SparvelTheme.colors.textPlaceholder,
-                        RoundedCornerShape(10.dp)
-                    )
-                    .padding(30.dp)
-                    .size(40.dp),
-                colorFilter = ColorFilter.tint(SparvelTheme.colors.secondary)
-            )
         }
-
         Text(
             modifier = Modifier
                 .width(100.dp)
