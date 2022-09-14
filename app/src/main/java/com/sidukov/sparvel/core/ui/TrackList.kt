@@ -1,26 +1,16 @@
 package com.sidukov.sparvel.core.ui
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
 import com.sidukov.sparvel.R
-import com.sidukov.sparvel.core.functionality.applyIf
 import com.sidukov.sparvel.core.model.Track
 import com.sidukov.sparvel.core.theme.SparvelTheme
 
@@ -46,39 +36,11 @@ fun TrackList(
                     .then(modifier),
                 horizontalArrangement = Arrangement.Start
             ) {
-                Box(
-                    modifier = Modifier.size(50.dp)
-                ) {
-                    var isImageLoaded by remember { mutableStateOf(false) }
-                    if (!isImageLoaded) {
-                        Image(
-                            painter = painterResource(R.drawable.ic_melody),
-                            contentDescription = null,
-                            modifier = Modifier
-                                .clip(RoundedCornerShape(10.dp))
-                                .background(SparvelTheme.colors.background)
-                                .border(
-                                    1.dp,
-                                    SparvelTheme.colors.textPlaceholder,
-                                    RoundedCornerShape(10.dp)
-                                )
-                                .padding(15.dp)
-                                .size(20.dp),
-                            colorFilter = ColorFilter.tint(SparvelTheme.colors.secondary)
-                        )
-                    }
-                    AsyncImage(
-                        model = item.coverId,
-                        modifier = Modifier
-                            .applyIf(isImageLoaded) {
-                                size(50.dp)
-                                    .clip(RoundedCornerShape(10.dp))
-                                    .border(0.dp, Color.Transparent, RoundedCornerShape(10.dp))
-                            },
-                        contentDescription = null,
-                        onSuccess = { isImageLoaded = true }
-                    )
-                }
+                AsyncOrPlaceholderImage(
+                    imageUrl = item.coverId,
+                    imageSize = 50,
+                    needGradient = false
+                )
                 Column(
                     modifier = Modifier
                         .height(50.dp)
@@ -106,7 +68,7 @@ fun TrackList(
             Spacer(modifier = Modifier.height(15.dp))
         }
         item {
-            Spacer(modifier = Modifier.height(50.dp))
+            Spacer(modifier = Modifier.height(10.dp))
         }
     }
 }

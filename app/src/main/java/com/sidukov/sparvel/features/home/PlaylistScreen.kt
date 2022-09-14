@@ -1,4 +1,4 @@
-package com.sidukov.sparvel.features.playlist
+package com.sidukov.sparvel.features.home
 
 import androidx.compose.runtime.Composable
 

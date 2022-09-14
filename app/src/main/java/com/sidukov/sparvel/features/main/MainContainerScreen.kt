@@ -24,14 +24,11 @@ import com.sidukov.sparvel.core.functionality.Screens
 import com.sidukov.sparvel.core.functionality.toTrackList
 import com.sidukov.sparvel.core.theme.SparvelTheme
 import com.sidukov.sparvel.features.album.AlbumScreen
-import com.sidukov.sparvel.features.album.AlbumsScreen
 import com.sidukov.sparvel.features.equalizer.EqualizerScreen
-import com.sidukov.sparvel.features.home.HomeScreen
+import com.sidukov.sparvel.features.home.HomeScreenContainer
 import com.sidukov.sparvel.features.home.HomeViewModel
-import com.sidukov.sparvel.features.library.LibraryScreen
+import com.sidukov.sparvel.features.home.PlaylistScreen
 import com.sidukov.sparvel.features.playlist.NewPlaylistScreen
-import com.sidukov.sparvel.features.playlist.PlaylistScreen
-import com.sidukov.sparvel.features.playlist.PlaylistsScreen
 import com.sidukov.sparvel.features.splash.SplashScreen
 import com.sidukov.sparvel.features.splash.SplashViewModel
 import com.sidukov.sparvel.features.track.AddTracksScreen
@@ -122,27 +119,18 @@ fun NavGraphBuilder.drawerContainerGraph(
             route = Screens.Home.route,
             arguments = listOf(navArgument("tracks") { type = NavType.StringType })
         ) { stack ->
-            HomeScreen(
+            HomeScreenContainer(
                 viewModelProvider[HomeViewModel::class.java],
                 navController,
                 stack.arguments?.getString("tracks").toTrackList(),
                 onMenuClicked
             )
         }
-        composable(Screens.Playlists.route) {
-            PlaylistsScreen()
-        }
         composable(Screens.Playlist.route) {
             PlaylistScreen()
         }
-        composable(Screens.Albums.route) {
-            AlbumsScreen()
-        }
         composable(Screens.Album.route) {
             AlbumScreen()
-        }
-        composable(Screens.Library.route) {
-            LibraryScreen()
         }
     }
 }

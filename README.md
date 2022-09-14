@@ -18,4 +18,8 @@ Package organization:
 * main - main screen with left drawer
 
 TODO list:
-* think of case when app installed first and during splash screen the user is asked for permission. ask user for permission after splash screen, add flag to local persistence such as datastore
+* in night mode collection items' image fadeout effect is screwed due to background gradient
+* fix double @Inject call in viewmodels (baseViewModel accepts injection as class field, not in constructor)
+* set color ripple effect for night theme
+* some symbols are not well visible in search bar, such as 'g'
+* while searching for music images are not being loaded

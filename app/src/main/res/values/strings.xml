@@ -19,5 +19,6 @@
     
     // Home Screen
     <string name="add_new_playlist">Add new playlist</string>
+    <string name="album_info_label">%d tracks</string>
 
 </resources>

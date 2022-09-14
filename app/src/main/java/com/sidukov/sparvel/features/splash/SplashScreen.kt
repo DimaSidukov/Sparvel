@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.sidukov.sparvel.R
 import com.sidukov.sparvel.core.functionality.Screens
+import com.sidukov.sparvel.core.functionality.navigateAndSetRoot
 import com.sidukov.sparvel.core.functionality.toJsonString
 import com.sidukov.sparvel.core.theme.SparvelTheme
 import kotlinx.coroutines.delay
@@ -31,7 +32,7 @@ fun SplashScreen(
     navController: NavHostController
 ) {
 
-    val loadingTime = 2000L
+    val loadingTime = 1000L
     var isDataLoaded by remember { mutableStateOf(false) }
 
     Column(
@@ -42,14 +43,14 @@ fun SplashScreen(
     ) {
         var visible by remember { mutableStateOf(false) }
         val density = LocalDensity.current
-        val duration = 1500
+        val duration = 1000
         val gradient = SparvelTheme.colors.logoGradient
 
         AnimatedVisibility(
             visible,
-            enter = slideInVertically(animationSpec = tween(durationMillis = duration)) {
+            enter = slideInVertically(tween(duration)) {
                 with(density) { -30.dp.roundToPx() }
-            } + fadeIn(animationSpec = tween(durationMillis = duration))
+            } + fadeIn(tween(duration))
         ) {
             Icon(
                 modifier = Modifier
@@ -67,9 +68,9 @@ fun SplashScreen(
         Spacer(modifier = Modifier.height(15.dp))
         AnimatedVisibility(
             visible = visible,
-            enter = slideInVertically(animationSpec = tween(durationMillis = duration)) {
+            enter = slideInVertically(tween(duration)) {
                 with(density) { 30.dp.roundToPx() }
-            } + fadeIn(animationSpec = tween(durationMillis = duration))) {
+            } + fadeIn(tween(duration))) {
             Text(
                 text = stringResource(R.string.app_name),
                 style = SparvelTheme.typography.appName,
@@ -84,7 +85,7 @@ fun SplashScreen(
                 while (!isDataLoaded) {
                     delay(loadingTime)
                 }
-                if (isDataLoaded) navController.navigate(Screens.Home.passTrackList(data))
+                if (isDataLoaded) navController.navigateAndSetRoot(Screens.Home.passTrackList(data))
             }
             launch {
                 data = viewModel.readTracks().toJsonString()
