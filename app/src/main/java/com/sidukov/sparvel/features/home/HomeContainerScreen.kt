@@ -42,12 +42,12 @@ fun HomeScreenContainer(
                     newTrackList = viewModel.readTracks()
                 }
             }
-            var mask by remember { mutableStateOf("") }
+            var query by remember { mutableStateOf("") }
 
             HomeMenuPanel(
                 onMenuClicked = onMenuClicked,
                 onTextUpdated = {
-                    mask = it
+                    query = it
                 }
             ) {
 
@@ -66,7 +66,7 @@ fun HomeScreenContainer(
                     FULL -> {
                         HomeScreen(
                             navController = navController,
-                            trackList = newTrackList.filter(mask),
+                            trackList = newTrackList.filter(query),
                             onPlaylistSectionClicked = {
                                 viewModel.setHomeScreen(PLAYLISTS)
                             },

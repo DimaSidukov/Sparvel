@@ -11,11 +11,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.drawWithCache
-import androidx.compose.ui.graphics.BlendMode
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.graphics.*
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.IntSize
@@ -34,7 +31,7 @@ fun AsyncOrPlaceholderImage(
 ) {
     var dynamicImageSize by remember { mutableStateOf(IntSize.Zero) }
     val gradient = Brush.verticalGradient(
-        colors = listOf(Color.Transparent, SparvelTheme.colors.background),
+        colors = listOf(SparvelTheme.colors.background, Color.Transparent),
         startY = dynamicImageSize.height * 0.3f,
         endY = dynamicImageSize.height * 0.9f
     )
@@ -56,7 +53,12 @@ fun AsyncOrPlaceholderImage(
                         RoundedCornerShape(10.dp)
                     )
                     .padding((0.3 * imageSize).dp)
-                    .size((0.4 * imageSize).dp),
+                    .size((0.4 * imageSize).dp)
+                    // applyIf + find right position
+                    .drawWithContent {
+                        drawContent()
+                        drawRect(gradient, blendMode = BlendMode.DstIn)
+                    },
                 colorFilter = ColorFilter.tint(SparvelTheme.colors.secondary)
             )
         }
@@ -64,16 +66,17 @@ fun AsyncOrPlaceholderImage(
             model = imageUrl,
             contentDescription = null,
             onSuccess = { isImageLoaded = true },
+            onError = { isImageLoaded = false },
             modifier = Modifier
                 .size(imageSize.dp)
                 .onGloballyPositioned { dynamicImageSize = it.size }
                 .applyIf(needGradient) {
-                    drawWithCache {
-                        onDrawWithContent {
+                    this
+                        .graphicsLayer { alpha = 0.99f }
+                        .drawWithContent {
                             drawContent()
-                            drawRect(gradient, blendMode = BlendMode.SrcOver)
+                            drawRect(gradient, blendMode = BlendMode.DstIn)
                         }
-                    }
                 }
                 .clip(RoundedCornerShape(10.dp))
                 .border(0.dp, Color.Transparent, RoundedCornerShape(10.dp))

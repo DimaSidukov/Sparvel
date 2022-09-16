@@ -31,8 +31,7 @@ fun CollectionSection(
         modifier = modifier.clickable(
             interactionSource = remember { MutableInteractionSource() },
             indication = rememberRipple(
-                // need to set color for night theme, it is not visible otherwise
-                color = Color.Yellow
+                color = SparvelTheme.colors.cursor
             ),
             onClick = onSectionNameClicked
         ),

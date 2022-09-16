@@ -2,10 +2,7 @@ package com.sidukov.sparvel.core.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
@@ -93,8 +90,8 @@ fun SearchBar(
                         ),
                         shape = RoundedCornerShape(10.dp)
                     )
-                }
-
+                },
+                contentPadding = PaddingValues(0.dp)
             )
         },
         textStyle = SparvelTheme.typography.searchBar.copy(color = SparvelTheme.colors.text)

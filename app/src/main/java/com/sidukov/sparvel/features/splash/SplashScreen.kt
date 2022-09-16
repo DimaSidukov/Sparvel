@@ -32,7 +32,7 @@ fun SplashScreen(
     navController: NavHostController
 ) {
 
-    val loadingTime = 1000L
+    val loadingTime = 300L
     var isDataLoaded by remember { mutableStateOf(false) }
 
     Column(
@@ -50,7 +50,7 @@ fun SplashScreen(
             visible,
             enter = slideInVertically(tween(duration)) {
                 with(density) { -30.dp.roundToPx() }
-            } + fadeIn(tween(duration))
+            } + fadeIn(tween(duration / 3))
         ) {
             Icon(
                 modifier = Modifier
@@ -70,7 +70,7 @@ fun SplashScreen(
             visible = visible,
             enter = slideInVertically(tween(duration)) {
                 with(density) { 30.dp.roundToPx() }
-            } + fadeIn(tween(duration))) {
+            } + fadeIn(tween(duration / 3))) {
             Text(
                 text = stringResource(R.string.app_name),
                 style = SparvelTheme.typography.appName,
@@ -85,7 +85,10 @@ fun SplashScreen(
                 while (!isDataLoaded) {
                     delay(loadingTime)
                 }
-                if (isDataLoaded) navController.navigateAndSetRoot(Screens.Home.passTrackList(data))
+                if (isDataLoaded) {
+                    delay(loadingTime * 2)
+                    navController.navigateAndSetRoot(Screens.Home.passTrackList(data))
+                }
             }
             launch {
                 data = viewModel.readTracks().toJsonString()
