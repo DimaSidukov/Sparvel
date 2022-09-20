@@ -45,20 +45,22 @@ fun AsyncOrPlaceholderImage(
                 painter = painterResource(R.drawable.ic_melody),
                 contentDescription = null,
                 modifier = Modifier
+                    .applyIf(needGradient) {
+                        graphicsLayer { alpha = 0.99f }
+                            .drawWithContent {
+                                drawContent()
+                                drawRect(gradient, blendMode = BlendMode.DstIn)
+                            }
+                    }
                     .clip(RoundedCornerShape(10.dp))
-                    .background(SparvelTheme.colors.background)
+                    .background(gradient)
                     .border(
                         1.dp,
                         SparvelTheme.colors.textPlaceholder,
                         RoundedCornerShape(10.dp)
                     )
                     .padding((0.3 * imageSize).dp)
-                    .size((0.4 * imageSize).dp)
-                    // applyIf + find right position
-                    .drawWithContent {
-                        drawContent()
-                        drawRect(gradient, blendMode = BlendMode.DstIn)
-                    },
+                    .size((0.4 * imageSize).dp),
                 colorFilter = ColorFilter.tint(SparvelTheme.colors.secondary)
             )
         }
@@ -71,8 +73,7 @@ fun AsyncOrPlaceholderImage(
                 .size(imageSize.dp)
                 .onGloballyPositioned { dynamicImageSize = it.size }
                 .applyIf(needGradient) {
-                    this
-                        .graphicsLayer { alpha = 0.99f }
+                    graphicsLayer { alpha = 0.99f }
                         .drawWithContent {
                             drawContent()
                             drawRect(gradient, blendMode = BlendMode.DstIn)

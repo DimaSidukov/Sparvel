@@ -18,7 +18,6 @@ Package organization:
 * main - main screen with left drawer
 
 TODO list:
-* in night mode collection items' image fadeout effect is screwed due to background gradient
-* fix double @Inject call in viewmodels (baseViewModel accepts injection as class field, not in constructor)
 * add animation for switching screens in HomeScreenContainer
-* fix no-image gradient in albums/playlists screens
+* add draggable music player ui element
+* add playlist creation/removal etc screens + local database for storing them

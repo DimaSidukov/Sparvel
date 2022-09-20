@@ -32,26 +32,10 @@ data class SparvelTypography(
     val collectionTitleLarge: TextStyle = TextStyle(FontWeight.Bold, 20.sp),
     val collectionTitleMedium: TextStyle = TextStyle(FontWeight.Normal, 16.sp),
     val collectionTitleSmall: TextStyle = TextStyle(FontWeight.SemiBold, 12.sp),
-    val collectionInfo: TextStyle = TextStyle(FontWeight.Light, 11.sp),
+    val collectionInfo: TextStyle = TextStyle(FontWeight.Light, 12.sp),
     val trackTitleSmall: TextStyle = TextStyle(FontWeight.SemiBold, 14.sp),
     val drawerTitle: TextStyle = TextStyle(FontWeight.Black, 24.sp),
     val drawerText: TextStyle = TextStyle(FontWeight.Medium, 18.sp),
     val appVersion: TextStyle = TextStyle(FontWeight.Light, 15.sp),
     val permissionDenied: TextStyle = TextStyle(FontWeight.Medium, 16.sp)
-) {
-    val displayLarge = material.displayLarge
-    val displayMedium = material.displayMedium
-    val displaySmall = material.displaySmall
-    val headlineLarge = material.headlineLarge
-    val headlineMedium = material.headlineMedium
-    val headlineSmall = material.headlineSmall
-    val titleLarge = material.titleLarge
-    val titleMedium = material.titleMedium
-    val titleSmall = material.titleSmall
-    val bodyLarge = material.bodyLarge
-    val bodyMedium = material.bodyMedium
-    val bodySmall = material.bodySmall
-    val labelLarge = material.labelLarge
-    val labelMedium = material.labelMedium
-    val labelSmall = material.labelSmall
-}
+)

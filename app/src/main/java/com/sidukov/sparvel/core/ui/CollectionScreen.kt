@@ -58,9 +58,10 @@ fun CollectionScreen(
                         style = SparvelTheme.typography.collectionTitleMedium,
                         maxLines = 1
                     )
+                    val tracksAmount = stringResource(R.string.album_info_label, collection.tracks.size)
                     Text(
                         modifier = Modifier.width(contentWidth.dp),
-                        text = stringResource(R.string.album_info_label, collection.tracks.size),
+                        text = if (collection.year != -1) "$tracksAmount • ${collection.year}" else tracksAmount,
                         textAlign = TextAlign.Center,
                         color = SparvelTheme.colors.secondary,
                         style = SparvelTheme.typography.collectionInfo,
