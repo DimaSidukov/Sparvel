@@ -1,5 +1,10 @@
 package com.sidukov.sparvel.features.home
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.slideInHorizontally
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -50,53 +55,51 @@ fun HomeScreenContainer(
                     query = it
                 }
             ) {
-
-                val duration = 300
-                val density = LocalDensity.current
-                val screenWidth = (LocalConfiguration.current.screenWidthDp / 2).dp
-
-                // start animation:
-                // slideInHorizontally(tween(duration)) { with(density) { -screenWidth.roundToPx() } } + fadeIn(tween(duration))
-
-//                var screenState by remember { mutableStateOf(LIBRARY as HomeScreen) }
-//                LaunchedEffect(screenState) {
-//                    screenState = uiState.currentScreen
-//                }
                 when (uiState.currentScreen) {
                     FULL -> {
                         HomeScreen(
                             navController = navController,
                             trackList = newTrackList.filter(query),
                             onPlaylistSectionClicked = {
-                                viewModel.setHomeScreen(PLAYLISTS)
+                                viewModel.setScreen(PLAYLISTS)
                             },
                             onAlbumSectionClicked = {
-                                viewModel.setHomeScreen(ALBUMS)
+                                viewModel.setScreen(ALBUMS)
                             }
                         )
                     }
                     PLAYLISTS -> {
-                        PlaylistsScreen(
-                            navController = navController,
-                            onNavigatedBack = {
-                                viewModel.setHomeScreen(FULL)
-                            }
-                        )
+                        viewModel.showNewScreen()
+                        SwipeFromLeftAnimation(isVisible = uiState.isNewScreenVisible) {
+                            PlaylistsScreen(
+                                navController = navController,
+                                onNavigatedBack = {
+                                    viewModel.setScreenAndDisableAnimation(FULL)
+                                }
+                            )
+                        }
                     }
                     ALBUMS -> {
-                        AlbumsScreen(
-                            navController = navController,
-                            albums = trackList.toMusicCollection(),
-                            onNavigatedBack = {
-                                viewModel.setHomeScreen(FULL)
-                            }
-                        )
+                        viewModel.showNewScreen()
+                        SwipeFromLeftAnimation(
+                            isVisible = uiState.isNewScreenVisible
+                        ) {
+                            AlbumsScreen(
+                                navController = navController,
+                                albums = trackList.toMusicCollection(),
+                                onNavigatedBack = {
+                                    viewModel.setScreenAndDisableAnimation(FULL)
+                                }
+                            )
+                        }
                     }
                     LIBRARY -> {
-
+                        viewModel.showNewScreen()
+                        SwipeFromLeftAnimation(isVisible = uiState.isNewScreenVisible) {
+                            LibraryScreen()
+                        }
                     }
                 }
-
             }
         },
         onPermissionDenied = {
@@ -116,5 +119,23 @@ fun HomeScreenContainer(
                 )
             }
         }
+    )
+}
+
+@Composable
+fun SwipeFromLeftAnimation(
+    isVisible: Boolean,
+    content: @Composable AnimatedVisibilityScope.() -> Unit
+) {
+    val duration = 100
+    val density = LocalDensity.current
+    val screenWidth = (LocalConfiguration.current.screenWidthDp / 2).dp
+
+    AnimatedVisibility(
+        visible = isVisible,
+        enter = slideInHorizontally(tween(duration)) { with(density) { -screenWidth.roundToPx() / 2 } } + fadeIn(
+            tween(duration / 2)
+        ),
+        content = content
     )
 }

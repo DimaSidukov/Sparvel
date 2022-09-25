@@ -7,7 +7,8 @@ import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithCache
@@ -23,6 +24,7 @@ import com.sidukov.sparvel.core.functionality.Screens
 import com.sidukov.sparvel.core.functionality.navigateAndSetRoot
 import com.sidukov.sparvel.core.functionality.toJsonString
 import com.sidukov.sparvel.core.theme.SparvelTheme
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -32,8 +34,7 @@ fun SplashScreen(
     navController: NavHostController
 ) {
 
-    val loadingTime = 300L
-    var isDataLoaded by remember { mutableStateOf(false) }
+    val uiState = viewModel.uiState
 
     Column(
         modifier = Modifier
@@ -41,13 +42,12 @@ fun SplashScreen(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        var visible by remember { mutableStateOf(false) }
         val density = LocalDensity.current
-        val duration = 1000
+        val duration = 600
         val gradient = SparvelTheme.colors.logoGradient
 
         AnimatedVisibility(
-            visible,
+            visible = uiState.isAnimationVisible,
             enter = slideInVertically(tween(duration)) {
                 with(density) { -30.dp.roundToPx() }
             } + fadeIn(tween(duration / 3))
@@ -67,7 +67,7 @@ fun SplashScreen(
         }
         Spacer(modifier = Modifier.height(15.dp))
         AnimatedVisibility(
-            visible = visible,
+            visible = uiState.isAnimationVisible,
             enter = slideInVertically(tween(duration)) {
                 with(density) { 30.dp.roundToPx() }
             } + fadeIn(tween(duration / 3))) {
@@ -77,22 +77,16 @@ fun SplashScreen(
                 color = SparvelTheme.colors.text
             )
         }
-
-        LaunchedEffect(true) {
-            visible = true
-            var data = ""
-            launch {
-                while (!isDataLoaded) {
-                    delay(loadingTime)
-                }
-                if (isDataLoaded) {
-                    delay(loadingTime * 2)
-                    navController.navigateAndSetRoot(Screens.Home.passTrackList(data))
+        LaunchedEffect(uiState.isDataLoaded) {
+            viewModel.setAnimationVisible()
+            if (uiState.isDataLoaded) {
+                delay(duration.toLong())
+                launch(Dispatchers.Main) {
+                    navController.navigateAndSetRoot(Screens.Home.passTrackList(uiState.trackList.toJsonString()))
                 }
             }
             launch {
-                data = viewModel.readTracks().toJsonString()
-                isDataLoaded = true
+                viewModel.readTracks()
             }
         }
     }

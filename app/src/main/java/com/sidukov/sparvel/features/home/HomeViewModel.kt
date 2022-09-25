@@ -19,8 +19,19 @@ class HomeViewModel @Inject constructor(
     var uiState by mutableStateOf(HomeScreenState())
         private set
 
-    fun setHomeScreen(screen: HomeScreen) {
+    fun setScreen(screen: HomeScreen) {
         uiState = uiState.copy(currentScreen = screen)
+    }
+
+    fun setScreenAndDisableAnimation(screen: HomeScreen) {
+        uiState = uiState.copy(
+            currentScreen = screen,
+            isNewScreenVisible = false
+        )
+    }
+
+    fun showNewScreen() {
+        uiState = uiState.copy(isNewScreenVisible = true)
     }
 
     suspend fun readTracks(): List<Track> {
@@ -34,7 +45,8 @@ class HomeViewModel @Inject constructor(
 data class HomeScreenState(
     val trackList: List<Track> = emptyList(),
     val albums: List<MusicCollection> = emptyList(),
-    val currentScreen: HomeScreen = HomeScreen.FULL
+    val currentScreen: HomeScreen = HomeScreen.FULL,
+    val isNewScreenVisible: Boolean = false
 )
 
 sealed class HomeScreen {
