@@ -5,10 +5,7 @@ import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.slideInHorizontally
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -27,6 +24,7 @@ import com.sidukov.sparvel.core.model.Track
 import com.sidukov.sparvel.core.theme.SparvelTheme
 import com.sidukov.sparvel.core.ui.HomeMenuPanel
 import com.sidukov.sparvel.features.home.HomeScreen.*
+import com.sidukov.sparvel.features.player.PlayerView
 import com.sidukov.sparvel.features.playlist.PlaylistsScreen
 
 @Composable
@@ -101,6 +99,7 @@ fun HomeScreenContainer(
                     }
                 }
             }
+            PlayerView()
         },
         onPermissionDenied = {
             Column(
