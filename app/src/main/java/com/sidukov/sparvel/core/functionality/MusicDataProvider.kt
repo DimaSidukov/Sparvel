@@ -8,7 +8,6 @@ import android.util.Log
 import com.sidukov.sparvel.core.model.Track
 import javax.inject.Inject
 
-
 class MusicDataProvider @Inject constructor(private val context: Context) {
 
     companion object {

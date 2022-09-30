@@ -1,5 +1,6 @@
 package com.sidukov.sparvel.features.player
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -26,6 +27,13 @@ fun PlayerView() {
         mutableStateOf(minHeightSize)
     }
 
+    var startHeight by remember { mutableStateOf(0.dp) }
+    var endHeight by remember { mutableStateOf(0.dp) }
+
+    var isTouchEnabled by remember {
+        mutableStateOf(true)
+    }
+
     val screenHeight = LocalConfiguration.current.screenHeightDp.dp
     val scope = rememberCoroutineScope()
 
@@ -36,24 +44,59 @@ fun PlayerView() {
                 .height(height)
                 .align(Alignment.BottomCenter)
                 .background(Color.Red)
+                .clickable(
+                    enabled = isTouchEnabled
+                ) {
+                    isTouchEnabled = false
+                    if (height < screenHeight) {
+                        scope.launch {
+                            while (height < screenHeight) {
+                                height += if (screenHeight - height >= animationDpValue) {
+                                    animationDpValue
+                                } else {
+                                    screenHeight - height
+
+                                }
+                                delay(5)
+                            }
+                            endHeight = height
+                            startHeight = height
+                            isTouchEnabled = true
+                        }
+                    } else {
+                        scope.launch {
+                            while (height > minHeightSize) {
+                                height -= if (height - minHeightSize >= animationDpValue) {
+                                    animationDpValue
+                                } else {
+                                    height - minHeightSize
+                                }
+                                delay(5)
+                            }
+                            endHeight = height
+                            startHeight = height
+                            isTouchEnabled = true
+                        }
+                    }
+                }
                 .pointerInput(Unit) {
                     detectDragGestures(
+                        onDragStart = {
+                            startHeight = height
+                        },
                         onDrag = { _, dragAmount ->
                             val newValue = height - (dragAmount.y * 2.5)
                                 .toInt()
                                 .toDp()
-                            if (dragAmount.y < 0 && newValue <= screenHeight) {
-                                height -= (dragAmount.y * 2.5)
-                                    .toInt()
-                                    .toDp()
-                            } else if (dragAmount.y > 0 && newValue >= minHeightSize) {
+                            if (dragAmount.y < 0 && newValue <= screenHeight || dragAmount.y > 0 && newValue >= minHeightSize) {
                                 height -= (dragAmount.y * 2.5)
                                     .toInt()
                                     .toDp()
                             }
+                            endHeight = height
                         },
                         onDragEnd = {
-                            if (height in (screenHeight / 2)..screenHeight) {
+                            if (endHeight >= startHeight) {
                                 scope.launch {
                                     while (height < screenHeight) {
                                         height += if (screenHeight - height >= animationDpValue) {
