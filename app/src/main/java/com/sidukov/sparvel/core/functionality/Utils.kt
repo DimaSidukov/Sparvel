@@ -6,11 +6,14 @@ import androidx.activity.OnBackPressedCallback
 import androidx.activity.OnBackPressedDispatcher
 import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.composed
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.navigation.NavController
@@ -129,3 +132,13 @@ fun List<Track>.filter(query: String) =
                 || it.album.contains(query, true)
                 || it.composer.contains(query, true)
     }
+
+fun Double.toIntToDp() = this.toInt().dp
+
+fun Modifier.systemPaddingTop() = composed {
+    this.windowInsetsPadding(
+        WindowInsets.systemBars.only(
+            WindowInsetsSides.Top
+        )
+    )
+}

@@ -22,6 +22,7 @@ import androidx.navigation.NavHostController
 import com.sidukov.sparvel.R
 import com.sidukov.sparvel.core.functionality.Screens
 import com.sidukov.sparvel.core.functionality.navigateAndSetRoot
+import com.sidukov.sparvel.core.functionality.systemPaddingTop
 import com.sidukov.sparvel.core.functionality.toJsonString
 import com.sidukov.sparvel.core.theme.SparvelTheme
 import kotlinx.coroutines.Dispatchers
@@ -38,6 +39,7 @@ fun SplashScreen(
 
     Column(
         modifier = Modifier
+            .systemPaddingTop()
             .fillMaxSize(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally

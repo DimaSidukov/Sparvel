@@ -35,9 +35,7 @@ fun SparvelTheme(
 
     val systemUiController = rememberSystemUiController()
     SideEffect {
-        systemUiController.setSystemBarsColor(colors.background)
-        systemUiController.setStatusBarColor(colors.background)
-        systemUiController.setNavigationBarColor(colors.background)
+        systemUiController.setSystemBarsColor(Color.Transparent)
     }
 
     CompositionLocalProvider(
