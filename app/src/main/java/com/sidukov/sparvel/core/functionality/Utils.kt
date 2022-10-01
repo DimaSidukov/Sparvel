@@ -133,8 +133,6 @@ fun List<Track>.filter(query: String) =
                 || it.composer.contains(query, true)
     }
 
-fun Double.toIntToDp() = this.toInt().dp
-
 fun Modifier.systemPaddingTop() = composed {
     this.windowInsetsPadding(
         WindowInsets.systemBars.only(
