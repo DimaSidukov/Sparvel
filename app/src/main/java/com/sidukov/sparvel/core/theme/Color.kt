@@ -10,6 +10,7 @@ private val black = Color.Black
 private val white = Color.White
 private val lightBlue = Color(0xFF748CAB)
 private val darkestBlue = Color(0xFF00081C)
+private val darkBlue = Color(0xFF030017)
 private val lightGrey = Color(0xFFBEC4CC)
 private val lightGrey2 = Color(0xFF999999)
 private val darkGrey = Color(0xFF5F5F5F)
@@ -29,6 +30,7 @@ data class SparvelColors(
     val backgroundGradient: Brush?,
     val logoGradient: Brush,
     val permissionDenied: Color,
+    val playerBackground: Color,
     private val secondaryMaterial: Color,
     private val backgroundMaterial: Color
 ) {
@@ -57,6 +59,7 @@ val LightColors = SparvelColors(
     backgroundGradient = null,
     logoGradient = Brush.verticalGradient(listOf(lightBlue, black)),
     permissionDenied = darkGrey,
+    playerBackground = white,
     secondaryMaterial = black,
     backgroundMaterial = white
 )
@@ -74,6 +77,7 @@ val DarkColors = SparvelColors(
     backgroundGradient = Brush.verticalGradient(listOf(darkestBlue, gloomyBlue)),
     logoGradient = Brush.verticalGradient(listOf(darkestBlue, white)),
     permissionDenied = lightGrey2,
+    playerBackground = darkBlue,
     secondaryMaterial = white,
     backgroundMaterial = darkestBlue
 )

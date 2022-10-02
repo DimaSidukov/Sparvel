@@ -42,7 +42,7 @@ fun CollectionScreen(
         ) {
             items(collectionList) { collection ->
                 Column {
-                    AsyncOrPlaceholderImage(
+                    ImageOrPlaceholder(
                         imageUrl = collection.coverId,
                         imageSize = contentWidth,
                         needGradient = true

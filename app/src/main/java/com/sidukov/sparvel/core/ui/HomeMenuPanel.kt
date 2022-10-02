@@ -9,7 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.sidukov.sparvel.R
-import com.sidukov.sparvel.core.functionality.systemPaddingTop
+import com.sidukov.sparvel.core.functionality.systemBarsPadding
 import com.sidukov.sparvel.core.theme.SparvelTheme
 
 @Composable
@@ -18,7 +18,7 @@ fun HomeMenuPanel(
     onTextUpdated: (String) -> Unit,
     content: @Composable () -> Unit,
 ) {
-    Column(modifier = Modifier.systemPaddingTop()) {
+    Column(modifier = Modifier.systemBarsPadding()) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()

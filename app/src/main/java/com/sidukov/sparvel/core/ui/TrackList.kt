@@ -21,7 +21,7 @@ import com.sidukov.sparvel.core.theme.SparvelTheme
 fun TrackList(
     modifier: Modifier = Modifier,
     itemList: List<Track>,
-    onItemClicked: () -> Unit = { },
+    onItemClicked: (Track) -> Unit = { },
     additionalContent: @Composable () -> Unit = { }
 ) {
     LazyColumn(
@@ -41,10 +41,10 @@ fun TrackList(
                         indication = rememberRipple(
                             color = SparvelTheme.colors.cursor
                         )
-                    ) { onItemClicked() },
+                    ) { onItemClicked(item) },
                 horizontalArrangement = Arrangement.Start
             ) {
-                AsyncOrPlaceholderImage(
+                ImageOrPlaceholder(
                     imageUrl = item.coverId,
                     imageSize = 50,
                     needGradient = false

@@ -66,6 +66,9 @@ fun HomeScreenContainer(
                             },
                             onAlbumSectionClicked = {
                                 viewModel.setScreen(ALBUMS)
+                            },
+                            onTrackClicked = {
+                                viewModel.showPlayer(it)
                             }
                         )
                     }
@@ -102,7 +105,7 @@ fun HomeScreenContainer(
                     }
                 }
             }
-            PlayerView()
+            uiState.selectedTrack?.let { PlayerView(it) }
         },
         onPermissionDenied = {
             Column(

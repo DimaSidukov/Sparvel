@@ -2,18 +2,25 @@ package com.sidukov.sparvel.core.functionality
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.graphics.ImageDecoder
+import android.os.Build
+import android.provider.MediaStore
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.OnBackPressedDispatcher
 import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.graphics.*
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.unit.dp
+import androidx.core.net.toUri
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.navigation.NavController
@@ -133,10 +140,35 @@ fun List<Track>.filter(query: String) =
                 || it.composer.contains(query, true)
     }
 
-fun Modifier.systemPaddingTop() = composed {
+fun Modifier.systemBarsPadding() = composed {
     this.windowInsetsPadding(
         WindowInsets.systemBars.only(
-            WindowInsetsSides.Top
+            WindowInsetsSides.Top + WindowInsetsSides.Bottom
         )
     )
 }
+
+@Composable
+fun String.decodeBitmap(): ImageBitmap? {
+    val cr = LocalContext.current.contentResolver
+    return try {
+        when {
+            Build.VERSION.SDK_INT < 28 -> MediaStore.Images.Media.getBitmap(cr, this.toUri())
+            else -> {
+                ImageDecoder.decodeBitmap(ImageDecoder.createSource(cr, this.toUri()))
+            }
+        }
+    } catch (e: Exception) {
+        null
+    }?.asImageBitmap()
+}
+
+fun Modifier.applyGradient(needGradient: Boolean, gradient: Brush) = this
+    .applyIf(needGradient) {
+        graphicsLayer { alpha = 0.99f }
+            .drawWithContent {
+                drawContent()
+                drawRect(gradient, blendMode = BlendMode.DstIn)
+            }
+    }
+    .clip(RoundedCornerShape(10.dp))

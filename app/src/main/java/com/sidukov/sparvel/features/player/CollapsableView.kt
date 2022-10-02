@@ -8,17 +8,17 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import com.sidukov.sparvel.core.functionality.background
+import com.sidukov.sparvel.core.theme.SparvelTheme
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
 fun CollapsableView(
-    content: @Composable () -> Unit
+    content: @Composable ColumnScope.() -> Unit
 ) {
 
     val minHeightSize = 70.dp
@@ -50,7 +50,7 @@ fun CollapsableView(
                 .fillMaxWidth()
                 .height(height)
                 .align(Alignment.BottomCenter)
-                .background(Color.Red)
+                .background(SparvelTheme.colors.playerBackground)
                 .clickable(
                     enabled = isTouchEnabled
                 ) {
@@ -97,8 +97,7 @@ fun CollapsableView(
                         }
                     }
                 ),
-        ) {
-            content()
-        }
+            content = content
+        )
     }
 }

@@ -23,15 +23,13 @@ fun HomeScreen(
     trackList: List<Track>,
     onPlaylistSectionClicked: () -> Unit,
     onAlbumSectionClicked: () -> Unit,
+    onTrackClicked: (Track) -> Unit,
 ) {
     Column {
         TrackList(
             modifier = Modifier.padding(start = 30.dp, end = 30.dp),
             itemList = trackList,
-            onItemClicked = {
-                // open player fragment and start track
-                // pass action from HomeContainerScreen
-            }
+            onItemClicked = onTrackClicked
         ) {
             Column(modifier = Modifier.padding(start = 30.dp)) {
                 CollectionSection(

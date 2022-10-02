@@ -34,6 +34,10 @@ class HomeViewModel @Inject constructor(
         uiState = uiState.copy(isNewScreenVisible = true)
     }
 
+    fun showPlayer(track: Track) {
+        uiState = uiState.copy(selectedTrack = track)
+    }
+
     suspend fun readTracks(): List<Track> {
         return withContext(viewModelScope.coroutineContext + Dispatchers.IO) {
             musicDataProvider.getAllDeviceTracks()
@@ -46,7 +50,8 @@ data class HomeScreenState(
     val trackList: List<Track> = emptyList(),
     val albums: List<MusicCollection> = emptyList(),
     val currentScreen: HomeScreen = HomeScreen.FULL,
-    val isNewScreenVisible: Boolean = false
+    val isNewScreenVisible: Boolean = false,
+    val selectedTrack: Track? = null
 )
 
 sealed class HomeScreen {

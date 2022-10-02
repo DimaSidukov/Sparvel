@@ -20,7 +20,7 @@ fun CollectionItem(
     onItemClicked: () -> Unit
 ) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        AsyncOrPlaceholderImage(
+        ImageOrPlaceholder(
             imageSize = 100,
             imageUrl = playlistImage,
             needGradient = needGradient,
