@@ -7,14 +7,17 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import com.sidukov.sparvel.R
@@ -28,6 +31,8 @@ fun HQImageOrPlaceholder(
     imageUrl: String,
     imageSize: Int,
     needGradient: Boolean,
+    currentHeight: Dp,
+    maxHeight: Dp,
     onImageClicked: (() -> Unit)? = null
 ) {
     var dynamicImageSize by remember { mutableStateOf(IntSize.Zero) }
@@ -38,7 +43,8 @@ fun HQImageOrPlaceholder(
     )
 
     Box(
-        modifier = Modifier.size(imageSize.dp)
+        modifier = Modifier
+            .size(imageSize.dp)
     ) {
         val bitmap = imageUrl.decodeBitmap()
         if (bitmap == null) {
@@ -46,13 +52,7 @@ fun HQImageOrPlaceholder(
                 painter = painterResource(R.drawable.ic_melody),
                 contentDescription = null,
                 modifier = Modifier
-                    .applyGradient(needGradient, gradient)
                     .background(gradient)
-                    .border(
-                        1.dp,
-                        SparvelTheme.colors.textPlaceholder,
-                        RoundedCornerShape(10.dp)
-                    )
                     .padding((0.3 * imageSize).dp)
                     .size((0.4 * imageSize).dp)
                     .applyIf(onImageClicked != null) {
@@ -64,8 +64,9 @@ fun HQImageOrPlaceholder(
             Image(
                 bitmap = bitmap,
                 contentDescription = null,
+                contentScale = ContentScale.FillWidth,
                 modifier = Modifier
-                    .size(imageSize.dp)
+                    .width(imageSize.dp)
                     .onGloballyPositioned { dynamicImageSize = it.size }
                     .applyGradient(needGradient, gradient)
                     .border(0.dp, Color.Transparent, RoundedCornerShape(10.dp))

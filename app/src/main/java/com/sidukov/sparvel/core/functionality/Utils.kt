@@ -1,10 +1,9 @@
 package com.sidukov.sparvel.core.functionality
 
-import android.Manifest
 import android.annotation.SuppressLint
 import android.graphics.ImageDecoder
 import android.os.Build
-import android.provider.MediaStore
+import android.provider.MediaStore.Images.Media.getBitmap
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.OnBackPressedDispatcher
 import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
@@ -18,14 +17,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleEventObserver
-import androidx.navigation.NavController
-import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import com.google.gson.Gson
 import com.sidukov.sparvel.core.model.MusicCollection
 import com.sidukov.sparvel.core.model.Track
@@ -41,40 +34,6 @@ fun Modifier.background(color: Any): Modifier =
         is Color -> this.then(Modifier.background(color))
         else -> this
     }
-
-@SuppressLint("PermissionLaunchedDuringComposition")
-@OptIn(ExperimentalPermissionsApi::class, ExperimentalPermissionsApi::class)
-@Composable
-fun GetStoragePermission(
-    onPermissionGranted: @Composable () -> Unit,
-    onPermissionDenied: @Composable () -> Unit
-) {
-    val permissionState = rememberMultiplePermissionsState(
-        permissions = listOf(
-            Manifest.permission.READ_EXTERNAL_STORAGE,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE
-        )
-    )
-    val lifecycleOwner = LocalLifecycleOwner.current
-
-    DisposableEffect(key1 = lifecycleOwner, effect = {
-        val observer = LifecycleEventObserver { _, event ->
-            if (event == Lifecycle.Event.ON_START) {
-                permissionState.launchMultiplePermissionRequest()
-            }
-        }
-        lifecycleOwner.lifecycle.addObserver(observer)
-
-        onDispose {
-            lifecycleOwner.lifecycle.removeObserver(observer)
-        }
-    })
-
-    when {
-        permissionState.allPermissionsGranted -> onPermissionGranted()
-        permissionState.shouldShowRationale -> onPermissionDenied()
-    }
-}
 
 fun List<Track>.toMusicCollection() = this.groupBy { it.album }.map {
     val unnamedArtist = "Unknown artist"
@@ -96,18 +55,6 @@ fun String?.toTrackList() =
         URLDecoder.decode(this, StandardCharsets.UTF_8.toString()),
         Array<Track>::class.java
     ).toList()
-
-fun NavController.navigateAndSetRoot(target: String) {
-    navigate(target) {
-        this@navigateAndSetRoot.currentBackStackEntry?.destination?.route.let {
-            it?.let { route ->
-                popUpTo(route) {
-                    inclusive = true
-                }
-            }
-        }
-    }
-}
 
 @SuppressLint("ComposableNaming")
 @Composable
@@ -133,12 +80,18 @@ fun exitScreenWithAction(action: () -> Unit) {
     }
 }
 
-fun List<Track>.filter(query: String) =
-    this.filter {
-        it.title.contains(query, true)
-                || it.album.contains(query, true)
-                || it.composer.contains(query, true)
+fun List<Track>.filter(query: String): List<Track> {
+    val words = query.trim().split("\\s+".toRegex()).toList()
+    return this.filter { track ->
+        track.title.containsQueryOrWords(query, words)
+                || track.album.containsQueryOrWords(query, words)
+                || track.composer.containsQueryOrWords(query, words)
     }
+}
+
+private fun String.containsQueryOrWords(query: String, words: List<String>) =
+    this.contains(query, true) || words.any { this.contains(it, true) }
+
 
 fun Modifier.systemBarsPadding() = composed {
     this.windowInsetsPadding(
@@ -153,7 +106,7 @@ fun String.decodeBitmap(): ImageBitmap? {
     val cr = LocalContext.current.contentResolver
     return try {
         when {
-            Build.VERSION.SDK_INT < 28 -> MediaStore.Images.Media.getBitmap(cr, this.toUri())
+            Build.VERSION.SDK_INT < 28 -> getBitmap(cr, this.toUri())
             else -> {
                 ImageDecoder.decodeBitmap(ImageDecoder.createSource(cr, this.toUri()))
             }

@@ -1,5 +1,7 @@
 package com.sidukov.sparvel.core.functionality
 
+import androidx.navigation.NavController
+
 sealed class Screens(val route: String) {
 
     companion object {
@@ -31,4 +33,16 @@ sealed class Screens(val route: String) {
     object EditTrackInfo : Screens(editTrackInfoTitle)
     object AddTracks : Screens(addTracksTitle)
     object Equalizer : Screens(equalizerTitle)
+}
+
+fun NavController.navigateAndSetRoot(target: String) {
+    navigate(target) {
+        this@navigateAndSetRoot.currentBackStackEntry?.destination?.route.let {
+            it?.let { route ->
+                popUpTo(route) {
+                    inclusive = true
+                }
+            }
+        }
+    }
 }

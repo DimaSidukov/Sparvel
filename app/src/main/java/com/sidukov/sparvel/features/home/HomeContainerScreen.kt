@@ -1,5 +1,7 @@
 package com.sidukov.sparvel.features.home
 
+import android.Manifest
+import android.annotation.SuppressLint
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.core.tween
@@ -15,12 +17,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
 import androidx.navigation.NavHostController
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import com.sidukov.sparvel.R
-import com.sidukov.sparvel.core.functionality.GetStoragePermission
 import com.sidukov.sparvel.core.functionality.filter
 import com.sidukov.sparvel.core.functionality.toMusicCollection
 import com.sidukov.sparvel.core.model.Track
@@ -90,7 +96,7 @@ fun HomeScreenContainer(
                         ) {
                             AlbumsScreen(
                                 navController = navController,
-                                albums = trackList.toMusicCollection(),
+                                albums = trackList.filter(query).toMusicCollection(),
                                 onNavigatedBack = {
                                     viewModel.setScreenAndDisableAnimation(FULL)
                                 }
@@ -143,4 +149,38 @@ fun SwipeFromLeftAnimation(
         ),
         content = content
     )
+}
+
+@SuppressLint("PermissionLaunchedDuringComposition")
+@OptIn(ExperimentalPermissionsApi::class, ExperimentalPermissionsApi::class)
+@Composable
+fun GetStoragePermission(
+    onPermissionGranted: @Composable () -> Unit,
+    onPermissionDenied: @Composable () -> Unit
+) {
+    val permissionState = rememberMultiplePermissionsState(
+        permissions = listOf(
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
+        )
+    )
+    val lifecycleOwner = LocalLifecycleOwner.current
+
+    DisposableEffect(key1 = lifecycleOwner, effect = {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_START) {
+                permissionState.launchMultiplePermissionRequest()
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
+        }
+    })
+
+    when {
+        permissionState.allPermissionsGranted -> onPermissionGranted()
+        permissionState.shouldShowRationale -> onPermissionDenied()
+    }
 }

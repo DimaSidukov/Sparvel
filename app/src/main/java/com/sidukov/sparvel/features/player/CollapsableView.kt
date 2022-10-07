@@ -10,6 +10,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.sidukov.sparvel.core.functionality.background
 import com.sidukov.sparvel.core.theme.SparvelTheme
@@ -18,11 +19,19 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun CollapsableView(
-    content: @Composable ColumnScope.() -> Unit
+    content: @Composable ColumnScope.(
+        currentHeight: Dp,
+        maxHeight: Dp
+    ) -> Unit
 ) {
 
+    val screenHeight =
+        LocalConfiguration.current.screenHeightDp.dp + WindowInsets.systemBars.getTop(
+            LocalDensity.current
+        ).dp
+
     val minHeightSize = 70.dp
-    val animationDpValue = 40.dp
+    val animationDpValue = 100.dp
     val animationDelay = 5L
 
     var height by remember {
@@ -36,11 +45,23 @@ fun CollapsableView(
         mutableStateOf(true)
     }
 
-    val screenHeight =
-        LocalConfiguration.current.screenHeightDp.dp + WindowInsets.systemBars.getTop(
-            LocalDensity.current
-        ).dp
     val scope = rememberCoroutineScope()
+
+    fun expandView(actionOnFinish: () -> Unit = { }) = scope.launch {
+        while (height < screenHeight) {
+            height += if (screenHeight - height >= animationDpValue) animationDpValue else screenHeight - height
+            delay(animationDelay)
+        }
+        actionOnFinish()
+    }
+
+    fun collapseView(actionOnFinish: () -> Unit = { }) = scope.launch {
+        while (height > minHeightSize) {
+            height -= if (height - minHeightSize >= animationDpValue) animationDpValue else height - minHeightSize
+            delay(animationDelay)
+        }
+        actionOnFinish()
+    }
 
     Box(
         modifier = Modifier.fillMaxSize()
@@ -56,11 +77,7 @@ fun CollapsableView(
                 ) {
                     isTouchEnabled = false
                     if (height < screenHeight) {
-                        scope.launch {
-                            while (height < screenHeight) {
-                                height += if (screenHeight - height >= animationDpValue) animationDpValue else screenHeight - height
-                                delay(animationDelay)
-                            }
+                        expandView {
                             endHeight = height.also { startHeight = it }
                             isTouchEnabled = true
                         }
@@ -80,24 +97,12 @@ fun CollapsableView(
                     },
                     onDragStopped = {
                         endHeight = height
-                        if (endHeight >= startHeight) {
-                            scope.launch {
-                                while (height < screenHeight) {
-                                    height += if (screenHeight - height >= animationDpValue) animationDpValue else screenHeight - height
-                                    delay(animationDelay)
-                                }
-                            }
-                        } else {
-                            scope.launch {
-                                while (height > minHeightSize) {
-                                    height -= if (height - minHeightSize >= animationDpValue) animationDpValue else height - minHeightSize
-                                    delay(animationDelay)
-                                }
-                            }
-                        }
+                        if (endHeight >= startHeight) expandView() else collapseView()
                     }
                 ),
-            content = content
+            content = {
+                content(height, screenHeight)
+            }
         )
     }
 }
