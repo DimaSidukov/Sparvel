@@ -17,6 +17,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import com.google.gson.Gson
@@ -125,3 +126,9 @@ fun Modifier.applyGradient(needGradient: Boolean, gradient: Brush) = this
             }
     }
     .clip(RoundedCornerShape(10.dp))
+
+fun Any.normalize(max: Any, min: Any): Float? = when (this) {
+    is Dp -> (this - min as Dp) / (max as Dp - min)
+    is Float -> (this - min as Float) / (max as Float - min)
+    else -> null
+}

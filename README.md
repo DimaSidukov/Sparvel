@@ -18,6 +18,7 @@ Package organization:
 * main - main screen with left drawer
 
 TODO list:
-* add animation for switching screens in HomeScreenContainer
-* add draggable music player ui element
 * add playlist creation/removal etc screens + local database for storing them
+* run ui through set of layout inspector test: check performance and recomposition. especially for draggable view
+* update toolbar icons color in player depending on the background (if it is too bright, change color of icons to black)
+* fix touch handler of player view

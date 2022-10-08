@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
@@ -31,8 +32,7 @@ fun HQImageOrPlaceholder(
     imageUrl: String,
     imageSize: Int,
     needGradient: Boolean,
-    currentHeight: Dp,
-    maxHeight: Dp,
+    alpha: Float,
     onImageClicked: (() -> Unit)? = null
 ) {
     var dynamicImageSize by remember { mutableStateOf(IntSize.Zero) }
@@ -53,6 +53,7 @@ fun HQImageOrPlaceholder(
                 contentDescription = null,
                 modifier = Modifier
                     .background(gradient)
+                    .alpha(alpha)
                     .padding((0.3 * imageSize).dp)
                     .size((0.4 * imageSize).dp)
                     .applyIf(onImageClicked != null) {
@@ -67,6 +68,7 @@ fun HQImageOrPlaceholder(
                 contentScale = ContentScale.FillWidth,
                 modifier = Modifier
                     .width(imageSize.dp)
+                    .alpha(alpha)
                     .onGloballyPositioned { dynamicImageSize = it.size }
                     .applyGradient(needGradient, gradient)
                     .border(0.dp, Color.Transparent, RoundedCornerShape(10.dp))

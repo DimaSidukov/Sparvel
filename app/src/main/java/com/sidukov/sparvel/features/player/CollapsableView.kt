@@ -8,8 +8,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.sidukov.sparvel.core.functionality.background
@@ -19,27 +17,23 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun CollapsableView(
+    screenHeight: Dp,
+    minHeight: Dp,
+    shouldCollapseView: Boolean,
     content: @Composable ColumnScope.(
-        currentHeight: Dp,
-        maxHeight: Dp
+        currentHeight: Dp
     ) -> Unit
 ) {
 
-    val screenHeight =
-        LocalConfiguration.current.screenHeightDp.dp + WindowInsets.systemBars.getTop(
-            LocalDensity.current
-        ).dp
-
-    val minHeightSize = 70.dp
     val animationDpValue = 100.dp
     val animationDelay = 5L
 
-    var height by remember {
-        mutableStateOf(minHeightSize)
-    }
-
     var startHeight by remember { mutableStateOf(0.dp) }
     var endHeight by remember { mutableStateOf(0.dp) }
+
+    var height by remember {
+        mutableStateOf(minHeight)
+    }
 
     var isTouchEnabled by remember {
         mutableStateOf(true)
@@ -56,12 +50,14 @@ fun CollapsableView(
     }
 
     fun collapseView(actionOnFinish: () -> Unit = { }) = scope.launch {
-        while (height > minHeightSize) {
-            height -= if (height - minHeightSize >= animationDpValue) animationDpValue else height - minHeightSize
+        while (height > minHeight) {
+            height -= if (height - minHeight >= animationDpValue) animationDpValue else height - minHeight
             delay(animationDelay)
         }
         actionOnFinish()
     }
+
+    if (shouldCollapseView) collapseView()
 
     Box(
         modifier = Modifier.fillMaxSize()
@@ -87,7 +83,7 @@ fun CollapsableView(
                     enabled = isTouchEnabled,
                     state = rememberDraggableState { delta ->
                         scope.launch {
-                            if (delta < 0 && height - delta.dp <= screenHeight || delta > 0 && height - delta.dp >= minHeightSize)
+                            if (delta < 0 && height - delta.dp <= screenHeight || delta > 0 && height - delta.dp >= minHeight)
                                 height -= delta.dp
                         }
                     },
@@ -101,7 +97,7 @@ fun CollapsableView(
                     }
                 ),
             content = {
-                content(height, screenHeight)
+                content(height)
             }
         )
     }
