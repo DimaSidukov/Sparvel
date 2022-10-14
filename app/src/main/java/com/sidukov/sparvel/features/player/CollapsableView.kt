@@ -1,9 +1,11 @@
 package com.sidukov.sparvel.features.player
 
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.draggable
 import androidx.compose.foundation.gestures.rememberDraggableState
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -25,19 +27,18 @@ fun CollapsableView(
     ) -> Unit
 ) {
 
-    val animationDpValue = 100.dp
-    val animationDelay = 5L
-
-    var startHeight by remember { mutableStateOf(0.dp) }
-    var endHeight by remember { mutableStateOf(0.dp) }
+    val animationDpValue = 20.dp
+    val animationDelay = 1L
 
     var height by remember {
         mutableStateOf(minHeight)
     }
 
-    var isTouchEnabled by remember {
-        mutableStateOf(true)
-    }
+    // used to calculate whether view should be collapsed or expanded
+    var startHeight by remember { mutableStateOf(0.dp) }
+    var endHeight by remember { mutableStateOf(0.dp) }
+
+    var isTouchEnabled by remember { mutableStateOf(true) }
 
     val scope = rememberCoroutineScope()
 
@@ -57,7 +58,11 @@ fun CollapsableView(
         actionOnFinish()
     }
 
-    if (shouldCollapseView) collapseView()
+    LaunchedEffect(Unit) {
+        if (shouldCollapseView) {
+            collapseView()
+        }
+    }
 
     Box(
         modifier = Modifier.fillMaxSize()
@@ -69,31 +74,35 @@ fun CollapsableView(
                 .align(Alignment.BottomCenter)
                 .background(SparvelTheme.colors.playerBackground)
                 .clickable(
-                    enabled = isTouchEnabled
+                    enabled = isTouchEnabled,
+                    indication = null,
+                    interactionSource = remember { MutableInteractionSource() }
                 ) {
                     isTouchEnabled = false
                     if (height < screenHeight) {
                         expandView {
-                            endHeight = height.also { startHeight = it }
                             isTouchEnabled = true
                         }
                     }
                 }
                 .draggable(
                     enabled = isTouchEnabled,
+                    orientation = Orientation.Vertical,
                     state = rememberDraggableState { delta ->
                         scope.launch {
-                            if (delta < 0 && height - delta.dp <= screenHeight || delta > 0 && height - delta.dp >= minHeight)
+                            if (delta < 0 && height - delta.dp <= screenHeight || delta > 0 && height - delta.dp >= minHeight) {
                                 height -= delta.dp
+                            }
                         }
                     },
-                    orientation = Orientation.Vertical,
                     onDragStarted = {
                         startHeight = height
+                        Log.d("HEIGHTS", "${startHeight} ${endHeight}")
                     },
                     onDragStopped = {
                         endHeight = height
-                        if (endHeight >= startHeight) expandView() else collapseView()
+                        Log.d("HEIGHTS", "${startHeight} ${endHeight}")
+                        if (endHeight > startHeight) expandView() else collapseView()
                     }
                 ),
             content = {

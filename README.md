@@ -23,3 +23,5 @@
 * update toolbar icons color in player depending on the background (if it is too bright, change color of icons to black)
 * fix touch handler of player view
 * extract build version into `BuildConfig`
+* put searchbar and drawer into toolbar
+* fix click on collapse icon and treshold for lower and upper bound ~100dp for the case when user made up their mind and decided to not collapse/expand view

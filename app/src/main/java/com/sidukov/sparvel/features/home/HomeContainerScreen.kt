@@ -43,94 +43,113 @@ fun HomeScreenContainer(
     trackList: List<Track>,
     onMenuClicked: () -> Unit,
 ) {
-
-    val uiState = viewModel.uiState
-
     GetStoragePermission(
         onPermissionGranted = {
-            var newTrackList by remember { mutableStateOf(trackList) }
-            if (trackList.isEmpty()) {
-                LaunchedEffect(true) {
-                    newTrackList = viewModel.readTracks()
-                }
-            }
-            var query by remember { mutableStateOf("") }
-
-            HomeMenuPanel(
-                onMenuClicked = onMenuClicked,
-                onTextUpdated = {
-                    query = it
-                }
-            ) {
-                when (uiState.currentScreen) {
-                    FULL -> {
-                        HomeScreen(
-                            navController = navController,
-                            trackList = newTrackList.filter(query),
-                            onPlaylistSectionClicked = {
-                                viewModel.setScreen(PLAYLISTS)
-                            },
-                            onAlbumSectionClicked = {
-                                viewModel.setScreen(ALBUMS)
-                            },
-                            onTrackClicked = {
-                                viewModel.showPlayer(it)
-                            }
-                        )
-                    }
-                    PLAYLISTS -> {
-                        viewModel.showNewScreen()
-                        SwipeFromLeftAnimation(isVisible = uiState.isNewScreenVisible) {
-                            PlaylistsScreen(
-                                navController = navController,
-                                onNavigatedBack = {
-                                    viewModel.setScreenAndDisableAnimation(FULL)
-                                }
-                            )
-                        }
-                    }
-                    ALBUMS -> {
-                        viewModel.showNewScreen()
-                        SwipeFromLeftAnimation(
-                            isVisible = uiState.isNewScreenVisible
-                        ) {
-                            AlbumsScreen(
-                                navController = navController,
-                                albums = trackList.filter(query).toMusicCollection(),
-                                onNavigatedBack = {
-                                    viewModel.setScreenAndDisableAnimation(FULL)
-                                }
-                            )
-                        }
-                    }
-                    LIBRARY -> {
-                        viewModel.showNewScreen()
-                        SwipeFromLeftAnimation(isVisible = uiState.isNewScreenVisible) {
-                            LibraryScreen()
-                        }
-                    }
-                }
-            }
-            uiState.selectedTrack?.let { PlayerView(it) }
+            HomeScreenApprovedState(
+                viewModel = viewModel,
+                navController = navController,
+                trackList = trackList,
+                onMenuClicked = onMenuClicked
+            )
         },
         onPermissionDenied = {
-            Column(
-                modifier = Modifier.fillMaxSize(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-            ) {
-                Text(
-                    modifier = Modifier
-                        .fillMaxWidth(0.6f)
-                        .align(Alignment.CenterHorizontally),
-                    text = stringResource(R.string.permission_denied_label),
-                    style = SparvelTheme.typography.permissionDenied,
-                    color = SparvelTheme.colors.permissionDenied,
-                    textAlign = TextAlign.Center
-                )
-            }
+            HomeScreenDeniedState()
         }
     )
+}
+
+@Composable
+fun HomeScreenApprovedState(
+    viewModel: HomeViewModel,
+    navController: NavHostController,
+    trackList: List<Track>,
+    onMenuClicked: () -> Unit
+) {
+    val uiState = viewModel.uiState
+
+    var newTrackList by remember { mutableStateOf(trackList) }
+    if (trackList.isEmpty()) {
+        LaunchedEffect(true) {
+            newTrackList = viewModel.readTracks()
+        }
+    }
+    var query by remember { mutableStateOf("") }
+
+    HomeMenuPanel(
+        onMenuClicked = onMenuClicked,
+        onTextUpdated = {
+            query = it
+        }
+    ) {
+        when (uiState.currentScreen) {
+            FULL -> {
+                HomeScreen(
+                    navController = navController,
+                    trackList = newTrackList.filter(query),
+                    onPlaylistSectionClicked = {
+                        viewModel.setScreen(PLAYLISTS)
+                    },
+                    onAlbumSectionClicked = {
+                        viewModel.setScreen(ALBUMS)
+                    },
+                    onTrackClicked = {
+                        viewModel.showPlayer(it)
+                    }
+                )
+            }
+            PLAYLISTS -> {
+                viewModel.showNewScreen()
+                SwipeFromLeftAnimation(isVisible = uiState.isNewScreenVisible) {
+                    PlaylistsScreen(
+                        navController = navController,
+                        onNavigatedBack = {
+                            viewModel.setScreenAndDisableAnimation(FULL)
+                        }
+                    )
+                }
+            }
+            ALBUMS -> {
+                viewModel.showNewScreen()
+                SwipeFromLeftAnimation(
+                    isVisible = uiState.isNewScreenVisible
+                ) {
+                    AlbumsScreen(
+                        navController = navController,
+                        albums = trackList.filter(query).toMusicCollection(),
+                        onNavigatedBack = {
+                            viewModel.setScreenAndDisableAnimation(FULL)
+                        }
+                    )
+                }
+            }
+            LIBRARY -> {
+                viewModel.showNewScreen()
+                SwipeFromLeftAnimation(isVisible = uiState.isNewScreenVisible) {
+                    LibraryScreen()
+                }
+            }
+        }
+    }
+    uiState.selectedTrack?.let { PlayerView(it) }
+}
+
+@Composable
+fun HomeScreenDeniedState() {
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Text(
+            modifier = Modifier
+                .fillMaxWidth(0.6f)
+                .align(Alignment.CenterHorizontally),
+            text = stringResource(R.string.permission_denied_label),
+            style = SparvelTheme.typography.permissionDenied,
+            color = SparvelTheme.colors.permissionDenied,
+            textAlign = TextAlign.Center
+        )
+    }
 }
 
 @Composable

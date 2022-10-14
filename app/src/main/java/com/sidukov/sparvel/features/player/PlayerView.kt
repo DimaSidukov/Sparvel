@@ -28,6 +28,7 @@ fun PlayerView(track: Track) {
         LocalConfiguration.current.screenHeightDp.dp +
                 WindowInsets.systemBars.getTop(LocalDensity.current).dp
     val minHeight = 70.dp
+
     var shouldCollapseView by remember { mutableStateOf(false) }
 
     val scope = rememberCoroutineScope()
@@ -59,9 +60,10 @@ fun PlayerView(track: Track) {
                 navigationIcon = {
                     IconButton(
                         onClick = {
-                            scope.launch {
-                                shouldCollapseView = true
-                            }
+                            shouldCollapseView = true
+//                            scope.launch {
+//
+//                            }
                         }
                     ) {
                         Icon(
