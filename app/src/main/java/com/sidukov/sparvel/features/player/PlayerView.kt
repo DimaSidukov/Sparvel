@@ -13,6 +13,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.sidukov.sparvel.R
+import com.sidukov.sparvel.core.functionality.decodeBitmap
 import com.sidukov.sparvel.core.functionality.normalize
 import com.sidukov.sparvel.core.functionality.systemBarsPadding
 import com.sidukov.sparvel.core.model.Track
@@ -32,6 +33,8 @@ fun PlayerView(track: Track) {
 
     val scope = rememberCoroutineScope()
 
+    val image = track.coverId.decodeBitmap()
+
     CollapsableView(
         screenHeight = screenHeight,
         minHeight = minHeight,
@@ -46,10 +49,9 @@ fun PlayerView(track: Track) {
                 shouldCollapseView = false
             }
         }
-
         Box {
             HQImageOrPlaceholder(
-                imageUrl = track.coverId,
+                image = image,
                 imageSize = 500,
                 needGradient = true,
                 alpha = alpha
