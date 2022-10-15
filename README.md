@@ -24,4 +24,8 @@
 * fix touch handler of player view
 * extract build version into `BuildConfig`
 * put searchbar and drawer into toolbar
-* fix click on collapse icon and treshold for lower and upper bound ~100dp for the case when user made up their mind and decided to not collapse/expand view
+* add treshold for lower and upper bound ~100dp for the case when user made up their mind and decided to not collapse/expand view
+* use `.background()` for gradient instead of `graphicsLayer + drawWithContent`. It also accepts brush as parameter
+* flat boxes in playerview and use verticalArrangement/gravity or smth for actual arrangement of elements inside
+* add blur to the background of the player
+* fix no-image state of player for collapsing and expanding view - brings a lot of screen freeze right now

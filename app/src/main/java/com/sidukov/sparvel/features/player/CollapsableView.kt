@@ -23,21 +23,19 @@ fun CollapsableView(
     minHeight: Dp,
     shouldCollapseView: Boolean,
     content: @Composable ColumnScope.(
-        currentHeight: Dp
+        currentHeight: Dp,
+        isLayoutExpanded: Boolean
     ) -> Unit
 ) {
 
-    val animationDpValue = 20.dp
+    val animationDpValue = 70.dp
     val animationDelay = 1L
 
-    var height by remember {
-        mutableStateOf(minHeight)
-    }
-
-    // used to calculate whether view should be collapsed or expanded
+    var height by remember { mutableStateOf(minHeight) }
     var startHeight by remember { mutableStateOf(0.dp) }
     var endHeight by remember { mutableStateOf(0.dp) }
 
+    var isLayoutExpanded by remember { mutableStateOf(false) }
     var isTouchEnabled by remember { mutableStateOf(true) }
 
     val scope = rememberCoroutineScope()
@@ -48,6 +46,7 @@ fun CollapsableView(
             delay(animationDelay)
         }
         actionOnFinish()
+        isLayoutExpanded = true
     }
 
     fun collapseView(actionOnFinish: () -> Unit = { }) = scope.launch {
@@ -56,9 +55,10 @@ fun CollapsableView(
             delay(animationDelay)
         }
         actionOnFinish()
+        isLayoutExpanded = false
     }
 
-    LaunchedEffect(Unit) {
+    SideEffect {
         if (shouldCollapseView) {
             collapseView()
         }
@@ -106,7 +106,7 @@ fun CollapsableView(
                     }
                 ),
             content = {
-                content(height)
+                content(height, isLayoutExpanded)
             }
         )
     }

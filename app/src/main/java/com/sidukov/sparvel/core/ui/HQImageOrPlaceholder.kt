@@ -2,13 +2,11 @@ package com.sidukov.sparvel.core.ui
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -18,7 +16,6 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import com.sidukov.sparvel.R
@@ -42,11 +39,12 @@ fun HQImageOrPlaceholder(
         endY = dynamicImageSize.height * 0.9f
     )
 
+    val bitmap = imageUrl.decodeBitmap()
+
     Box(
         modifier = Modifier
             .size(imageSize.dp)
     ) {
-        val bitmap = imageUrl.decodeBitmap()
         if (bitmap == null) {
             Image(
                 painter = painterResource(R.drawable.ic_melody),
@@ -71,7 +69,6 @@ fun HQImageOrPlaceholder(
                     .alpha(alpha)
                     .onGloballyPositioned { dynamicImageSize = it.size }
                     .applyGradient(needGradient, gradient)
-                    .border(0.dp, Color.Transparent, RoundedCornerShape(10.dp))
                     .applyIf(onImageClicked != null) {
                         clickable(onClick = onImageClicked!!)
                     }

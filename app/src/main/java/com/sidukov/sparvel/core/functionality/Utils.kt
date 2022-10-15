@@ -26,7 +26,7 @@ import com.sidukov.sparvel.core.model.Track
 import java.net.URLDecoder
 import java.nio.charset.StandardCharsets
 
-fun Modifier.applyIf(condition: Boolean, modifier: Modifier.() -> Modifier): Modifier =
+inline fun Modifier.applyIf(condition: Boolean, modifier: Modifier.() -> Modifier): Modifier =
     if (condition) then(modifier(this)) else this
 
 fun Modifier.background(color: Any): Modifier =

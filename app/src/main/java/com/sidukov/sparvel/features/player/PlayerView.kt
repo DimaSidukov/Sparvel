@@ -37,10 +37,16 @@ fun PlayerView(track: Track) {
         screenHeight = screenHeight,
         minHeight = minHeight,
         shouldCollapseView = shouldCollapseView
-    ) { currentHeight ->
+    ) { currentHeight, isLayoutExpanded ->
         val ratio = 0.35f
         val heightNormalized = currentHeight.normalize(screenHeight, minHeight)!!
         val alpha = if (heightNormalized < ratio) 0f else heightNormalized.normalize(1f, ratio)!!
+
+        SideEffect {
+            if (isLayoutExpanded) {
+                shouldCollapseView = false
+            }
+        }
 
         Box {
             HQImageOrPlaceholder(
@@ -59,11 +65,11 @@ fun PlayerView(track: Track) {
                 title = { },
                 navigationIcon = {
                     IconButton(
+                        enabled = isLayoutExpanded,
                         onClick = {
-                            shouldCollapseView = true
-//                            scope.launch {
-//
-//                            }
+                            scope.launch {
+                                shouldCollapseView = true
+                            }
                         }
                     ) {
                         Icon(
