@@ -1,6 +1,5 @@
 package com.sidukov.sparvel.features.player
 
-import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.draggable
@@ -66,7 +65,6 @@ fun CollapsableView(
             collapseView()
         }
     }
-
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -102,13 +100,13 @@ fun CollapsableView(
                     onDragStopped = {
                         endHeight = height
                         if (endHeight >= startHeight) {
-                            if (abs(endHeight.value - startHeight.value) > 100f ) {
+                            if (abs(endHeight.value - startHeight.value) > 100f) {
                                 expandView()
                             } else {
                                 collapseView()
                             }
                         } else if (endHeight < startHeight) {
-                            if (abs(endHeight.value - startHeight.value) > 100f ) {
+                            if (abs(endHeight.value - startHeight.value) > 100f) {
                                 collapseView()
                             } else {
                                 expandView()
