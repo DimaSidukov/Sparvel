@@ -1,6 +1,5 @@
 package com.sidukov.sparvel.features.player
 
-import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.systemBars
@@ -58,7 +57,7 @@ fun PlayerView(track: Track) {
             CenterAlignedTopAppBar(
                 modifier = Modifier
                     .systemBarsPadding()
-                    .alpha(alpha),
+                    .alpha(alpha.normalize(1f, 0.5f)!!),
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
                     containerColor = Color.Transparent
                 ),

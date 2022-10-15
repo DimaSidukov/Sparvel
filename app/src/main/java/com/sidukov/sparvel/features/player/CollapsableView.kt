@@ -16,6 +16,7 @@ import com.sidukov.sparvel.core.functionality.background
 import com.sidukov.sparvel.core.theme.SparvelTheme
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlin.math.abs
 
 @Composable
 fun CollapsableView(
@@ -28,7 +29,7 @@ fun CollapsableView(
     ) -> Unit
 ) {
 
-    val animationDpValue = 70.dp
+    val animationDpValue = 30.dp
     val animationDelay = 1L
 
     var height by remember { mutableStateOf(minHeight) }
@@ -46,6 +47,7 @@ fun CollapsableView(
             delay(animationDelay)
         }
         actionOnFinish()
+        isTouchEnabled = true
         isLayoutExpanded = true
     }
 
@@ -55,6 +57,7 @@ fun CollapsableView(
             delay(animationDelay)
         }
         actionOnFinish()
+        isTouchEnabled = true
         isLayoutExpanded = false
     }
 
@@ -80,9 +83,7 @@ fun CollapsableView(
                 ) {
                     isTouchEnabled = false
                     if (height < screenHeight) {
-                        expandView {
-                            isTouchEnabled = true
-                        }
+                        expandView()
                     }
                 }
                 .draggable(
@@ -97,12 +98,22 @@ fun CollapsableView(
                     },
                     onDragStarted = {
                         startHeight = height
-                        Log.d("HEIGHTS", "${startHeight} ${endHeight}")
                     },
                     onDragStopped = {
                         endHeight = height
-                        Log.d("HEIGHTS", "${startHeight} ${endHeight}")
-                        if (endHeight > startHeight) expandView() else collapseView()
+                        if (endHeight >= startHeight) {
+                            if (abs(endHeight.value - startHeight.value) > 100f ) {
+                                expandView()
+                            } else {
+                                collapseView()
+                            }
+                        } else if (endHeight < startHeight) {
+                            if (abs(endHeight.value - startHeight.value) > 100f ) {
+                                collapseView()
+                            } else {
+                                expandView()
+                            }
+                        }
                     }
                 ),
             content = {
