@@ -1,5 +1,6 @@
 package com.sidukov.sparvel.core.ui
 
+import android.graphics.BitmapFactory
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -13,8 +14,10 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
@@ -40,14 +43,14 @@ fun HQImageOrPlaceholder(
     )
 
     val bitmap = imageUrl.decodeBitmap()
+    val placeholder =
+        BitmapFactory.decodeResource(LocalContext.current.resources, R.drawable.ic_melody)
+            .asImageBitmap()
 
-    Box(
-        modifier = Modifier
-            .size(imageSize.dp)
-    ) {
+    Box {
         if (bitmap == null) {
             Image(
-                painter = painterResource(R.drawable.ic_melody),
+                bitmap = placeholder,
                 contentDescription = null,
                 modifier = Modifier
                     .background(gradient)

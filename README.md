@@ -22,9 +22,9 @@
 * update toolbar icons color in player depending on the background (if it is too bright, change color of icons to black)
 * extract build version into `BuildConfig`
 * put searchbar and drawer into toolbar
-* use `.background()` for gradient instead of `graphicsLayer + drawWithContent`. It also accepts brush as parameter
 * flat boxes in playerview and use verticalArrangement/gravity or smth for actual arrangement of elements inside
 * add blur to the background of the player
 * fix no-image state of player for collapsing and expanding view - brings a lot of screen freeze right now
 * add logo to the app
+* try to use `detectDragGestures` instead of `draggable` to allow user start swiping from any position of the view
 * recomendation: when implementing playlists, it's better store only track ids in database and then when user opens the screen, load data by these ids. No sense in storing track data, since user may not open some playlist for undefined period of time
