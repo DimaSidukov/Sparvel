@@ -17,12 +17,16 @@ import com.sidukov.sparvel.core.functionality.decodeBitmap
 import com.sidukov.sparvel.core.functionality.normalize
 import com.sidukov.sparvel.core.functionality.systemBarsPadding
 import com.sidukov.sparvel.core.model.Track
+import com.sidukov.sparvel.core.theme.SparvelTheme
 import com.sidukov.sparvel.core.ui.HQImageOrPlaceholder
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PlayerView(track: Track) {
+fun PlayerView(
+    track: Track,
+    onSettingsClicked: () -> Unit
+) {
 
     val screenHeight =
         LocalConfiguration.current.screenHeightDp.dp +
@@ -76,6 +80,18 @@ fun PlayerView(track: Track) {
                         Icon(
                             painter = painterResource(R.drawable.ic_arrow),
                             contentDescription = null
+                        )
+                    }
+                },
+                actions = {
+                    IconButton(
+                        enabled = isLayoutExpanded,
+                        onClick = onSettingsClicked
+                    ) {
+                        Icon(
+                            painter = painterResource(R.drawable.ic_equalizer),
+                            contentDescription = null,
+                            tint = SparvelTheme.colors.navigation
                         )
                     }
                 }

@@ -130,7 +130,14 @@ fun HomeScreenApprovedState(
             }
         }
     }
-    uiState.selectedTrack?.let { PlayerView(it) }
+    uiState.selectedTrack?.let {
+        PlayerView(
+            track = it,
+            onSettingsClicked = {
+
+            }
+        )
+    }
 }
 
 @Composable
