@@ -19,7 +19,11 @@ val LatoFontFamily = FontFamily(
     Font(R.font.lato_thin, FontWeight.Thin)
 )
 
-internal fun TextStyle(weight: FontWeight, size: TextUnit = 16.sp) = TextStyle(
+val InterFontFamily = FontFamily(
+    Font(R.font.inter_light, FontWeight.Light)
+)
+
+internal fun LatoTextStyle(weight: FontWeight, size: TextUnit = 16.sp) = TextStyle(
     fontFamily = LatoFontFamily,
     fontWeight = weight,
     fontSize = size
@@ -27,15 +31,23 @@ internal fun TextStyle(weight: FontWeight, size: TextUnit = 16.sp) = TextStyle(
 
 data class SparvelTypography(
     val material: Typography = Typography(),
-    val appName: TextStyle = TextStyle(FontWeight.Light, 35.sp),
-    val searchBar: TextStyle = TextStyle(FontWeight.Normal, 14.sp),
-    val collectionTitleLarge: TextStyle = TextStyle(FontWeight.Bold, 20.sp),
-    val collectionTitleMedium: TextStyle = TextStyle(FontWeight.Normal, 16.sp),
-    val collectionTitleSmall: TextStyle = TextStyle(FontWeight.SemiBold, 12.sp),
-    val collectionInfo: TextStyle = TextStyle(FontWeight.Light, 12.sp),
-    val trackTitleSmall: TextStyle = TextStyle(FontWeight.SemiBold, 14.sp),
-    val drawerTitle: TextStyle = TextStyle(FontWeight.Black, 24.sp),
-    val drawerText: TextStyle = TextStyle(FontWeight.Medium, 18.sp),
-    val appVersion: TextStyle = TextStyle(FontWeight.Light, 15.sp),
-    val permissionDenied: TextStyle = TextStyle(FontWeight.Medium, 16.sp)
+    val appName: TextStyle = LatoTextStyle(FontWeight.Light, 35.sp),
+    val searchBar: TextStyle = LatoTextStyle(FontWeight.Normal, 14.sp),
+    val collectionTitleLarge: TextStyle = LatoTextStyle(FontWeight.Bold, 20.sp),
+    val collectionTitleMedium: TextStyle = LatoTextStyle(FontWeight.Normal, 16.sp),
+    val collectionTitleSmall: TextStyle = LatoTextStyle(FontWeight.SemiBold, 12.sp),
+    val collectionInfo: TextStyle = LatoTextStyle(FontWeight.Light, 12.sp),
+    val trackNameSmall: TextStyle = LatoTextStyle(FontWeight.SemiBold, 14.sp),
+    val trackNameMedium: TextStyle = LatoTextStyle(FontWeight.SemiBold, 20.sp),
+    val artistMedium: TextStyle = LatoTextStyle(FontWeight.Light, 14.sp),
+    val drawerTitle: TextStyle = LatoTextStyle(FontWeight.Black, 24.sp),
+    val drawerText: TextStyle = LatoTextStyle(FontWeight.Medium, 18.sp),
+    val appVersion: TextStyle = LatoTextStyle(FontWeight.Light, 15.sp),
+    val permissionDenied: TextStyle = LatoTextStyle(FontWeight.Medium, 16.sp),
+    val toolbarTitle: TextStyle = LatoTextStyle(FontWeight.Bold, 24.sp),
+    val progressTimestamp: TextStyle = TextStyle(
+        fontFamily = InterFontFamily,
+        fontWeight = FontWeight.Light,
+        fontSize = 12.sp
+    )
 )

@@ -12,8 +12,6 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.res.painterResource
@@ -35,7 +33,7 @@ fun HQImageOrPlaceholder(
     var dynamicImageSize by remember { mutableStateOf(IntSize.Zero) }
     val gradient = Brush.verticalGradient(
         colors = listOf(SparvelTheme.colors.background, Color.Transparent),
-        startY = dynamicImageSize.height * 0.3f,
+        startY = dynamicImageSize.height * 0.7f,
         endY = dynamicImageSize.height * 0.9f
     )
 

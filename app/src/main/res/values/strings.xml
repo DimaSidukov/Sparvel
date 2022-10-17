@@ -5,7 +5,7 @@
     <string name="playlists_label">Playlists</string>
     <string name="albums_label">Albums</string>
     <string name="library_label">Library</string>
-    <string name="composer_album_label">%s \u2022 %s</string>
+    <string name="artist_album_label">%s \u2022 %s</string>
     <string name="app_language_action">App language</string>
     <string name="sound_settings_action">Sound settings</string>
     <string name="color_theme_action">Color theme</string>

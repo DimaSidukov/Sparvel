@@ -56,14 +56,14 @@ fun TrackList(
                     verticalArrangement = Arrangement.SpaceAround
                 ) {
                     Text(
-                        item.title,
-                        style = SparvelTheme.typography.trackTitleSmall,
+                        item.name,
+                        style = SparvelTheme.typography.trackNameSmall,
                         color = SparvelTheme.colors.secondary
                     )
                     Text(
                         text = stringResource(
-                            R.string.composer_album_label,
-                            item.composer,
+                            R.string.artist_album_label,
+                            item.artist,
                             item.album
                         ),
                         style = SparvelTheme.typography.collectionTitleSmall,

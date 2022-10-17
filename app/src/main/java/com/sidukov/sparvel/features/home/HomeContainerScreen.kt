@@ -35,6 +35,7 @@ import com.sidukov.sparvel.core.ui.HomeMenuPanel
 import com.sidukov.sparvel.features.home.HomeScreen.*
 import com.sidukov.sparvel.features.player.PlayerView
 import com.sidukov.sparvel.features.playlist.PlaylistsScreen
+import kotlinx.coroutines.launch
 
 @Composable
 fun HomeScreenContainer(
@@ -66,6 +67,7 @@ fun HomeScreenApprovedState(
     onMenuClicked: () -> Unit
 ) {
     val uiState = viewModel.uiState
+    val scope = rememberCoroutineScope()
 
     var newTrackList by remember { mutableStateOf(trackList) }
     if (trackList.isEmpty()) {
@@ -93,7 +95,9 @@ fun HomeScreenApprovedState(
                         viewModel.setScreen(ALBUMS)
                     },
                     onTrackClicked = {
-                        viewModel.showPlayer(it)
+                        scope.launch {
+                            viewModel.showPlayer(it)
+                        }
                     }
                 )
             }

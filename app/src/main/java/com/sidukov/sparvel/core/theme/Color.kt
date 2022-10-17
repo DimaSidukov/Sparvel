@@ -11,11 +11,14 @@ private val white = Color.White
 private val lightBlue = Color(0xFF748CAB)
 private val darkestBlue = Color(0xFF00081C)
 private val darkBlue = Color(0xFF030017)
-private val lightGrey = Color(0xFFBEC4CC)
-private val lightGrey2 = Color(0xFF999999)
 private val darkGrey = Color(0xFF5F5F5F)
+private val darkGrey2 = Color(0xFF3C3D46)
 private val gloomyBlue = Color(0xFF01232E)
 private val dimGrey = Color(0xFFE3E3E3)
+private val lightGrey = Color(0xFFBEC4CC)
+private val lightGrey2 = Color(0xFF999999)
+private val lightGrey3 = Color(0xFF969696)
+private val lightGrey4 = Color(0xFF7B7B7B)
 
 data class SparvelColors(
     val material: ColorScheme,
@@ -31,6 +34,10 @@ data class SparvelColors(
     val logoGradient: Brush,
     val permissionDenied: Color,
     val playerBackground: Color,
+    val toolbarTitle: Color,
+    val playerActions: Color,
+    val progress: Color,
+    val progressTrack: Color,
     private val secondaryMaterial: Color,
     private val backgroundMaterial: Color
 ) {
@@ -60,6 +67,10 @@ val LightColors = SparvelColors(
     logoGradient = Brush.verticalGradient(listOf(lightBlue, black)),
     permissionDenied = darkGrey,
     playerBackground = white,
+    toolbarTitle = black,
+    playerActions = darkGrey2,
+    progress = dimGrey,
+    progressTrack = lightGrey3,
     secondaryMaterial = black,
     backgroundMaterial = white
 )
@@ -78,6 +89,10 @@ val DarkColors = SparvelColors(
     logoGradient = Brush.verticalGradient(listOf(darkestBlue, white)),
     permissionDenied = lightGrey2,
     playerBackground = darkBlue,
+    toolbarTitle = dimGrey,
+    playerActions = white,
+    progress = lightGrey4,
+    progressTrack = white,
     secondaryMaterial = white,
     backgroundMaterial = darkestBlue
 )

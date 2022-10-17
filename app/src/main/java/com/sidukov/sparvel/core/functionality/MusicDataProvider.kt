@@ -11,6 +11,7 @@ import javax.inject.Inject
 class MusicDataProvider @Inject constructor(private val context: Context) {
 
     companion object {
+        private const val UNKNOWN_PATTERN = "unknown"
         private const val UNNAMED_TRACK = "No name"
         private const val UNNAMED_ARTIST = "Unknown artist"
         private const val UNNAMED_ALBUM = "Unknown album"
@@ -40,10 +41,10 @@ class MusicDataProvider @Inject constructor(private val context: Context) {
                 list.add(
                     Track(
                         id = c.getString(0),
-                        track = c.getString(1) ?: UNNAMED_TRACK,
-                        title = c.getString(2),
-                        composer = c.getString(3) ?: UNNAMED_ARTIST,
-                        album = c.getString(5) ?: UNNAMED_ALBUM,
+                        track = c.getString(1).formatUnknown(UNNAMED_TRACK),
+                        name = c.getString(2),
+                        artist = c.getString(3).formatUnknown(UNNAMED_ARTIST),
+                        album = c.getString(5).formatUnknown(UNNAMED_ALBUM),
                         coverId = ContentUris.withAppendedId(
                             ALBUM_URI,
                             c.getLong(c.getColumnIndexOrThrow(MediaStore.Audio.Media.ALBUM_ID))
@@ -61,4 +62,7 @@ class MusicDataProvider @Inject constructor(private val context: Context) {
         }
         return list
     }
+
+    private fun String?.formatUnknown(target: String) =
+        if (this == null || this.contains(UNKNOWN_PATTERN)) target else this
 }

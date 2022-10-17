@@ -35,7 +35,9 @@ class HomeViewModel @Inject constructor(
     }
 
     fun showPlayer(track: Track) {
-        uiState = uiState.copy(selectedTrack = track)
+        if (track != uiState.selectedTrack) {
+            uiState = uiState.copy(selectedTrack = track)
+        }
     }
 
     suspend fun readTracks(): List<Track> {

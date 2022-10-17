@@ -1,13 +1,15 @@
 package com.sidukov.sparvel.features.player
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
@@ -15,13 +17,12 @@ import androidx.compose.ui.unit.dp
 import com.sidukov.sparvel.R
 import com.sidukov.sparvel.core.functionality.decodeBitmap
 import com.sidukov.sparvel.core.functionality.normalize
-import com.sidukov.sparvel.core.functionality.systemBarsPadding
 import com.sidukov.sparvel.core.model.Track
 import com.sidukov.sparvel.core.theme.SparvelTheme
 import com.sidukov.sparvel.core.ui.HQImageOrPlaceholder
+import com.sidukov.sparvel.core.ui.Toolbar
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PlayerView(
     track: Track,
@@ -39,6 +40,10 @@ fun PlayerView(
 
     val image = track.coverId.decodeBitmap()
 
+    var isPlaying by remember { mutableStateOf(false) }
+
+    var playbackTimestamp by remember { mutableStateOf(0.3f) }
+
     CollapsableView(
         screenHeight = screenHeight,
         minHeight = minHeight,
@@ -53,48 +58,192 @@ fun PlayerView(
                 shouldCollapseView = false
             }
         }
-        Box {
-            HQImageOrPlaceholder(
-                image = image,
-                imageSize = 500,
-                needGradient = true,
-                alpha = alpha
-            )
-            CenterAlignedTopAppBar(
-                modifier = Modifier
-                    .systemBarsPadding()
-                    .alpha(alpha.normalize(1f, 0.5f)!!),
-                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                    containerColor = Color.Transparent
-                ),
-                title = { },
-                navigationIcon = {
-                    IconButton(
-                        enabled = isLayoutExpanded,
-                        onClick = {
-                            scope.launch {
-                                shouldCollapseView = true
-                            }
+        Column {
+            Box {
+                HQImageOrPlaceholder(
+                    image = image,
+                    imageSize = 500,
+                    needGradient = true,
+                    alpha = alpha
+                )
+                Toolbar(
+                    navigationIcon = R.drawable.ic_arrow,
+                    actionIcon = R.drawable.ic_equalizer,
+                    alpha = alpha.normalize(1f, 0.5f)!!,
+                    onNavigationClicked = {
+                        scope.launch {
+                            shouldCollapseView = true
                         }
-                    ) {
-                        Icon(
-                            painter = painterResource(R.drawable.ic_arrow),
-                            contentDescription = null
-                        )
+                    },
+                    onActionClicked = onSettingsClicked
+                )
+            }
+            TrackInfo(
+                name = track.name,
+                artist = track.artist,
+                modifier = Modifier.padding(start = 25.dp, end = 25.dp, top = 50.dp)
+            )
+            Box(
+                contentAlignment = Alignment.BottomCenter,
+                modifier = Modifier
+                    .padding(start = 25.dp, end = 25.dp)
+                    .fillMaxWidth()
+                    .fillMaxHeight()
+            ) {
+                Column {
+                    PlayerProgress(playbackTimestamp) { value ->
+                        playbackTimestamp = value
                     }
-                },
-                actions = {
-                    IconButton(
-                        enabled = isLayoutExpanded,
-                        onClick = onSettingsClicked
-                    ) {
-                        Icon(
-                            painter = painterResource(R.drawable.ic_equalizer),
-                            contentDescription = null,
-                            tint = SparvelTheme.colors.navigation
-                        )
-                    }
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Timestamps(
+                        start = 0,
+                        end = track.duration.toInt()
+                    )
+                    Spacer(modifier = Modifier.height(70.dp))
+                    PlayerController(
+                        isPlaying = isPlaying,
+                        onRepeatClicked = {
+
+                        },
+                        onPreviousClicked = {
+
+                        },
+                        onPlayClicked = {
+                            isPlaying = !isPlaying
+                        },
+                        onNextClicked = {
+
+                        },
+                        onCurrentPlaylistClicked = {
+
+                        }
+                    )
                 }
+            }
+        }
+    }
+}
+
+@Composable
+fun Timestamps(
+    start: Int,
+    end: Int,
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Text(
+            text = "0:00",
+            style = SparvelTheme.typography.progressTimestamp,
+            color = SparvelTheme.colors.text
+        )
+        Text(
+            text = end.toString(),
+            style = SparvelTheme.typography.progressTimestamp,
+            color = SparvelTheme.colors.text
+        )
+    }
+}
+
+@Composable
+fun TrackInfo(
+    name: String,
+    artist: String,
+    modifier: Modifier = Modifier
+) {
+    Column(modifier = modifier) {
+        Text(
+            text = name,
+            style = SparvelTheme.typography.trackNameMedium,
+            color = SparvelTheme.colors.text
+        )
+        Spacer(modifier = Modifier.height(10.dp))
+        Text(
+            text = artist,
+            style = SparvelTheme.typography.artistMedium,
+            color = SparvelTheme.colors.text
+        )
+    }
+}
+
+@Composable
+fun PlayerProgress(
+    value: Float,
+    onValueChange: (Float) -> Unit
+) {
+    Slider(
+        value = value,
+        onValueChange = onValueChange,
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(3.dp)
+            .clip(RoundedCornerShape(50)),
+        colors = SliderDefaults.colors(
+            thumbColor = SparvelTheme.colors.progressTrack,
+            activeTrackColor = SparvelTheme.colors.progressTrack,
+            inactiveTrackColor = SparvelTheme.colors.progress
+        )
+    )
+}
+
+@Composable
+fun PlayerController(
+    isPlaying: Boolean,
+    onRepeatClicked: () -> Unit,
+    onPreviousClicked: () -> Unit,
+    onPlayClicked: () -> Unit,
+    onNextClicked: () -> Unit,
+    onCurrentPlaylistClicked: () -> Unit
+) {
+
+    val playerActionColor = SparvelTheme.colors.playerActions
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(bottom = 100.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        IconButton(onClick = onRepeatClicked, modifier = Modifier.size(30.dp)) {
+            Icon(
+                painter = painterResource(R.drawable.ic_repeat),
+                contentDescription = null,
+                tint = playerActionColor,
+            )
+        }
+        IconButton(onClick = onPreviousClicked, modifier = Modifier.size(30.dp)) {
+            Icon(
+                painter = painterResource(R.drawable.ic_player_arrow),
+                contentDescription = null,
+                tint = playerActionColor
+            )
+        }
+        // https://stackoverflow.com/questions/71232511/jetpack-compose-play-pause-animation
+        Canvas(
+            modifier = Modifier.clickable {
+                onPlayClicked()
+            }
+        ) {
+            drawCircle(
+                color = playerActionColor,
+                radius = 100f
+            )
+        }
+        IconButton(onClick = onNextClicked, modifier = Modifier.size(30.dp)) {
+            Icon(
+                painter = painterResource(R.drawable.ic_player_arrow),
+                contentDescription = null,
+                tint = playerActionColor,
+                modifier = Modifier.rotate(180f)
+            )
+        }
+        IconButton(onClick = onCurrentPlaylistClicked, modifier = Modifier.size(30.dp)) {
+            Icon(
+                painter = painterResource(R.drawable.ic_playlist),
+                contentDescription = null,
+                tint = playerActionColor
             )
         }
     }

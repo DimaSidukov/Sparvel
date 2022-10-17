@@ -42,7 +42,7 @@ fun List<Track>.toMusicCollection() = this.groupBy { it.album }.map {
     MusicCollection(
         it.key,
         it.value[0].coverId,
-        if (it.value[0].composer == unnamedArtist || it.value[0].album == unnamedAlbum) unnamedAlbum else it.value[0].album,
+        if (it.value[0].artist == unnamedArtist || it.value[0].album == unnamedAlbum) unnamedAlbum else it.value[0].album,
         it.value,
         it.value[0].year
     )
@@ -84,9 +84,9 @@ fun exitScreenWithAction(action: () -> Unit) {
 fun List<Track>.filter(query: String): List<Track> {
     val words = query.trim().split("\\s+".toRegex()).toList()
     return this.filter { track ->
-        track.title.containsQueryOrWords(query, words)
+        track.name.containsQueryOrWords(query, words)
                 || track.album.containsQueryOrWords(query, words)
-                || track.composer.containsQueryOrWords(query, words)
+                || track.artist.containsQueryOrWords(query, words)
     }
 }
 
