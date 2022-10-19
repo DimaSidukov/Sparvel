@@ -40,7 +40,7 @@ fun Toolbar(
     },
     navigationIcon = {
         IconButton(
-            modifier = Modifier.padding(start = 25.dp),
+            modifier = Modifier.padding(start = 15.dp),
             enabled = isEnabled,
             onClick = onNavigationClicked
         ) {

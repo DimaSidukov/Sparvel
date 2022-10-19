@@ -7,6 +7,7 @@ import android.provider.MediaStore
 import android.util.Log
 import com.sidukov.sparvel.core.model.Track
 import javax.inject.Inject
+import kotlin.math.ceil
 
 class MusicDataProvider @Inject constructor(private val context: Context) {
 
@@ -49,7 +50,7 @@ class MusicDataProvider @Inject constructor(private val context: Context) {
                             ALBUM_URI,
                             c.getLong(c.getColumnIndexOrThrow(MediaStore.Audio.Media.ALBUM_ID))
                         ).toString(),
-                        duration = c.getString(4).toLong(),
+                        duration = ceil(c.getString(4).toDouble() / 1000).toInt(),
                         year = (c.getString(6) ?: "-1").toInt()
                     )
                 )

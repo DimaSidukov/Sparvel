@@ -26,6 +26,9 @@ import com.sidukov.sparvel.core.model.Track
 import java.net.URLDecoder
 import java.nio.charset.StandardCharsets
 
+var appVersion: String =
+    "Version ${BuildConfig.VERSION_CODE}.${BuildConfig.VERSION_NAME}-${BuildConfig.BUILD_TYPE}"
+
 inline fun Modifier.applyIf(condition: Boolean, modifier: Modifier.() -> Modifier): Modifier =
     if (condition) then(modifier(this)) else this
 
@@ -129,5 +132,4 @@ fun Modifier.applyGradient(needGradient: Boolean, gradient: Brush) = this
 
 fun Float.normalize(max: Float, min: Float): Float = (this - min) / (max - min)
 
-var appVersion: String =
-    "Version ${BuildConfig.VERSION_CODE}.${BuildConfig.VERSION_NAME}-${BuildConfig.BUILD_TYPE}"
+fun Int.toMinutesAndSeconds() = String.format("%d:%02d", this / 60, this % 60)

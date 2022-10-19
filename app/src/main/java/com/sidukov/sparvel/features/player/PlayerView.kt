@@ -1,12 +1,17 @@
 package com.sidukov.sparvel.features.player
 
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.SliderDefaults
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
@@ -14,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import com.sidukov.sparvel.R
 import com.sidukov.sparvel.core.functionality.decodeBitmap
 import com.sidukov.sparvel.core.functionality.normalize
+import com.sidukov.sparvel.core.functionality.toMinutesAndSeconds
 import com.sidukov.sparvel.core.model.Track
 import com.sidukov.sparvel.core.theme.SparvelTheme
 import com.sidukov.sparvel.core.ui.HQImageOrPlaceholder
@@ -64,7 +70,7 @@ fun PlayerView(
                 Toolbar(
                     navigationIcon = R.drawable.ic_arrow,
                     actionIcon = R.drawable.ic_equalizer,
-                    alpha = alpha.normalize(1f, 0.5f)!!,
+                    alpha = alpha.normalize(1f, 0.5f),
                     onNavigationClicked = {
                         scope.launch {
                             shouldMoveDown = true
@@ -92,9 +98,9 @@ fun PlayerView(
                     Spacer(modifier = Modifier.height(8.dp))
                     Timestamps(
                         start = 0,
-                        end = track.duration.toInt()
+                        end = track.duration
                     )
-                    Spacer(modifier = Modifier.height(70.dp))
+                    Spacer(modifier = Modifier.height(40.dp))
                     PlayerController(
                         isPlaying = isPlaying,
                         onRepeatClicked = {
@@ -129,12 +135,12 @@ fun Timestamps(
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Text(
-            text = "0:00",
+            text = start.toMinutesAndSeconds(),
             style = SparvelTheme.typography.progressTimestamp,
             color = SparvelTheme.colors.text
         )
         Text(
-            text = end.toString(),
+            text = end.toMinutesAndSeconds(),
             style = SparvelTheme.typography.progressTimestamp,
             color = SparvelTheme.colors.text
         )
@@ -167,7 +173,7 @@ fun PlayerProgress(
     value: Float,
     onValueChange: (Float) -> Unit
 ) {
-    Slider(
+    CustomizableSlider(
         value = value,
         onValueChange = onValueChange,
         modifier = Modifier
@@ -177,7 +183,9 @@ fun PlayerProgress(
             thumbColor = SparvelTheme.colors.progressTrack,
             activeTrackColor = SparvelTheme.colors.progressTrack,
             inactiveTrackColor = SparvelTheme.colors.progress
-        )
+        ),
+        trackHeight = 3.dp,
+        thumbRadius = 12.dp
     )
 }
 
@@ -196,7 +204,7 @@ fun PlayerController(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(bottom = 100.dp),
+            .padding(bottom = 70.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -214,15 +222,12 @@ fun PlayerController(
                 tint = playerActionColor
             )
         }
-        IconButton(onClick = onPlayClicked, modifier = Modifier.size(100.dp)) {
-            // https://stackoverflow.com/questions/71232511/jetpack-compose-play-pause-animation
-            Canvas(modifier = Modifier) {
-                drawCircle(
-                    color = playerActionColor,
-                    radius = 100f
-                )
-            }
-        }
+        PlayButton(
+            isPlaying = isPlaying,
+            onClick = onPlayClicked,
+            backgroundColor = playerActionColor,
+            iconColor = SparvelTheme.colors.playerIcon
+        )
         IconButton(onClick = onNextClicked, modifier = Modifier.size(25.dp)) {
             Icon(
                 painter = painterResource(R.drawable.ic_player_arrow),
@@ -238,5 +243,27 @@ fun PlayerController(
                 tint = playerActionColor
             )
         }
+    }
+}
+
+@Composable
+fun PlayButton(
+    isPlaying: Boolean,
+    onClick: () -> Unit,
+    backgroundColor: Color,
+    iconColor: Color
+) {
+    // https://stackoverflow.com/questions/71232511/jetpack-compose-play-pause-animation
+    Canvas(
+        modifier = Modifier
+            .size(100.dp)
+            .clickable {
+                onClick()
+            }
+    ) {
+        drawCircle(
+            color = backgroundColor,
+            radius = 100f
+        )
     }
 }
