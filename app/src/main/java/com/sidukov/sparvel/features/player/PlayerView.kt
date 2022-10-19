@@ -45,8 +45,8 @@ fun PlayerView(
         shouldMoveDown = shouldMoveDown
     ) { currentHeight, isLayoutExpanded ->
         val ratio = 0.35f
-        val heightNormalized = currentHeight.normalize(screenHeight, minHeight)!!
-        val alpha = if (heightNormalized < ratio) 0f else heightNormalized.normalize(1f, ratio)!!
+        val heightNormalized = currentHeight.value.normalize(screenHeight.value, minHeight.value)
+        val alpha = if (heightNormalized < ratio) 0f else heightNormalized.normalize(1f, ratio)
 
         SideEffect {
             if (isLayoutExpanded) {

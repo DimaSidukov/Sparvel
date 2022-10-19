@@ -9,7 +9,6 @@
     <string name="app_language_action">App language</string>
     <string name="sound_settings_action">Sound settings</string>
     <string name="color_theme_action">Color theme</string>
-    <string name="version_label">Version 1.0</string>
     <string name="permission_denied_label">Storage permission denied. Please, go to settings and enable it.</string>
 
     // Search bar

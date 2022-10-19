@@ -21,6 +21,7 @@ import androidx.navigation.*
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.sidukov.sparvel.core.functionality.Screens
+import com.sidukov.sparvel.core.functionality.appVersion
 import com.sidukov.sparvel.core.functionality.toTrackList
 import com.sidukov.sparvel.core.theme.SparvelTheme
 import com.sidukov.sparvel.features.album.AlbumScreen
@@ -180,7 +181,7 @@ fun DrawerContent(
             }
             Text(
                 modifier = Modifier.padding(bottom = 50.dp),
-                text = stringResource(com.sidukov.sparvel.R.string.version_label),
+                text = appVersion,
                 style = SparvelTheme.typography.appVersion,
                 color = SparvelTheme.colors.drawerText
             )
