@@ -1,14 +1,11 @@
 package com.sidukov.sparvel.features.player
 
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
@@ -32,22 +29,20 @@ fun PlayerView(
     val screenHeight =
         LocalConfiguration.current.screenHeightDp.dp +
                 WindowInsets.systemBars.getTop(LocalDensity.current).dp
-    val minHeight = 70.dp
+    val minHeight = 120.dp
 
-    var shouldCollapseView by remember { mutableStateOf(false) }
+    var shouldMoveDown by remember { mutableStateOf(false) }
+    var isPlaying by remember { mutableStateOf(false) }
+    var playbackTimestamp by remember { mutableStateOf(0.3f) }
 
     val scope = rememberCoroutineScope()
 
     val image = track.coverId.decodeBitmap()
 
-    var isPlaying by remember { mutableStateOf(false) }
-
-    var playbackTimestamp by remember { mutableStateOf(0.3f) }
-
-    CollapsableView(
+    DraggableView(
         screenHeight = screenHeight,
         minHeight = minHeight,
-        shouldCollapseView = shouldCollapseView
+        shouldMoveDown = shouldMoveDown
     ) { currentHeight, isLayoutExpanded ->
         val ratio = 0.35f
         val heightNormalized = currentHeight.normalize(screenHeight, minHeight)!!
@@ -55,7 +50,7 @@ fun PlayerView(
 
         SideEffect {
             if (isLayoutExpanded) {
-                shouldCollapseView = false
+                shouldMoveDown = false
             }
         }
         Column {
@@ -72,17 +67,12 @@ fun PlayerView(
                     alpha = alpha.normalize(1f, 0.5f)!!,
                     onNavigationClicked = {
                         scope.launch {
-                            shouldCollapseView = true
+                            shouldMoveDown = true
                         }
                     },
                     onActionClicked = onSettingsClicked
                 )
             }
-            TrackInfo(
-                name = track.name,
-                artist = track.artist,
-                modifier = Modifier.padding(start = 25.dp, end = 25.dp, top = 50.dp)
-            )
             Box(
                 contentAlignment = Alignment.BottomCenter,
                 modifier = Modifier
@@ -91,6 +81,11 @@ fun PlayerView(
                     .fillMaxHeight()
             ) {
                 Column {
+                    TrackInfo(
+                        name = track.name,
+                        artist = track.artist,
+                    )
+                    Spacer(modifier = Modifier.height(50.dp))
                     PlayerProgress(playbackTimestamp) { value ->
                         playbackTimestamp = value
                     }
@@ -177,8 +172,7 @@ fun PlayerProgress(
         onValueChange = onValueChange,
         modifier = Modifier
             .fillMaxWidth()
-            .height(3.dp)
-            .clip(RoundedCornerShape(50)),
+            .height(3.dp),
         colors = SliderDefaults.colors(
             thumbColor = SparvelTheme.colors.progressTrack,
             activeTrackColor = SparvelTheme.colors.progressTrack,
@@ -213,25 +207,23 @@ fun PlayerController(
                 tint = playerActionColor,
             )
         }
-        IconButton(onClick = onPreviousClicked, modifier = Modifier.size(30.dp)) {
+        IconButton(onClick = onPreviousClicked, modifier = Modifier.size(25.dp)) {
             Icon(
                 painter = painterResource(R.drawable.ic_player_arrow),
                 contentDescription = null,
                 tint = playerActionColor
             )
         }
-        // https://stackoverflow.com/questions/71232511/jetpack-compose-play-pause-animation
-        Canvas(
-            modifier = Modifier.clickable {
-                onPlayClicked()
+        IconButton(onClick = onPlayClicked, modifier = Modifier.size(100.dp)) {
+            // https://stackoverflow.com/questions/71232511/jetpack-compose-play-pause-animation
+            Canvas(modifier = Modifier) {
+                drawCircle(
+                    color = playerActionColor,
+                    radius = 100f
+                )
             }
-        ) {
-            drawCircle(
-                color = playerActionColor,
-                radius = 100f
-            )
         }
-        IconButton(onClick = onNextClicked, modifier = Modifier.size(30.dp)) {
+        IconButton(onClick = onNextClicked, modifier = Modifier.size(25.dp)) {
             Icon(
                 painter = painterResource(R.drawable.ic_player_arrow),
                 contentDescription = null,

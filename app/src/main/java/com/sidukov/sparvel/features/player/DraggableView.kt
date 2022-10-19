@@ -18,31 +18,31 @@ import kotlinx.coroutines.launch
 import kotlin.math.abs
 
 @Composable
-fun CollapsableView(
+fun DraggableView(
     screenHeight: Dp,
     minHeight: Dp,
-    shouldCollapseView: Boolean,
+    shouldMoveDown: Boolean,
     content: @Composable ColumnScope.(
         currentHeight: Dp,
         isLayoutExpanded: Boolean
     ) -> Unit
 ) {
 
-    val animationDpValue = 30.dp
+    val animationDpValue = 20.dp
     val animationDelay = 1L
 
-    var height by remember { mutableStateOf(minHeight) }
-    var startHeight by remember { mutableStateOf(0.dp) }
-    var endHeight by remember { mutableStateOf(0.dp) }
+    var offset by remember { mutableStateOf(minHeight) }
+    var startPosition by remember { mutableStateOf(0.dp) }
+    var endPosition by remember { mutableStateOf(0.dp) }
 
     var isLayoutExpanded by remember { mutableStateOf(false) }
     var isTouchEnabled by remember { mutableStateOf(true) }
 
     val scope = rememberCoroutineScope()
 
-    fun expandView(actionOnFinish: () -> Unit = { }) = scope.launch {
-        while (height < screenHeight) {
-            height += if (screenHeight - height >= animationDpValue) animationDpValue else screenHeight - height
+    fun moveUp(actionOnFinish: () -> Unit = { }) = scope.launch {
+        while (offset < screenHeight) {
+            offset += if (screenHeight - offset >= animationDpValue) animationDpValue else screenHeight - offset
             delay(animationDelay)
         }
         actionOnFinish()
@@ -50,9 +50,9 @@ fun CollapsableView(
         isLayoutExpanded = true
     }
 
-    fun collapseView(actionOnFinish: () -> Unit = { }) = scope.launch {
-        while (height > minHeight) {
-            height -= if (height - minHeight >= animationDpValue) animationDpValue else height - minHeight
+    fun moveDown(actionOnFinish: () -> Unit = { }) = scope.launch {
+        while (offset > minHeight) {
+            offset -= if (offset - minHeight >= animationDpValue) animationDpValue else offset - minHeight
             delay(animationDelay)
         }
         actionOnFinish()
@@ -61,8 +61,8 @@ fun CollapsableView(
     }
 
     SideEffect {
-        if (shouldCollapseView) {
-            collapseView()
+        if (shouldMoveDown) {
+            moveDown()
         }
     }
     Box(
@@ -71,7 +71,8 @@ fun CollapsableView(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(height)
+                .fillMaxHeight()
+                .offset(y = screenHeight - offset)
                 .align(Alignment.BottomCenter)
                 .background(SparvelTheme.colors.playerBackground)
                 .clickable(
@@ -80,8 +81,8 @@ fun CollapsableView(
                     interactionSource = remember { MutableInteractionSource() }
                 ) {
                     isTouchEnabled = false
-                    if (height < screenHeight) {
-                        expandView()
+                    if (offset < screenHeight) {
+                        moveUp()
                     }
                 }
                 .draggable(
@@ -89,33 +90,33 @@ fun CollapsableView(
                     orientation = Orientation.Vertical,
                     state = rememberDraggableState { delta ->
                         scope.launch {
-                            if (delta < 0 && height - delta.dp <= screenHeight || delta > 0 && height - delta.dp >= minHeight) {
-                                height -= delta.dp
+                            if (delta < 0 && offset - delta.dp <= screenHeight || delta > 0 && offset - delta.dp >= minHeight) {
+                                offset -= delta.dp
                             }
                         }
                     },
                     onDragStarted = {
-                        startHeight = height
+                        startPosition = offset
                     },
                     onDragStopped = {
-                        endHeight = height
-                        if (endHeight >= startHeight) {
-                            if (abs(endHeight.value - startHeight.value) > 100f) {
-                                expandView()
+                        endPosition = offset
+                        if (endPosition >= startPosition) {
+                            if (abs(endPosition.value - startPosition.value) > 100f) {
+                                moveUp()
                             } else {
-                                collapseView()
+                                moveDown()
                             }
-                        } else if (endHeight < startHeight) {
-                            if (abs(endHeight.value - startHeight.value) > 100f) {
-                                collapseView()
+                        } else if (endPosition < startPosition) {
+                            if (abs(endPosition.value - startPosition.value) > 100f) {
+                                moveDown()
                             } else {
-                                expandView()
+                                moveUp()
                             }
                         }
                     }
                 ),
             content = {
-                content(height, isLayoutExpanded)
+                content(offset, isLayoutExpanded)
             }
         )
     }
