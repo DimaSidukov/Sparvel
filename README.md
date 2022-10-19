@@ -24,7 +24,6 @@
 * put searchbar and drawer into toolbar
 * flat boxes in playerview and use verticalArrangement/gravity or smth for actual arrangement of elements inside
 * add blur to the background of the player
-* add logo to the app
 * try to use `detectDragGestures` instead of `draggable` to allow user start swiping from any position of the view
 * recomendation: when implementing playlists, it's better store only track ids in database and then when user opens the screen, load data by these ids. No sense in storing track data, since user may not open some playlist for undefined period of time
 * change ripple effect color for all elements
