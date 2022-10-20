@@ -173,7 +173,7 @@ fun PlayerProgress(
     value: Float,
     onValueChange: (Float) -> Unit
 ) {
-    CustomizableSlider(
+    ThinnerSlider(
         value = value,
         onValueChange = onValueChange,
         modifier = Modifier
@@ -183,9 +183,7 @@ fun PlayerProgress(
             thumbColor = SparvelTheme.colors.progressTrack,
             activeTrackColor = SparvelTheme.colors.progressTrack,
             inactiveTrackColor = SparvelTheme.colors.progress
-        ),
-        trackHeight = 3.dp,
-        thumbRadius = 12.dp
+        )
     )
 }
 

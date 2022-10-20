@@ -35,16 +35,13 @@ import androidx.compose.ui.semantics.disabled
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.setProgress
 import androidx.compose.ui.unit.*
-import com.sidukov.sparvel.features.player.ColorSchemeKeyTokens.*
-import com.sidukov.sparvel.features.player.ElevationTokens.Level0
-import com.sidukov.sparvel.features.player.ElevationTokens.Level1
-import com.sidukov.sparvel.features.player.ShapeKeyTokens.CornerFull
+import com.sidukov.sparvel.features.player.ShapeKeyTokens.*
 import com.sidukov.sparvel.features.player.SliderTokens.HandleHeight
 import com.sidukov.sparvel.features.player.SliderTokens.HandleWidth
 import com.sidukov.sparvel.features.player.SliderTokens.InactiveTrackHeight
+import com.sidukov.sparvel.features.player.SliderTokens.StateLayerSize
 import com.sidukov.sparvel.features.player.SliderTokens.TickMarksContainerSize
 import com.sidukov.sparvel.features.player.SwitchTokens.HandleShape
-import com.sidukov.sparvel.features.player.TypographyKeyTokens.LabelMedium
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlin.math.abs
@@ -52,23 +49,27 @@ import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.roundToInt
 
-private val ThumbWidth = HandleWidth
-private val ThumbHeight = HandleHeight
+
+private val actualThumbRadius = 8.dp
+private val actualTrackHeight = 2.dp
+
+private val ThumbWidth = actualThumbRadius
+private val ThumbHeight = actualThumbRadius
 private val ThumbSize = DpSize(ThumbWidth, ThumbHeight)
 private val ThumbDefaultElevation = 1.dp
 private val ThumbPressedElevation = 6.dp
 private val TickSize = TickMarksContainerSize
-val ThumbDiameter = SwitchTokens.SelectedHandleWidth
+private val ThumbDiameter = SwitchTokens.SelectedHandleWidth
 private val SliderHeight = 48.dp
 private val SliderMinWidth = 144.dp
-val TrackHeight = InactiveTrackHeight
+private val TrackHeight = InactiveTrackHeight
 private val DefaultSliderConstraints =
     Modifier
         .widthIn(min = SliderMinWidth)
         .heightIn(max = SliderHeight)
 
 @Composable
-fun CustomizableSlider(
+fun ThinnerSlider(
     value: Float,
     onValueChange: (Float) -> Unit,
     modifier: Modifier = Modifier,
@@ -77,9 +78,7 @@ fun CustomizableSlider(
     steps: Int = 0,
     onValueChangeFinished: (() -> Unit)? = null,
     colors: SliderColors = SliderDefaults.colors(),
-    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
-    trackHeight: Dp = 6.dp,
-    thumbRadius: Dp = 12.dp
+    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() }
 ) {
     val onValueChangeState = rememberUpdatedState<(Float) -> Unit> {
         if (it != value) {
@@ -94,8 +93,8 @@ fun CustomizableSlider(
         modifier
             .minimumTouchTargetSize()
             .requiredSizeIn(
-                minWidth = SliderTokens.HandleWidth,
-                minHeight = SliderTokens.HandleHeight
+                minWidth = HandleWidth,
+                minHeight = HandleHeight
             )
             .sliderSemantics(
                 value,
@@ -111,6 +110,7 @@ fun CustomizableSlider(
         val widthPx = constraints.maxWidth.toFloat()
         val maxPx: Float
         val minPx: Float
+        val thumbRadius = ThumbDiameter / 2
 
         with(LocalDensity.current) {
             maxPx = max(widthPx - thumbRadius.toPx(), 0f)
@@ -137,7 +137,6 @@ fun CustomizableSlider(
 
         val gestureEndAction = rememberUpdatedState {
             if (!draggableState.isDragging) {
-                // check isDragging in case the change is still in progress (touch -> drag case)
                 onValueChangeFinished?.invoke()
             }
         }
@@ -158,7 +157,7 @@ fun CustomizableSlider(
             reverseDirection = isRtl,
             enabled = enabled,
             interactionSource = interactionSource,
-            onDragStopped = { _ -> gestureEndAction.value.invoke() },
+            onDragStopped = { gestureEndAction.value.invoke() },
             startDragImmediately = draggableState.isDragging,
             state = draggableState
         )
@@ -172,7 +171,7 @@ fun CustomizableSlider(
 
         with(LocalDensity.current) {
             widthDp = width.toDp()
-            trackStrokeWidth = trackHeight.toPx()
+            trackStrokeWidth = TrackHeight.toPx()
         }
 
         val offset = widthDp * positionFraction
@@ -186,7 +185,7 @@ fun CustomizableSlider(
                     0f,
                     positionFraction,
                     tickFractions,
-                    thumbRadius * 2,
+                    ThumbWidth,
                     trackStrokeWidth
                 )
             },
@@ -197,7 +196,7 @@ fun CustomizableSlider(
                     interactionSource,
                     colors,
                     enabled,
-                    DpSize(thumbRadius, thumbRadius)
+                    ThumbSize
                 )
             },
             modifier = press.then(drag)
@@ -215,7 +214,6 @@ private fun snapValueToTick(
     minPx: Float,
     maxPx: Float
 ): Float {
-    // target is a closest anchor to the `current`, if exists
     return tickFractions
         .minByOrNull { abs(lerp(minPx, maxPx, it) - current) }
         ?.run { lerp(minPx, maxPx, this) }
@@ -224,18 +222,14 @@ private fun snapValueToTick(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Suppress("ModifierInspectorInfo")
-internal fun Modifier.minimumTouchTargetSize(): Modifier = composed(
+private fun Modifier.minimumTouchTargetSize(): Modifier = composed(
     inspectorInfo = debugInspectorInfo {
         name = "minimumTouchTargetSize"
-        // TODO: b/214589635 - surface this information through the layout inspector in a better way
-        //  - for now just add some information to help developers debug what this size represents.
         properties["README"] = "Adds outer padding to measure at least 48.dp (default) in " +
                 "size to disambiguate touch interactions if the element would measure smaller"
     }
 ) {
     if (LocalMinimumTouchTargetEnforcement.current) {
-        // TODO: consider using a hardcoded value of 48.dp instead to avoid inconsistent UI if the
-        // LocalViewConfiguration changes across devices / during runtime.
         val size = LocalViewConfiguration.current.minimumTouchTargetSize
         MinimumTouchTargetModifier(size)
     } else {
@@ -275,9 +269,6 @@ private fun Modifier.sliderSemantics(
                 } else {
                     newValue
                 }
-
-                // This is to keep it consistent with AbsSeekbar.java: return false if no
-                // change from current.
                 if (resolvedValue == coerced) {
                     false
                 } else {
@@ -463,7 +454,7 @@ private fun BoxScope.SliderThumb(
                     interactionSource = interactionSource,
                     indication = rememberRipple(
                         bounded = false,
-                        radius = SliderTokens.StateLayerSize / 2
+                        radius = StateLayerSize / 2
                     )
                 )
                 .hoverable(interactionSource = interactionSource)
@@ -474,31 +465,31 @@ private fun BoxScope.SliderThumb(
 }
 
 @Composable
-internal fun com.sidukov.sparvel.features.player.ShapeKeyTokens.toShape(): Shape {
+private fun ShapeKeyTokens.toShape(): Shape {
     return MaterialTheme.shapes.fromToken(this)
 }
 
-fun Shapes.fromToken(value: com.sidukov.sparvel.features.player.ShapeKeyTokens): Shape {
+private fun Shapes.fromToken(value: ShapeKeyTokens): Shape {
     return when (value) {
-        com.sidukov.sparvel.features.player.ShapeKeyTokens.CornerExtraLarge -> extraLarge
-        com.sidukov.sparvel.features.player.ShapeKeyTokens.CornerExtraLargeTop -> extraLarge.top()
-        com.sidukov.sparvel.features.player.ShapeKeyTokens.CornerExtraSmall -> extraSmall
-        com.sidukov.sparvel.features.player.ShapeKeyTokens.CornerExtraSmallTop -> extraSmall.top()
+        CornerExtraLarge -> extraLarge
+        CornerExtraLargeTop -> extraLarge.top()
+        CornerExtraSmall -> extraSmall
+        CornerExtraSmallTop -> extraSmall.top()
         CornerFull -> CircleShape
-        com.sidukov.sparvel.features.player.ShapeKeyTokens.CornerLarge -> large
-        com.sidukov.sparvel.features.player.ShapeKeyTokens.CornerLargeEnd -> large.end()
-        com.sidukov.sparvel.features.player.ShapeKeyTokens.CornerLargeTop -> large.top()
-        com.sidukov.sparvel.features.player.ShapeKeyTokens.CornerMedium -> medium
-        com.sidukov.sparvel.features.player.ShapeKeyTokens.CornerNone -> RectangleShape
-        com.sidukov.sparvel.features.player.ShapeKeyTokens.CornerSmall -> small
+        CornerLarge -> large
+        CornerLargeEnd -> large.end()
+        CornerLargeTop -> large.top()
+        CornerMedium -> medium
+        CornerNone -> RectangleShape
+        CornerSmall -> small
     }
 }
 
-fun CornerBasedShape.top(): CornerBasedShape {
+private fun CornerBasedShape.top(): CornerBasedShape {
     return copy(bottomStart = CornerSize(0.0.dp), bottomEnd = CornerSize(0.0.dp))
 }
 
-fun CornerBasedShape.end(): CornerBasedShape {
+private fun CornerBasedShape.end(): CornerBasedShape {
     return copy(topStart = CornerSize(0.0.dp), bottomStart = CornerSize(0.0.dp))
 }
 
@@ -506,15 +497,9 @@ fun CornerBasedShape.end(): CornerBasedShape {
 private fun lerp(a: Float, b: Float, fraction: Float): Float =
     a * (1 - fraction) + b * fraction
 
-// Scale x1 from a1..b1 range to a2..b2 range
 private fun scale(a1: Float, b1: Float, x1: Float, a2: Float, b2: Float) =
     lerp(a2, b2, calcFraction(a1, b1, x1))
 
-// Scale x.start, x.endInclusive from a1..b1 range to a2..b2 range
-private fun scale(a1: Float, b1: Float, x: ClosedFloatingPointRange<Float>, a2: Float, b2: Float) =
-    scale(a1, b1, x.start, a2, b2)..scale(a1, b1, x.endInclusive, a2, b2)
-
-// Calculate the 0..1 fraction that `pos` value represents between `a` and `b`
 private fun calcFraction(a: Float, b: Float, pos: Float) =
     (if (b - a == 0f) 0f else (pos - a) / (b - a)).coerceIn(0f, 1f)
 
@@ -526,7 +511,6 @@ private class MinimumTouchTargetModifier(val size: DpSize) : LayoutModifier {
 
         val placeable = measurable.measure(constraints)
 
-        // Be at least as big as the minimum dimension in both dimensions
         val width = maxOf(placeable.width, size.width.roundToPx())
         val height = maxOf(placeable.height, size.height.roundToPx())
 
@@ -574,136 +558,17 @@ private class SliderDraggableState(
     }
 }
 
-object SliderTokens {
-    val ActiveTrackColor = Primary
-    val ActiveTrackHeight = 6.0.dp
-    val ActiveTrackShape = CornerFull
-    val DisabledActiveTrackColor = OnSurface
-    const val DisabledActiveTrackOpacity = 0.38f
-    val DisabledHandleColor = OnSurface
-    val DisabledHandleElevation = Level0
-    const val DisabledHandleOpacity = 0.38f
-    val DisabledInactiveTrackColor = OnSurface
-    const val DisabledInactiveTrackOpacity = 0.12f
-    val FocusHandleColor = Primary
-    val HandleColor = Primary
-    val HandleElevation = Level1
+private object SliderTokens {
     val HandleHeight = 20.0.dp
-    val HandleShape = CornerFull
     val HandleWidth = 20.0.dp
-    val HoverHandleColor = Primary
-    val InactiveTrackColor = SurfaceVariant
-    val InactiveTrackHeight = 4.0.dp
-    val InactiveTrackShape = CornerFull
-    val LabelContainerColor = Primary
-    val LabelContainerElevation = Level0
-    val LabelContainerHeight = 28.0.dp
-    val LabelTextColor = OnPrimary
-    val LabelTextFont = LabelMedium
-    val PressedHandleColor = Primary
+    val InactiveTrackHeight = actualTrackHeight
     val StateLayerSize = 40.0.dp
-    val TrackElevation = Level0
-    val OverlapHandleOutlineColor = OnPrimary
-    val OverlapHandleOutlineWidth = 1.0.dp
-    val TickMarksActiveContainerColor = OnPrimary
-    const val TickMarksActiveContainerOpacity = 0.38f
-    val TickMarksContainerShape = CornerFull
     val TickMarksContainerSize = 2.0.dp
-    val TickMarksDisabledContainerColor = OnSurface
-    const val TickMarksDisabledContainerOpacity = 0.38f
-    val TickMarksInactiveContainerColor = OnSurfaceVariant
-    const val TickMarksInactiveContainerOpacity = 0.38f
 }
 
-object SwitchTokens {
-    val DisabledSelectedHandleColor = Surface
-    const val DisabledSelectedHandleOpacity = 1.0f
-    val DisabledSelectedIconColor = OnSurface
-    const val DisabledSelectedIconOpacity = 0.38f
-    val DisabledSelectedTrackColor = OnSurface
-    const val DisabledTrackOpacity = 0.12f
-    val DisabledUnselectedHandleColor = OnSurface
-    const val DisabledUnselectedHandleOpacity = 0.38f
-    val DisabledUnselectedIconColor = SurfaceVariant
-    const val DisabledUnselectedIconOpacity = 0.38f
-    val DisabledUnselectedTrackColor = SurfaceVariant
-    val DisabledUnselectedTrackOutlineColor = OnSurface
+private object SwitchTokens {
     val HandleShape = CornerFull
-    val PressedHandleHeight = 28.0.dp
-    val PressedHandleWidth = 28.0.dp
-    val SelectedFocusHandleColor = PrimaryContainer
-    val SelectedFocusIconColor = OnPrimaryContainer
-    val SelectedFocusTrackColor = Primary
-    val SelectedHandleColor = OnPrimary
-    val SelectedHandleHeight = 24.0.dp
-    val SelectedHandleWidth = 24.0.dp
-    val SelectedHoverHandleColor = PrimaryContainer
-    val SelectedHoverIconColor = OnPrimaryContainer
-    val SelectedHoverTrackColor = Primary
-    val SelectedIconColor = OnPrimaryContainer
-    val SelectedIconSize = 16.0.dp
-    val SelectedPressedHandleColor = PrimaryContainer
-    val SelectedPressedIconColor = OnPrimaryContainer
-    val SelectedPressedTrackColor = Primary
-    val SelectedTrackColor = Primary
-    val StateLayerShape = CornerFull
-    val StateLayerSize = 40.0.dp
-    val TrackHeight = 32.0.dp
-    val TrackOutlineWidth = 2.0.dp
-    val TrackShape = CornerFull
-    val TrackWidth = 52.0.dp
-    val UnselectedFocusHandleColor = OnSurfaceVariant
-    val UnselectedFocusIconColor = SurfaceVariant
-    val UnselectedFocusTrackColor = SurfaceVariant
-    val UnselectedFocusTrackOutlineColor = Outline
-    val UnselectedHandleColor = Outline
-    val UnselectedHandleHeight = 16.0.dp
-    val UnselectedHandleWidth = 16.0.dp
-    val UnselectedHoverHandleColor = OnSurfaceVariant
-    val UnselectedHoverIconColor = SurfaceVariant
-    val UnselectedHoverTrackColor = SurfaceVariant
-    val UnselectedHoverTrackOutlineColor = Outline
-    val UnselectedIconColor = SurfaceVariant
-    val UnselectedIconSize = 16.0.dp
-    val UnselectedPressedHandleColor = OnSurfaceVariant
-    val UnselectedPressedIconColor = SurfaceVariant
-    val UnselectedPressedTrackColor = SurfaceVariant
-    val UnselectedPressedTrackOutlineColor = Outline
-    val UnselectedTrackColor = SurfaceVariant
-    val IconHandleHeight = 24.0.dp
-    val IconHandleWidth = 24.0.dp
-}
-
-enum class ColorSchemeKeyTokens {
-    Background,
-    Error,
-    ErrorContainer,
-    InverseOnSurface,
-    InversePrimary,
-    InverseSurface,
-    OnBackground,
-    OnError,
-    OnErrorContainer,
-    OnPrimary,
-    OnPrimaryContainer,
-    OnSecondary,
-    OnSecondaryContainer,
-    OnSurface,
-    OnSurfaceVariant,
-    OnTertiary,
-    OnTertiaryContainer,
-    Outline,
-    OutlineVariant,
-    Primary,
-    PrimaryContainer,
-    Scrim,
-    Secondary,
-    SecondaryContainer,
-    Surface,
-    SurfaceTint,
-    SurfaceVariant,
-    Tertiary,
-    TertiaryContainer,
+    val SelectedHandleWidth = actualThumbRadius
 }
 
 enum class ShapeKeyTokens {
@@ -718,31 +583,4 @@ enum class ShapeKeyTokens {
     CornerMedium,
     CornerNone,
     CornerSmall,
-}
-
-object ElevationTokens {
-    val Level0 = 0.0.dp
-    val Level1 = 1.0.dp
-    val Level2 = 3.0.dp
-    val Level3 = 6.0.dp
-    val Level4 = 8.0.dp
-    val Level5 = 12.0.dp
-}
-
-enum class TypographyKeyTokens {
-    BodyLarge,
-    BodyMedium,
-    BodySmall,
-    DisplayLarge,
-    DisplayMedium,
-    DisplaySmall,
-    HeadlineLarge,
-    HeadlineMedium,
-    HeadlineSmall,
-    LabelLarge,
-    LabelMedium,
-    LabelSmall,
-    TitleLarge,
-    TitleMedium,
-    TitleSmall,
 }
