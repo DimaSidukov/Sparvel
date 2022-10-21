@@ -10,14 +10,15 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.sidukov.sparvel.R
-import com.sidukov.sparvel.core.functionality.decodeBitmap
 import com.sidukov.sparvel.core.functionality.normalize
 import com.sidukov.sparvel.core.functionality.toMinutesAndSeconds
 import com.sidukov.sparvel.core.model.Track
@@ -29,6 +30,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun PlayerView(
     track: Track,
+    image: ImageBitmap?,
     onSettingsClicked: () -> Unit
 ) {
 
@@ -42,8 +44,6 @@ fun PlayerView(
     var playbackTimestamp by remember { mutableStateOf(0.3f) }
 
     val scope = rememberCoroutineScope()
-
-    val image = track.coverId.decodeBitmap()
 
     DraggableView(
         screenHeight = screenHeight,
@@ -59,18 +59,18 @@ fun PlayerView(
                 shouldMoveDown = false
             }
         }
-        Column {
+        Column(
+            modifier = Modifier.alpha(alpha.normalize(1f, 0.3f))
+        ) {
             Box {
                 HQImageOrPlaceholder(
                     image = image,
                     imageSize = 500,
-                    needGradient = true,
-                    alpha = alpha
+                    needGradient = true
                 )
                 Toolbar(
                     navigationIcon = R.drawable.ic_arrow,
                     actionIcon = R.drawable.ic_equalizer,
-                    alpha = alpha.normalize(1f, 0.5f),
                     onNavigationClicked = {
                         scope.launch {
                             shouldMoveDown = true

@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
@@ -18,14 +17,12 @@ fun Toolbar(
     @DrawableRes navigationIcon: Int,
     @DrawableRes actionIcon: Int,
     title: String? = null,
-    alpha: Float,
     isEnabled: Boolean = true,
     onNavigationClicked: () -> Unit,
     onActionClicked: () -> Unit,
 ) = CenterAlignedTopAppBar(
     modifier = Modifier
-        .systemBarsPadding()
-        .alpha(alpha),
+        .systemBarsPadding(),
     colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
         containerColor = Color.Transparent
     ),

@@ -23,17 +23,6 @@ class HomeViewModel @Inject constructor(
         uiState = uiState.copy(currentScreen = screen)
     }
 
-    fun setScreenAndDisableAnimation(screen: HomeScreen) {
-        uiState = uiState.copy(
-            currentScreen = screen,
-            isNewScreenVisible = false
-        )
-    }
-
-    fun showNewScreen() {
-        uiState = uiState.copy(isNewScreenVisible = true)
-    }
-
     fun showPlayer(track: Track) {
         if (track != uiState.selectedTrack) {
             uiState = uiState.copy(selectedTrack = track)
@@ -52,7 +41,6 @@ data class HomeScreenState(
     val trackList: List<Track> = emptyList(),
     val albums: List<MusicCollection> = emptyList(),
     val currentScreen: HomeScreen = HomeScreen.FULL,
-    val isNewScreenVisible: Boolean = false,
     val selectedTrack: Track? = null
 )
 

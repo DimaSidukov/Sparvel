@@ -5,10 +5,11 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -42,24 +43,25 @@ fun ImageOrPlaceholder(
     ) {
         var isImageLoaded by remember { mutableStateOf(false) }
         if (!isImageLoaded) {
-            Image(
-                painter = painterResource(R.drawable.ic_melody),
-                contentDescription = null,
+            Box(
                 modifier = Modifier
-                    .applyGradient(needGradient, gradient)
+                    .fillMaxSize()
                     .background(gradient)
-                    .border(
-                        1.dp,
-                        SparvelTheme.colors.textPlaceholder,
-                        RoundedCornerShape(10.dp)
-                    )
-                    .padding((0.3 * imageSize).dp)
-                    .size((0.4 * imageSize).dp)
+                    .border(1.dp, SparvelTheme.colors.textPlaceholder, RoundedCornerShape(10.dp))
+                    .applyGradient(needGradient, gradient)
                     .applyIf(onImageClicked != null) {
                         clickable(onClick = onImageClicked!!)
-                    },
-                colorFilter = ColorFilter.tint(SparvelTheme.colors.secondary)
-            )
+                    }
+            ) {
+                Image(
+                    painter = painterResource(R.drawable.ic_melody),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .align(Alignment.Center)
+                        .size((0.4 * imageSize).dp),
+                    colorFilter = ColorFilter.tint(SparvelTheme.colors.secondary)
+                )
+            }
         }
         AsyncImage(
             model = imageUrl,

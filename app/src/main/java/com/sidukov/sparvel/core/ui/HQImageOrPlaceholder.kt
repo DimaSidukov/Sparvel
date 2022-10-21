@@ -27,7 +27,6 @@ fun HQImageOrPlaceholder(
     image: ImageBitmap?,
     imageSize: Int,
     needGradient: Boolean,
-    alpha: Float,
     onImageClicked: (() -> Unit)? = null
 ) {
     var dynamicImageSize by remember { mutableStateOf(IntSize.Zero) }
@@ -42,7 +41,6 @@ fun HQImageOrPlaceholder(
             painter = painterResource(R.drawable.ic_melody),
             contentDescription = null,
             modifier = Modifier
-                .alpha(alpha)
                 .padding((0.3 * imageSize).dp)
                 .size((0.4 * imageSize).dp)
                 .applyIf(onImageClicked != null) {
@@ -57,7 +55,6 @@ fun HQImageOrPlaceholder(
             contentScale = ContentScale.FillWidth,
             modifier = Modifier
                 .width(imageSize.dp)
-                .alpha(alpha)
                 .onGloballyPositioned { dynamicImageSize = it.size }
                 .applyGradient(needGradient, gradient)
                 .applyIf(onImageClicked != null) {

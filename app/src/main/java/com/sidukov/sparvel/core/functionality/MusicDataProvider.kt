@@ -30,7 +30,8 @@ class MusicDataProvider @Inject constructor(private val context: Context) {
                 MediaStore.Audio.Media.DURATION,
                 MediaStore.Audio.Media.ALBUM,
                 MediaStore.Audio.Media.YEAR,
-                MediaStore.Audio.Media.ALBUM_ID
+                MediaStore.Audio.Media.ALBUM_ID,
+                MediaStore.Audio.Media.DATE_ADDED
             ),
             MediaStore.Audio.Media.IS_MUSIC,
             null,
@@ -51,7 +52,8 @@ class MusicDataProvider @Inject constructor(private val context: Context) {
                             c.getLong(c.getColumnIndexOrThrow(MediaStore.Audio.Media.ALBUM_ID))
                         ).toString(),
                         duration = ceil(c.getString(4).toDouble() / 1000).toInt(),
-                        year = (c.getString(6) ?: "-1").toInt()
+                        year = (c.getString(6) ?: "-1").toInt(),
+                        dateAdded = c.getInt(8)
                     )
                 )
             }
@@ -61,7 +63,7 @@ class MusicDataProvider @Inject constructor(private val context: Context) {
         } finally {
             c?.close()
         }
-        return list
+        return list.sortedByDescending { it.dateAdded }
     }
 
     private fun String?.formatUnknown(target: String) =

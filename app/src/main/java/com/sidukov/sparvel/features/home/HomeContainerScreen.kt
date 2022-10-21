@@ -2,11 +2,7 @@ package com.sidukov.sparvel.features.home
 
 import android.Manifest
 import android.annotation.SuppressLint
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.AnimatedVisibilityScope
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -15,18 +11,16 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.navigation.NavHostController
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import com.sidukov.sparvel.R
+import com.sidukov.sparvel.core.functionality.decodeBitmap
 import com.sidukov.sparvel.core.functionality.filter
 import com.sidukov.sparvel.core.functionality.toMusicCollection
 import com.sidukov.sparvel.core.model.Track
@@ -83,52 +77,43 @@ fun HomeScreenApprovedState(
             query = it
         }
     ) {
-        when (uiState.currentScreen) {
-            FULL -> {
-                HomeScreen(
-                    navController = navController,
-                    trackList = newTrackList.filter(query),
-                    onPlaylistSectionClicked = {
-                        viewModel.setScreen(PLAYLISTS)
-                    },
-                    onAlbumSectionClicked = {
-                        viewModel.setScreen(ALBUMS)
-                    },
-                    onTrackClicked = {
-                        scope.launch {
-                            viewModel.showPlayer(it)
-                        }
-                    }
-                )
-            }
-            PLAYLISTS -> {
-                viewModel.showNewScreen()
-                SwipeFromLeftAnimation(isVisible = uiState.isNewScreenVisible) {
-                    PlaylistsScreen(
+        Crossfade(targetState = uiState.currentScreen) { screen ->
+            when (screen) {
+                FULL -> {
+                    HomeScreen(
                         navController = navController,
-                        onNavigatedBack = {
-                            viewModel.setScreenAndDisableAnimation(FULL)
+                        trackList = newTrackList.filter(query),
+                        onPlaylistSectionClicked = {
+                            viewModel.setScreen(PLAYLISTS)
+                        },
+                        onAlbumSectionClicked = {
+                            viewModel.setScreen(ALBUMS)
+                        },
+                        onTrackClicked = {
+                            scope.launch {
+                                viewModel.showPlayer(it)
+                            }
                         }
                     )
                 }
-            }
-            ALBUMS -> {
-                viewModel.showNewScreen()
-                SwipeFromLeftAnimation(
-                    isVisible = uiState.isNewScreenVisible
-                ) {
+                PLAYLISTS -> {
+                    PlaylistsScreen(
+                        navController = navController,
+                        onNavigatedBack = {
+                            viewModel.setScreen(FULL)
+                        }
+                    )
+                }
+                ALBUMS -> {
                     AlbumsScreen(
                         navController = navController,
                         albums = trackList.filter(query).toMusicCollection(),
                         onNavigatedBack = {
-                            viewModel.setScreenAndDisableAnimation(FULL)
+                            viewModel.setScreen(FULL)
                         }
                     )
                 }
-            }
-            LIBRARY -> {
-                viewModel.showNewScreen()
-                SwipeFromLeftAnimation(isVisible = uiState.isNewScreenVisible) {
+                LIBRARY -> {
                     LibraryScreen()
                 }
             }
@@ -137,6 +122,7 @@ fun HomeScreenApprovedState(
     uiState.selectedTrack?.let {
         PlayerView(
             track = it,
+            image = it.coverId.decodeBitmap(),
             onSettingsClicked = {
 
             }
@@ -161,24 +147,6 @@ fun HomeScreenDeniedState() {
             textAlign = TextAlign.Center
         )
     }
-}
-
-@Composable
-fun SwipeFromLeftAnimation(
-    isVisible: Boolean,
-    content: @Composable AnimatedVisibilityScope.() -> Unit
-) {
-    val duration = 100
-    val density = LocalDensity.current
-    val screenWidth = (LocalConfiguration.current.screenWidthDp / 2).dp
-
-    AnimatedVisibility(
-        visible = isVisible,
-        enter = slideInHorizontally(tween(duration)) { with(density) { -screenWidth.roundToPx() / 2 } } + fadeIn(
-            tween(duration / 2)
-        ),
-        content = content
-    )
 }
 
 @SuppressLint("PermissionLaunchedDuringComposition")

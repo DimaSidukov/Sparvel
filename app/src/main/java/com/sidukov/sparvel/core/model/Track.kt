@@ -10,5 +10,6 @@ class Track(
     val album: String,
     var coverId: String,
     val duration: Int,
-    val year: Int
+    val year: Int,
+    val dateAdded: Int
 ) : Serializable
