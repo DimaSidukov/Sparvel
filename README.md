@@ -21,9 +21,7 @@
 * add playlist creation/removal etc screens + local database for storing them
 * update toolbar icons color in player depending on the background (if it is too bright, change color of icons to black)
 * put searchbar and drawer into toolbar
-* flat boxes in playerview and use verticalArrangement/gravity or smth for actual arrangement of elements inside
 * add blur to the background of the player
-* try to use `detectDragGestures` instead of `draggable` to allow user start swiping from any position of the view
 * recommendation: when implementing playlists, it's better store only track ids in database and then when user opens the screen, load data by these ids. No sense in storing track data, since user may not open some playlist for undefined period of time
 * change ripple effect color for all elements
-* fix error when thumb doesn't reach very end of the track when sliding
+* Long Time No See Rue des Saules no plus sign, fix it

@@ -1,5 +1,7 @@
 package com.sidukov.sparvel.features.player
 
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.Orientation
@@ -13,62 +15,38 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.sidukov.sparvel.core.theme.SparvelTheme
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import kotlin.math.abs
 
 @Composable
 fun DraggableView(
     screenHeight: Dp,
     minHeight: Dp,
     shouldMoveDown: Boolean,
-    content: @Composable ColumnScope.(
+    content: @Composable BoxScope.(
         currentHeight: Dp,
-        isLayoutExpanded: Boolean
+        isExpanded: Boolean
     ) -> Unit
 ) {
 
-    val animationDpValue = 20.dp
-    val animationDelay = 1L
-
-    var offset by remember { mutableStateOf(minHeight) }
     var startPosition by remember { mutableStateOf(0.dp) }
     var endPosition by remember { mutableStateOf(0.dp) }
 
-    var isLayoutExpanded by remember { mutableStateOf(false) }
-    var isTouchEnabled by remember { mutableStateOf(true) }
-
-    val scope = rememberCoroutineScope()
-
-    fun moveUp(actionOnFinish: () -> Unit = { }) = scope.launch {
-        while (offset < screenHeight) {
-            offset += if (screenHeight - offset >= animationDpValue) animationDpValue else screenHeight - offset
-            delay(animationDelay)
-        }
-        actionOnFinish()
-        isTouchEnabled = true
-        isLayoutExpanded = true
-    }
-
-    fun moveDown(actionOnFinish: () -> Unit = { }) = scope.launch {
-        while (offset > minHeight) {
-            offset -= if (offset - minHeight >= animationDpValue) animationDpValue else offset - minHeight
-            delay(animationDelay)
-        }
-        actionOnFinish()
-        isTouchEnabled = true
-        isLayoutExpanded = false
-    }
+    var isExpanded by remember { mutableStateOf(false) }
+    var height by remember { mutableStateOf(minHeight) }
+    val offset by animateDpAsState(
+        if (isExpanded) screenHeight else minHeight,
+        tween(300)
+    )
 
     SideEffect {
         if (shouldMoveDown) {
-            moveDown()
+            isExpanded = false
         }
     }
+
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
-        Column(
+        Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .fillMaxHeight()
@@ -76,47 +54,30 @@ fun DraggableView(
                 .align(Alignment.BottomCenter)
                 .background(SparvelTheme.colors.playerBackground)
                 .clickable(
-                    enabled = isTouchEnabled,
+                    enabled = true,
                     indication = null,
-                    interactionSource = remember { MutableInteractionSource() }
-                ) {
-                    isTouchEnabled = false
-                    if (offset < screenHeight) {
-                        moveUp()
-                    }
-                }
+                    interactionSource = remember { MutableInteractionSource() },
+                    onClick = { isExpanded = true }
+                )
                 .draggable(
-                    enabled = isTouchEnabled,
+                    enabled = true,
                     orientation = Orientation.Vertical,
                     state = rememberDraggableState { delta ->
-                        scope.launch {
-                            if (delta < 0 && offset - delta.dp <= screenHeight || delta > 0 && offset - delta.dp >= minHeight) {
-                                offset -= delta.dp
-                            }
+                        if (height in minHeight..screenHeight && (height - delta.dp) in minHeight..screenHeight) {
+                            height -= delta.dp
                         }
                     },
                     onDragStarted = {
-                        startPosition = offset
+                        startPosition = height
                     },
                     onDragStopped = {
-                        endPosition = offset
-                        if (endPosition >= startPosition) {
-                            if (abs(endPosition.value - startPosition.value) > 100f) {
-                                moveUp()
-                            } else {
-                                moveDown()
-                            }
-                        } else if (endPosition < startPosition) {
-                            if (abs(endPosition.value - startPosition.value) > 100f) {
-                                moveDown()
-                            } else {
-                                moveUp()
-                            }
-                        }
+                        endPosition = height
+                        isExpanded = endPosition > startPosition
+                        height = if (endPosition > startPosition) screenHeight else minHeight
                     }
                 ),
             content = {
-                content(offset, isLayoutExpanded)
+                content(offset, isExpanded)
             }
         )
     }

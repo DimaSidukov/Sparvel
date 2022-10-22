@@ -47,8 +47,8 @@ fun ImageOrPlaceholder(
                 modifier = Modifier
                     .fillMaxSize()
                     .background(gradient)
-                    .border(1.dp, SparvelTheme.colors.textPlaceholder, RoundedCornerShape(10.dp))
                     .applyGradient(needGradient, gradient)
+                    .border(1.dp, SparvelTheme.colors.textPlaceholder, RoundedCornerShape(10.dp))
                     .applyIf(onImageClicked != null) {
                         clickable(onClick = onImageClicked!!)
                     }

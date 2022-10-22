@@ -2,7 +2,7 @@ package com.sidukov.sparvel.features.home
 
 import android.Manifest
 import android.annotation.SuppressLint
-import androidx.compose.animation.Crossfade
+import androidx.compose.animation.*
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -53,6 +53,7 @@ fun HomeScreenContainer(
     )
 }
 
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun HomeScreenApprovedState(
     viewModel: HomeViewModel,
@@ -77,7 +78,20 @@ fun HomeScreenApprovedState(
             query = it
         }
     ) {
-        Crossfade(targetState = uiState.currentScreen) { screen ->
+        AnimatedContent(
+            targetState = uiState.currentScreen,
+            transitionSpec = {
+                if (targetState == FULL) {
+                    slideInHorizontally { height -> height } + fadeIn() with
+                            slideOutHorizontally { height -> -height } + fadeOut()
+                } else {
+                    slideInHorizontally { height -> -height } + fadeIn() with
+                            slideOutHorizontally { height -> height } + fadeOut()
+                }.using(
+                    SizeTransform(clip = false)
+                )
+            }
+        ) { screen ->
             when (screen) {
                 FULL -> {
                     HomeScreen(
