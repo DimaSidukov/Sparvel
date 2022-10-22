@@ -25,3 +25,4 @@
 * recommendation: when implementing playlists, it's better store only track ids in database and then when user opens the screen, load data by these ids. No sense in storing track data, since user may not open some playlist for undefined period of time
 * change ripple effect color for all elements
 * Long Time No See Rue des Saules no plus sign, fix it
+* padding when track is selected, fix it
