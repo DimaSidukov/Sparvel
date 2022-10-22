@@ -96,30 +96,6 @@ fun Float.normalize(max: Float, min: Float): Float = (this - min) / (max - min)
 
 fun Int.toMinutesAndSeconds() = String.format("%d:%02d", this / 60, this % 60)
 
-@SuppressLint("ComposableNaming")
-@Composable
-fun exitScreenWithAction(action: () -> Unit) {
-    val backPressedDispatcher: OnBackPressedDispatcher? =
-        LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
-    val currentOnBackPressed by rememberUpdatedState(newValue = action)
-
-    val backCallback = remember {
-        object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                currentOnBackPressed()
-            }
-        }
-    }
-
-    DisposableEffect(
-        key1 = backPressedDispatcher
-    ) {
-        backPressedDispatcher?.addCallback(backCallback)
-
-        onDispose { backCallback.remove() }
-    }
-}
-
 @Composable
 fun String.decodeBitmap(): ImageBitmap? {
     val cr = LocalContext.current.contentResolver

@@ -11,6 +11,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
@@ -39,7 +40,9 @@ fun ImageOrPlaceholder(
     )
 
     Box(
-        modifier = Modifier.size(imageSize.dp)
+        modifier = Modifier
+            .size(imageSize.dp)
+            .clip(RoundedCornerShape(10.dp))
     ) {
         var isImageLoaded by remember { mutableStateOf(false) }
         if (!isImageLoaded) {

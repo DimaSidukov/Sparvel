@@ -78,6 +78,7 @@ fun HomeScreenApprovedState(
             query = it
         }
     ) {
+        newTrackList = newTrackList.filter(query)
         AnimatedContent(
             targetState = uiState.currentScreen,
             transitionSpec = {
@@ -95,14 +96,18 @@ fun HomeScreenApprovedState(
             when (screen) {
                 FULL -> {
                     HomeScreen(
-                        isTrackSelected = uiState.selectedTrack != null,
                         navController = navController,
-                        trackList = newTrackList.filter(query),
+                        trackList = newTrackList,
                         onPlaylistSectionClicked = {
                             viewModel.setScreen(PLAYLISTS)
                         },
                         onAlbumSectionClicked = {
                             viewModel.setScreen(ALBUMS)
+                        },
+                        onLibrarySectionClicked = {
+                            scope.launch {
+                                viewModel.setScreen(LIBRARY)
+                            }
                         },
                         onTrackClicked = {
                             scope.launch {
@@ -122,14 +127,24 @@ fun HomeScreenApprovedState(
                 ALBUMS -> {
                     AlbumsScreen(
                         navController = navController,
-                        albums = trackList.filter(query).toMusicCollection(),
+                        albums = newTrackList.toMusicCollection(),
                         onNavigatedBack = {
                             viewModel.setScreen(FULL)
                         }
                     )
                 }
                 LIBRARY -> {
-                    LibraryScreen()
+                    LibraryScreen(
+                        tracks = newTrackList,
+                        onTrackClicked = {
+                            scope.launch {
+                                viewModel.showPlayer(it)
+                            }
+                        },
+                        onNavigatedBack = {
+                            viewModel.setScreen(FULL)
+                        }
+                    )
                 }
             }
         }

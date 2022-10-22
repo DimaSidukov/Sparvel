@@ -27,11 +27,7 @@ fun CollectionScreen(
             .then(modifier)
     ) {
         val contentWidth = 150
-
-        Text(
-            text = sectionName,
-            style = SparvelTheme.typography.collectionTitleLarge.copy(color = SparvelTheme.colors.secondary)
-        )
+        SectionName(sectionName)
         LazyVerticalGrid(
             modifier = Modifier
                 .fillMaxSize()

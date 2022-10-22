@@ -13,7 +13,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.sidukov.sparvel.core.model.MusicCollection
 import com.sidukov.sparvel.core.theme.SparvelTheme
@@ -27,18 +26,16 @@ fun CollectionSection(
     onItemClicked: () -> Unit,
     lastItem: @Composable LazyItemScope.() -> Unit = { },
 ) {
-    Text(
+    SectionName(
+        sectionName = sectionName,
         modifier = modifier.clickable(
             interactionSource = remember { MutableInteractionSource() },
             indication = rememberRipple(
                 color = SparvelTheme.colors.cursor
             ),
             onClick = onSectionNameClicked
-        ),
-        text = sectionName,
-        style = SparvelTheme.typography.collectionTitleLarge.copy(color = SparvelTheme.colors.secondary)
+        )
     )
-
     LazyRow(
         modifier = Modifier
             .fillMaxWidth()
@@ -57,3 +54,11 @@ fun CollectionSection(
         }
     }
 }
+
+@Composable
+fun SectionName(sectionName: String, modifier: Modifier = Modifier) = Text(
+    text = sectionName,
+    style = SparvelTheme.typography.collectionTitleLarge,
+    color = SparvelTheme.colors.text,
+    modifier = modifier
+)

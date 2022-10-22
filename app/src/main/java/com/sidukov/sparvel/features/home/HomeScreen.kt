@@ -1,7 +1,7 @@
 package com.sidukov.sparvel.features.home
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -11,23 +11,22 @@ import com.sidukov.sparvel.R
 import com.sidukov.sparvel.core.functionality.Screens
 import com.sidukov.sparvel.core.functionality.toMusicCollection
 import com.sidukov.sparvel.core.model.Track
-import com.sidukov.sparvel.core.theme.SparvelTheme
 import com.sidukov.sparvel.core.ui.AddPlaylistItem
 import com.sidukov.sparvel.core.ui.CollectionSection
+import com.sidukov.sparvel.core.ui.SectionName
 import com.sidukov.sparvel.core.ui.TrackList
 
 @Composable
 fun HomeScreen(
-    isTrackSelected: Boolean,
     navController: NavHostController,
     trackList: List<Track>,
     onPlaylistSectionClicked: () -> Unit,
     onAlbumSectionClicked: () -> Unit,
+    onLibrarySectionClicked: () -> Unit,
     onTrackClicked: (Track) -> Unit,
 ) {
     Column {
         TrackList(
-            isTrackSelected = isTrackSelected,
             modifier = Modifier.padding(start = 30.dp, end = 30.dp),
             itemList = trackList,
             onItemClicked = onTrackClicked
@@ -59,11 +58,13 @@ fun HomeScreen(
                         // navController.navigate(Screens.Albums.route)
                     }
                 )
-                Text(
-                    modifier = Modifier.padding(bottom = 20.dp, top = 30.dp),
-                    text = stringResource(R.string.library_label),
-                    style = SparvelTheme.typography.collectionTitleLarge,
-                    color = SparvelTheme.colors.secondary
+                SectionName(
+                    sectionName = stringResource(R.string.library_label),
+                    modifier = Modifier
+                        .padding(bottom = 20.dp, top = 30.dp)
+                        .clickable {
+                            onLibrarySectionClicked()
+                        }
                 )
             }
         }

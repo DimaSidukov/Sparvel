@@ -14,13 +14,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.sidukov.sparvel.R
-import com.sidukov.sparvel.core.functionality.SelectedTrackPadding
 import com.sidukov.sparvel.core.model.Track
 import com.sidukov.sparvel.core.theme.SparvelTheme
 
 @Composable
 fun TrackList(
-    isTrackSelected: Boolean,
     modifier: Modifier = Modifier,
     itemList: List<Track>,
     onItemClicked: (Track) -> Unit = { },
@@ -78,9 +76,6 @@ fun TrackList(
                 }
             }
             Spacer(modifier = Modifier.height(15.dp))
-        }
-        item {
-            SelectedTrackPadding(isTrackSelected)
         }
     }
 }

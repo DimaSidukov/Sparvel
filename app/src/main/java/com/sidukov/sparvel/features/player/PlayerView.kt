@@ -1,5 +1,6 @@
 package com.sidukov.sparvel.features.player
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -21,6 +22,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import com.sidukov.sparvel.R
 import com.sidukov.sparvel.core.functionality.normalize
 import com.sidukov.sparvel.core.functionality.toMinutesAndSeconds
@@ -47,6 +49,10 @@ fun PlayerView(
     var playbackTimestamp by remember { mutableStateOf(0.3f) }
 
     val scope = rememberCoroutineScope()
+
+    BackHandler {
+        shouldMoveDown = true
+    }
 
     DraggableView(
         screenHeight = screenHeight,
