@@ -1,7 +1,9 @@
 package com.sidukov.sparvel.core.theme
 
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.LocalOverscrollConfiguration
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.material.ripple.LocalRippleTheme
+import androidx.compose.material.ripple.RippleAlpha
+import androidx.compose.material.ripple.RippleTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.Color
@@ -24,13 +26,27 @@ object SparvelTheme {
 internal val LocalColors = staticCompositionLocalOf { LightColors }
 internal val LocalTypography = staticCompositionLocalOf { SparvelTypography() }
 
-@OptIn(ExperimentalFoundationApi::class)
+private object Ripple : RippleTheme {
+    @Composable
+    override fun defaultColor(): Color = RippleTheme.defaultRippleColor(
+        Color.Red,
+        lightTheme = !isSystemInDarkTheme()
+    )
+
+    @Composable
+    override fun rippleAlpha(): RippleAlpha = RippleTheme.defaultRippleAlpha(
+        Color.Red,
+        lightTheme = !isSystemInDarkTheme()
+    )
+}
+
 @Composable
 fun SparvelTheme(
     darkTheme: Boolean = SparvelApplication.preferences.appTheme == AppTheme.DARK.code,
     content: @Composable () -> Unit
 ) {
     val colors = if (darkTheme) DarkColors else LightColors
+
     val typography = SparvelTypography()
 
     val systemUiController = rememberSystemUiController()
@@ -40,7 +56,7 @@ fun SparvelTheme(
 
     CompositionLocalProvider(
         LocalColors provides colors,
-        LocalOverscrollConfiguration provides null
+        LocalRippleTheme provides Ripple
     ) {
         MaterialTheme(
             colorScheme = colors.material,

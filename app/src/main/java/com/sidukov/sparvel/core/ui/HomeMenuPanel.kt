@@ -18,7 +18,10 @@ fun HomeMenuPanel(
     onTextUpdated: (String) -> Unit,
     content: @Composable () -> Unit,
 ) {
-    Column(modifier = Modifier.systemBarsPadding()) {
+    Column(
+        modifier = Modifier
+            .systemBarsPadding()
+    ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()

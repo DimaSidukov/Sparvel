@@ -39,6 +39,7 @@ data class SparvelColors(
     val playerActions: Color,
     val progress: Color,
     val progressTrack: Color,
+    val rippleColor: Color,
     private val secondaryMaterial: Color,
     private val backgroundMaterial: Color
 ) {
@@ -73,6 +74,7 @@ val LightColors = SparvelColors(
     playerActions = darkGrey2,
     progress = dimGrey,
     progressTrack = lightGrey3,
+    rippleColor = black,
     secondaryMaterial = black,
     backgroundMaterial = white
 )
@@ -95,6 +97,7 @@ val DarkColors = SparvelColors(
     toolbarTitle = dimGrey,
     playerActions = white,
     progress = lightGrey4,
+    rippleColor = white,
     progressTrack = white,
     secondaryMaterial = white,
     backgroundMaterial = darkestBlue

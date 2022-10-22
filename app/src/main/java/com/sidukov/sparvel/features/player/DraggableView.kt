@@ -2,13 +2,13 @@ package com.sidukov.sparvel.features.player
 
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.draggable
 import androidx.compose.foundation.gestures.rememberDraggableState
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -46,13 +46,14 @@ fun DraggableView(
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
-        Box(
+        Surface(
+            shadowElevation = 10.dp,
+            color = SparvelTheme.colors.playerBackground,
             modifier = Modifier
                 .fillMaxWidth()
                 .fillMaxHeight()
                 .offset(y = screenHeight - offset)
                 .align(Alignment.BottomCenter)
-                .background(SparvelTheme.colors.playerBackground)
                 .clickable(
                     enabled = true,
                     indication = null,

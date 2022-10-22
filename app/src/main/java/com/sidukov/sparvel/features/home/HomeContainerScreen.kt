@@ -95,6 +95,7 @@ fun HomeScreenApprovedState(
             when (screen) {
                 FULL -> {
                     HomeScreen(
+                        isTrackSelected = uiState.selectedTrack != null,
                         navController = navController,
                         trackList = newTrackList.filter(query),
                         onPlaylistSectionClicked = {

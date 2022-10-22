@@ -16,9 +16,9 @@ import com.sidukov.sparvel.core.ui.AddPlaylistItem
 import com.sidukov.sparvel.core.ui.CollectionSection
 import com.sidukov.sparvel.core.ui.TrackList
 
-
 @Composable
 fun HomeScreen(
+    isTrackSelected: Boolean,
     navController: NavHostController,
     trackList: List<Track>,
     onPlaylistSectionClicked: () -> Unit,
@@ -27,6 +27,7 @@ fun HomeScreen(
 ) {
     Column {
         TrackList(
+            isTrackSelected = isTrackSelected,
             modifier = Modifier.padding(start = 30.dp, end = 30.dp),
             itemList = trackList,
             onItemClicked = onTrackClicked

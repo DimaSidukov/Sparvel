@@ -17,6 +17,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import com.google.gson.Gson
@@ -60,6 +61,41 @@ fun String?.toTrackList() =
         Array<Track>::class.java
     ).toList()
 
+fun List<Track>.filter(query: String): List<Track> {
+    val words = query.trim().split("\\s+".toRegex()).toList()
+    return this.filter { track ->
+        track.name.containsQueryOrWords(query, words)
+                || track.album.containsQueryOrWords(query, words)
+                || track.artist.containsQueryOrWords(query, words)
+    }
+}
+
+private fun String.containsQueryOrWords(query: String, words: List<String>) =
+    this.contains(query, true) || words.any { this.contains(it, true) }
+
+
+fun Modifier.systemBarsPadding() = composed {
+    this.windowInsetsPadding(
+        WindowInsets.systemBars.only(
+            WindowInsetsSides.Top + WindowInsetsSides.Bottom
+        )
+    )
+}
+
+fun Modifier.applyGradient(needGradient: Boolean, gradient: Brush) = this
+    .applyIf(needGradient) {
+        graphicsLayer { alpha = 0.99f }
+            .drawWithContent {
+                drawContent()
+                drawRect(gradient, blendMode = BlendMode.DstIn)
+            }
+    }
+    .clip(RoundedCornerShape(10.dp))
+
+fun Float.normalize(max: Float, min: Float): Float = (this - min) / (max - min)
+
+fun Int.toMinutesAndSeconds() = String.format("%d:%02d", this / 60, this % 60)
+
 @SuppressLint("ComposableNaming")
 @Composable
 fun exitScreenWithAction(action: () -> Unit) {
@@ -84,27 +120,6 @@ fun exitScreenWithAction(action: () -> Unit) {
     }
 }
 
-fun List<Track>.filter(query: String): List<Track> {
-    val words = query.trim().split("\\s+".toRegex()).toList()
-    return this.filter { track ->
-        track.name.containsQueryOrWords(query, words)
-                || track.album.containsQueryOrWords(query, words)
-                || track.artist.containsQueryOrWords(query, words)
-    }
-}
-
-private fun String.containsQueryOrWords(query: String, words: List<String>) =
-    this.contains(query, true) || words.any { this.contains(it, true) }
-
-
-fun Modifier.systemBarsPadding() = composed {
-    this.windowInsetsPadding(
-        WindowInsets.systemBars.only(
-            WindowInsetsSides.Top + WindowInsetsSides.Bottom
-        )
-    )
-}
-
 @Composable
 fun String.decodeBitmap(): ImageBitmap? {
     val cr = LocalContext.current.contentResolver
@@ -120,16 +135,10 @@ fun String.decodeBitmap(): ImageBitmap? {
     }?.asImageBitmap()
 }
 
-fun Modifier.applyGradient(needGradient: Boolean, gradient: Brush) = this
-    .applyIf(needGradient) {
-        graphicsLayer { alpha = 0.99f }
-            .drawWithContent {
-                drawContent()
-                drawRect(gradient, blendMode = BlendMode.DstIn)
-            }
-    }
-    .clip(RoundedCornerShape(10.dp))
-
-fun Float.normalize(max: Float, min: Float): Float = (this - min) / (max - min)
-
-fun Int.toMinutesAndSeconds() = String.format("%d:%02d", this / 60, this % 60)
+@Composable
+fun SelectedTrackPadding(isTrackSelected: Boolean = false, defaultPadding: Dp = 10.dp) =
+    Spacer(
+        modifier = Modifier.height(
+            if (isTrackSelected) 60.dp else defaultPadding
+        )
+    )
