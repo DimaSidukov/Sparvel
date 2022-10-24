@@ -79,8 +79,8 @@ fun SearchBar(
                         tint = SparvelTheme.colors.searchText,
                     )
                 },
-                border = {
-                    TextFieldDefaults.BorderBox(
+                container = {
+                    TextFieldDefaults.OutlinedBorderContainerBox(
                         enabled = true,
                         isError = false,
                         interactionSource = interactionSource,
@@ -91,19 +91,6 @@ fun SearchBar(
                         shape = RoundedCornerShape(10.dp)
                     )
                 },
-//                for migration
-//                container = {
-//                    TextFieldDefaults.OutlinedBorderContainerBox(
-//                        enabled = true,
-//                        isError = false,
-//                        interactionSource = interactionSource,
-//                        colors = TextFieldDefaults.outlinedTextFieldColors(
-//                            focusedBorderColor = SparvelTheme.colors.searchBorder,
-//                            unfocusedBorderColor = SparvelTheme.colors.searchBorder,
-//                        ),
-//                        shape = RoundedCornerShape(10.dp)
-//                    )
-//                },
                 contentPadding = PaddingValues(0.dp)
             )
         },

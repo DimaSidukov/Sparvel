@@ -6,10 +6,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.SliderDefaults
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -21,8 +18,8 @@ import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavHostController
 import com.sidukov.sparvel.R
 import com.sidukov.sparvel.core.functionality.normalize
 import com.sidukov.sparvel.core.functionality.toMinutesAndSeconds
@@ -177,22 +174,40 @@ fun TrackInfo(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PlayerProgress(
     value: Float,
     onValueChange: (Float) -> Unit
 ) {
-    ThinnerSlider(
+
+    val colors = SliderDefaults.colors(
+        thumbColor = SparvelTheme.colors.progressTrack,
+        activeTrackColor = SparvelTheme.colors.progressTrack,
+        inactiveTrackColor = SparvelTheme.colors.progress
+    )
+
+    Slider(
         value = value,
         onValueChange = onValueChange,
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(3.dp),
-        colors = SliderDefaults.colors(
-            thumbColor = SparvelTheme.colors.progressTrack,
-            activeTrackColor = SparvelTheme.colors.progressTrack,
-            inactiveTrackColor = SparvelTheme.colors.progress
-        )
+        track = remember {
+            { sliderPositions ->
+                SliderDefaults.Track(
+                    colors = colors,
+                    sliderPositions = sliderPositions
+                )
+            }
+        },
+        thumb = remember {
+            {
+                SliderDefaults.Thumb(
+                    interactionSource = remember { MutableInteractionSource() },
+                    colors = colors,
+                    thumbSize = DpSize(12.dp, 12.dp),
+                    modifier = Modifier.offset(y = 4.dp)
+                )
+            }
+        }
     )
 }
 

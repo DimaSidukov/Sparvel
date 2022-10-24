@@ -18,7 +18,7 @@ fun AlbumsScreen(
     onNavigatedBack: () -> Unit
 ) {
     CollectionScreen(
-        modifier = Modifier.padding(start = 30.dp, end = 30.dp),
+        modifier = Modifier.padding(horizontal = 30.dp),
         sectionName = stringResource(R.string.albums_label),
         collectionList = albums
     )

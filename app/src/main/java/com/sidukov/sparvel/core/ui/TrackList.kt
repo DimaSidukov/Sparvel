@@ -31,7 +31,10 @@ fun TrackList(
         item {
             additionalContent()
         }
-        items(itemList) { item ->
+        items(
+            items = itemList,
+            contentType = { it }
+        ) { item ->
             Row(
                 modifier = Modifier
                     .fillMaxSize()

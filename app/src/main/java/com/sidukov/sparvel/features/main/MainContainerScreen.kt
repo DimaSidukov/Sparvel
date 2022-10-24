@@ -1,11 +1,11 @@
 package com.sidukov.sparvel.features.main
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -13,6 +13,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
@@ -52,7 +54,11 @@ fun MainContainerScreen(
         drawerState = drawerState,
         gesturesEnabled = drawerState.isOpen,
         drawerContent = {
-            ModalDrawerSheet {
+            ModalDrawerSheet(
+                windowInsets = WindowInsets(top = 0.dp),
+                modifier = Modifier.fillMaxHeight(),
+                drawerContainerColor = Color.Transparent
+            ) {
                 Column(
                     modifier = Modifier
                         .fillMaxHeight()
@@ -125,7 +131,6 @@ fun NavGraphBuilder.drawerContainerGraph(
             route = Screens.Home.route,
             arguments = listOf(navArgument("tracks") { type = NavType.StringType })
         ) { stack ->
-            Log.d("TRACKNAME", stack.arguments?.getString("tracks").toTrackList().find { it.name.contains("Saules") }!!.name)
             HomeScreenContainer(
                 viewModelProvider[HomeViewModel::class.java],
                 navController,
@@ -151,12 +156,11 @@ fun DrawerContent(
 ) {
     Box(
         modifier = Modifier
-            .fillMaxSize()
-            .padding(horizontal = 35.dp),
+            .fillMaxSize(),
         contentAlignment = Alignment.TopStart,
     ) {
         Text(
-            modifier = Modifier.padding(top = 125.dp),
+            modifier = Modifier.padding(top = 125.dp, start = 35.dp),
             text = stringResource(R.string.app_name),
             style = SparvelTheme.typography.drawerTitle,
             color = SparvelTheme.colors.drawerText,
@@ -164,8 +168,9 @@ fun DrawerContent(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
+                .padding(horizontal = 20.dp)
                 .align(Alignment.Center),
-            verticalArrangement = Arrangement.spacedBy(30.dp)
+            verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             DrawerSheetItem(
                 img = R.drawable.ic_globe,
@@ -195,7 +200,7 @@ fun DrawerContent(
         Text(
             modifier = Modifier
                 .align(Alignment.BottomStart)
-                .padding(bottom = 50.dp),
+                .padding(bottom = 50.dp, start = 35.dp),
             text = appVersion,
             style = SparvelTheme.typography.appVersion,
             color = SparvelTheme.colors.drawerText
@@ -205,29 +210,31 @@ fun DrawerContent(
 
 @Composable
 fun DrawerSheetItem(img: Int, text: Int, onItemClicked: () -> Unit) {
-    Row(
+    Box(
         modifier = Modifier
+            .clip(RoundedCornerShape(50))
             .clickable(
+                interactionSource = remember { MutableInteractionSource() },
                 indication = rememberRipple(),
-                interactionSource = remember {
-                    MutableInteractionSource()
-                },
-                role = Role.Button,
-                onClick = {
-                    onItemClicked()
-                }
-            )
+                role = Role.Button
+            ) { onItemClicked() }
     ) {
-        Image(
-            modifier = Modifier.size(25.dp),
-            painter = painterResource(img),
-            contentDescription = null,
-        )
-        Text(
-            modifier = Modifier.padding(start = 20.dp),
-            text = stringResource(text),
-            style = SparvelTheme.typography.drawerText,
-            color = SparvelTheme.colors.drawerText
-        )
+        Row(
+            modifier = Modifier
+                .padding(horizontal = 10.dp, vertical = 10.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Image(
+                modifier = Modifier.size(25.dp),
+                painter = painterResource(img),
+                contentDescription = null,
+            )
+            Text(
+                modifier = Modifier.padding(start = 20.dp),
+                text = stringResource(text),
+                style = SparvelTheme.typography.drawerText,
+                color = SparvelTheme.colors.drawerText
+            )
+        }
     }
 }

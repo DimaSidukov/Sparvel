@@ -42,7 +42,10 @@ fun CollectionSection(
             .padding(top = 15.dp),
         horizontalArrangement = Arrangement.spacedBy(25.dp)
     ) {
-        items(itemList) { item ->
+        items(
+            items = itemList,
+            contentType = { it }
+        ) { item ->
             CollectionItem(
                 playlistName = item.title,
                 playlistImage = item.coverId,

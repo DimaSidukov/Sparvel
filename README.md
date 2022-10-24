@@ -20,7 +20,6 @@
 **TODO list**:
 * add playlist creation/removal etc screens + local database for storing them
 * update toolbar icons color in player depending on the background (if it is too bright, change color of icons to black)
-* put searchbar and drawer into toolbar
 * add blur to the background of the player
 * recommendation: when implementing playlists, it's better store only track ids in database and then when user opens the screen, load data by these ids. No sense in storing track data, since user may not open some playlist for undefined period of time
 * change ripple effect color for all elements
