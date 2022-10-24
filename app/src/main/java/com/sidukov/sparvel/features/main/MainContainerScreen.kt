@@ -1,5 +1,6 @@
 package com.sidukov.sparvel.features.main
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -20,6 +21,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.*
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.sidukov.sparvel.R
 import com.sidukov.sparvel.core.functionality.Screens
 import com.sidukov.sparvel.core.functionality.appVersion
 import com.sidukov.sparvel.core.functionality.toTrackList
@@ -66,7 +68,10 @@ fun MainContainerScreen(
                         onSoundSettingsClicked = {
 
                         },
-                        onColorThemeClicked = onAppThemeChanged
+                        onColorThemeClicked = onAppThemeChanged,
+                        onHelpFeedbackClicked = {
+
+                        }
                     )
                 }
             }
@@ -120,6 +125,7 @@ fun NavGraphBuilder.drawerContainerGraph(
             route = Screens.Home.route,
             arguments = listOf(navArgument("tracks") { type = NavType.StringType })
         ) { stack ->
+            Log.d("TRACKNAME", stack.arguments?.getString("tracks").toTrackList().find { it.name.contains("Saules") }!!.name)
             HomeScreenContainer(
                 viewModelProvider[HomeViewModel::class.java],
                 navController,
@@ -140,52 +146,60 @@ fun NavGraphBuilder.drawerContainerGraph(
 fun DrawerContent(
     onAppLanguageClicked: () -> Unit,
     onSoundSettingsClicked: () -> Unit,
-    onColorThemeClicked: () -> Unit
+    onColorThemeClicked: () -> Unit,
+    onHelpFeedbackClicked: () -> Unit
 ) {
-    Box {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(horizontal = 35.dp),
+        contentAlignment = Alignment.TopStart,
+    ) {
+        Text(
+            modifier = Modifier.padding(top = 125.dp),
+            text = stringResource(R.string.app_name),
+            style = SparvelTheme.typography.drawerTitle,
+            color = SparvelTheme.colors.drawerText,
+        )
         Column(
             modifier = Modifier
-                .fillMaxSize()
-                .padding(start = 35.dp, end = 35.dp),
-            verticalArrangement = Arrangement.SpaceBetween,
-            horizontalAlignment = Alignment.Start
+                .fillMaxWidth()
+                .align(Alignment.Center),
+            verticalArrangement = Arrangement.spacedBy(30.dp)
         ) {
-            Text(
-                modifier = Modifier.padding(top = 125.dp),
-                text = stringResource(com.sidukov.sparvel.R.string.app_name),
-                style = SparvelTheme.typography.drawerTitle,
-                color = SparvelTheme.colors.drawerText
-            )
-            Column(
-                modifier = Modifier.fillMaxWidth(),
-                verticalArrangement = Arrangement.spacedBy(30.dp)
+            DrawerSheetItem(
+                img = R.drawable.ic_globe,
+                text = R.string.app_language_action
             ) {
-                DrawerSheetItem(
-                    img = com.sidukov.sparvel.R.drawable.ic_globe,
-                    text = com.sidukov.sparvel.R.string.app_language_action
-                ) {
-                    onAppLanguageClicked()
-                }
-                DrawerSheetItem(
-                    img = com.sidukov.sparvel.R.drawable.ic_equalizer,
-                    text = com.sidukov.sparvel.R.string.sound_settings_action
-                ) {
-                    onSoundSettingsClicked()
-                }
-                DrawerSheetItem(
-                    img = com.sidukov.sparvel.R.drawable.ic_crescent,
-                    text = com.sidukov.sparvel.R.string.color_theme_action
-                ) {
-                    onColorThemeClicked()
-                }
+                onAppLanguageClicked()
             }
-            Text(
-                modifier = Modifier.padding(bottom = 50.dp),
-                text = appVersion,
-                style = SparvelTheme.typography.appVersion,
-                color = SparvelTheme.colors.drawerText
-            )
+            DrawerSheetItem(
+                img = R.drawable.ic_equalizer,
+                text = R.string.sound_settings_action
+            ) {
+                onSoundSettingsClicked()
+            }
+            DrawerSheetItem(
+                img = R.drawable.ic_crescent,
+                text = R.string.color_theme_action
+            ) {
+                onColorThemeClicked()
+            }
+            DrawerSheetItem(
+                img = R.drawable.ic_info,
+                text = R.string.help_and_feedback_label
+            ) {
+                onHelpFeedbackClicked()
+            }
         }
+        Text(
+            modifier = Modifier
+                .align(Alignment.BottomStart)
+                .padding(bottom = 50.dp),
+            text = appVersion,
+            style = SparvelTheme.typography.appVersion,
+            color = SparvelTheme.colors.drawerText
+        )
     }
 }
 
@@ -207,7 +221,7 @@ fun DrawerSheetItem(img: Int, text: Int, onItemClicked: () -> Unit) {
         Image(
             modifier = Modifier.size(25.dp),
             painter = painterResource(img),
-            contentDescription = null
+            contentDescription = null,
         )
         Text(
             modifier = Modifier.padding(start = 20.dp),

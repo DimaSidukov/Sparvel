@@ -1,12 +1,8 @@
 package com.sidukov.sparvel.core.functionality
 
-import android.annotation.SuppressLint
 import android.graphics.ImageDecoder
 import android.os.Build
 import android.provider.MediaStore.Images.Media.getBitmap
-import androidx.activity.OnBackPressedCallback
-import androidx.activity.OnBackPressedDispatcher
-import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -24,8 +20,6 @@ import com.google.gson.Gson
 import com.sidukov.sparvel.BuildConfig
 import com.sidukov.sparvel.core.model.MusicCollection
 import com.sidukov.sparvel.core.model.Track
-import java.net.URLDecoder
-import java.nio.charset.StandardCharsets
 
 var appVersion: String =
     "Version ${BuildConfig.VERSION_CODE}.${BuildConfig.VERSION_NAME}-${BuildConfig.BUILD_TYPE}"
@@ -57,7 +51,7 @@ fun List<Track>.toJsonString(): String =
 
 fun String?.toTrackList() =
     Gson().fromJson(
-        URLDecoder.decode(this, StandardCharsets.UTF_8.toString()),
+        this,
         Array<Track>::class.java
     ).toList()
 
