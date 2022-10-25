@@ -26,7 +26,6 @@ import androidx.navigation.compose.composable
 import com.sidukov.sparvel.R
 import com.sidukov.sparvel.core.functionality.Screens
 import com.sidukov.sparvel.core.functionality.appVersion
-import com.sidukov.sparvel.core.functionality.toTrackList
 import com.sidukov.sparvel.core.theme.SparvelTheme
 import com.sidukov.sparvel.features.album.AlbumScreen
 import com.sidukov.sparvel.features.equalizer.EqualizerScreen
@@ -35,7 +34,6 @@ import com.sidukov.sparvel.features.home.HomeViewModel
 import com.sidukov.sparvel.features.home.PlaylistScreen
 import com.sidukov.sparvel.features.playlist.NewPlaylistScreen
 import com.sidukov.sparvel.features.splash.SplashScreen
-import com.sidukov.sparvel.features.splash.SplashViewModel
 import com.sidukov.sparvel.features.track.AddTracksScreen
 import com.sidukov.sparvel.features.track.EditTrackInfoScreen
 import kotlinx.coroutines.launch
@@ -100,10 +98,7 @@ fun AppNavigationGraph(
 ) {
     NavHost(navController, startDestination = Screens.Splash.route) {
         composable(Screens.Splash.route) {
-            SplashScreen(
-                viewModelProvider[SplashViewModel::class.java],
-                navController
-            )
+            SplashScreen(navController)
         }
         drawerContainerGraph(navController, viewModelProvider, onMenuClicked)
         composable(Screens.NewPlaylist.route) {
@@ -127,14 +122,10 @@ fun NavGraphBuilder.drawerContainerGraph(
     onMenuClicked: () -> Unit
 ) {
     navigation(startDestination = Screens.Home.route, route = Screens.DrawerContainer.route) {
-        composable(
-            route = Screens.Home.route,
-            arguments = listOf(navArgument("tracks") { type = NavType.StringType })
-        ) { stack ->
+        composable(route = Screens.Home.route) {
             HomeScreenContainer(
                 viewModelProvider[HomeViewModel::class.java],
                 navController,
-                stack.arguments?.getString("tracks").toTrackList(),
                 onMenuClicked
             )
         }

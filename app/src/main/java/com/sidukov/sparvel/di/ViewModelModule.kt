@@ -3,7 +3,6 @@ package com.sidukov.sparvel.di
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.sidukov.sparvel.features.home.HomeViewModel
-import com.sidukov.sparvel.features.splash.SplashViewModel
 import dagger.Binds
 import dagger.MapKey
 import dagger.Module
@@ -41,10 +40,5 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(HomeViewModel::class)
     abstract fun provideHomeViewModel(viewModel: HomeViewModel): ViewModel
-
-    @Binds
-    @IntoMap
-    @ViewModelKey(SplashViewModel::class)
-    abstract fun provideSplashViewModel(viewModel: SplashViewModel): ViewModel
 
 }

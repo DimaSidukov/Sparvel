@@ -15,6 +15,7 @@ private val darkGrey = Color(0xFF5F5F5F)
 private val darkGrey2 = Color(0xFF3C3D46)
 private val gloomyBlue = Color(0xFF01232E)
 private val dimGrey = Color(0xFFE3E3E3)
+private val dimGrey2 = Color(0xFFECECEC)
 private val lightGrey = Color(0xFFBEC4CC)
 private val lightGrey2 = Color(0xFF999999)
 private val lightGrey3 = Color(0xFF969696)
@@ -37,8 +38,9 @@ data class SparvelColors(
     val playerIcon: Color,
     val toolbarTitle: Color,
     val playerActions: Color,
-    val progress: Color,
-    val progressTrack: Color,
+    val thumb: Color,
+    val activeTrack: Color,
+    val inactiveTrack: Color,
     val rippleColor: Color,
     private val secondaryMaterial: Color,
     private val backgroundMaterial: Color
@@ -72,8 +74,9 @@ val LightColors = SparvelColors(
     playerIcon = white,
     toolbarTitle = black,
     playerActions = darkGrey2,
-    progress = dimGrey,
-    progressTrack = lightGrey3,
+    thumb = lightGrey3,
+    activeTrack = lightGrey3,
+    inactiveTrack = dimGrey2,
     rippleColor = black,
     secondaryMaterial = black,
     backgroundMaterial = white
@@ -96,9 +99,10 @@ val DarkColors = SparvelColors(
     playerIcon = black,
     toolbarTitle = dimGrey,
     playerActions = white,
-    progress = lightGrey4,
+    thumb = white,
+    activeTrack = white,
+    inactiveTrack = lightGrey4,
     rippleColor = white,
-    progressTrack = white,
     secondaryMaterial = white,
     backgroundMaterial = darkestBlue
 )

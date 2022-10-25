@@ -9,7 +9,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.Color
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.sidukov.sparvel.SparvelApplication
-import com.sidukov.sparvel.core.functionality.AppTheme
+import com.sidukov.sparvel.core.functionality.storage.AppTheme
 
 object SparvelTheme {
     val colors: SparvelColors

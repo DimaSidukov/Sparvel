@@ -35,7 +35,6 @@ import kotlinx.coroutines.launch
 fun HomeScreenContainer(
     viewModel: HomeViewModel,
     navController: NavHostController,
-    trackList: List<Track>,
     onMenuClicked: () -> Unit,
 ) {
     GetStoragePermission(
@@ -43,7 +42,6 @@ fun HomeScreenContainer(
             HomeScreenApprovedState(
                 viewModel = viewModel,
                 navController = navController,
-                trackList = trackList,
                 onMenuClicked = onMenuClicked
             )
         },
@@ -58,19 +56,17 @@ fun HomeScreenContainer(
 fun HomeScreenApprovedState(
     viewModel: HomeViewModel,
     navController: NavHostController,
-    trackList: List<Track>,
     onMenuClicked: () -> Unit
 ) {
     val uiState = viewModel.uiState
     val scope = rememberCoroutineScope()
 
-    var newTrackList by remember { mutableStateOf(trackList) }
-    if (trackList.isEmpty()) {
-        LaunchedEffect(true) {
-            newTrackList = viewModel.readTracks()
-        }
-    }
+    var trackList by remember { mutableStateOf<List<Track>>(emptyList()) }
     var query by remember { mutableStateOf("") }
+
+    LaunchedEffect(true) {
+        trackList = viewModel.readTracks()
+    }
 
     HomeMenuPanel(
         onMenuClicked = onMenuClicked,
@@ -78,7 +74,7 @@ fun HomeScreenApprovedState(
             query = it
         }
     ) {
-        newTrackList = newTrackList.filter(query)
+        trackList = trackList.filter(query)
         AnimatedContent(
             targetState = uiState.currentScreen,
             transitionSpec = {
@@ -97,7 +93,8 @@ fun HomeScreenApprovedState(
                 FULL -> {
                     HomeScreen(
                         navController = navController,
-                        trackList = newTrackList,
+                        trackList = trackList,
+                        isTrackSelected = uiState.selectedTrack != null,
                         onPlaylistSectionClicked = {
                             viewModel.setScreen(PLAYLISTS)
                         },
@@ -119,6 +116,7 @@ fun HomeScreenApprovedState(
                 PLAYLISTS -> {
                     PlaylistsScreen(
                         navController = navController,
+                        isTrackSelected = uiState.selectedTrack != null,
                         onNavigatedBack = {
                             viewModel.setScreen(FULL)
                         }
@@ -127,7 +125,8 @@ fun HomeScreenApprovedState(
                 ALBUMS -> {
                     AlbumsScreen(
                         navController = navController,
-                        albums = newTrackList.toMusicCollection(),
+                        isTrackSelected = uiState.selectedTrack != null,
+                        albums = trackList.toMusicCollection(),
                         onNavigatedBack = {
                             viewModel.setScreen(FULL)
                         }
@@ -135,7 +134,8 @@ fun HomeScreenApprovedState(
                 }
                 LIBRARY -> {
                     LibraryScreen(
-                        tracks = newTrackList,
+                        tracks = trackList,
+                        isTrackSelected = uiState.selectedTrack != null,
                         onTrackClicked = {
                             scope.launch {
                                 viewModel.showPlayer(it)

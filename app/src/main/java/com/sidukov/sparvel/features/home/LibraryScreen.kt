@@ -15,8 +15,9 @@ import com.sidukov.sparvel.core.ui.TrackList
 
 @Composable
 fun LibraryScreen(
-    tracks: List<Track>,
     modifier: Modifier = Modifier,
+    tracks: List<Track>,
+    isTrackSelected: Boolean,
     onTrackClicked: (Track) -> Unit,
     onNavigatedBack: () -> Unit
 ) {
@@ -28,6 +29,7 @@ fun LibraryScreen(
         TrackList(
             itemList = tracks,
             modifier = Modifier.padding(start = 30.dp, end = 30.dp),
+            isTrackSelected = isTrackSelected,
             onItemClicked = onTrackClicked
         ) {
             SectionName(

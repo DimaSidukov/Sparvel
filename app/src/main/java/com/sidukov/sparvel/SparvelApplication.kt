@@ -1,7 +1,7 @@
 package com.sidukov.sparvel
 
 import android.app.Application
-import com.sidukov.sparvel.core.functionality.SharedPrefsManager
+import com.sidukov.sparvel.core.functionality.storage.SharedPrefsManager
 import com.sidukov.sparvel.di.AppComponent
 import com.sidukov.sparvel.di.AppModule
 import com.sidukov.sparvel.di.DaggerAppComponent

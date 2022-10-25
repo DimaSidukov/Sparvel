@@ -179,37 +179,26 @@ fun TrackInfo(
 fun PlayerProgress(
     value: Float,
     onValueChange: (Float) -> Unit
-) {
-
-    val colors = SliderDefaults.colors(
-        thumbColor = SparvelTheme.colors.progressTrack,
-        activeTrackColor = SparvelTheme.colors.progressTrack,
-        inactiveTrackColor = SparvelTheme.colors.progress
-    )
-
-    Slider(
-        value = value,
-        onValueChange = onValueChange,
-        track = remember {
-            { sliderPositions ->
-                SliderDefaults.Track(
-                    colors = colors,
-                    sliderPositions = sliderPositions
+) = Slider(
+    value = value,
+    onValueChange = onValueChange,
+    colors = SliderDefaults.colors(
+        activeTrackColor = SparvelTheme.colors.activeTrack,
+        inactiveTrackColor = SparvelTheme.colors.inactiveTrack,
+    ),
+    thumb = remember {
+        {
+            SliderDefaults.Thumb(
+                interactionSource = remember { MutableInteractionSource() },
+                thumbSize = DpSize(8.dp, 8.dp),
+                modifier = Modifier.offset(y = 6.dp, x = 4.dp),
+                colors = SliderDefaults.colors(
+                    thumbColor = SparvelTheme.colors.thumb
                 )
-            }
-        },
-        thumb = remember {
-            {
-                SliderDefaults.Thumb(
-                    interactionSource = remember { MutableInteractionSource() },
-                    colors = colors,
-                    thumbSize = DpSize(12.dp, 12.dp),
-                    modifier = Modifier.offset(y = 4.dp)
-                )
-            }
+            )
         }
-    )
-}
+    }
+)
 
 @Composable
 fun PlayerController(

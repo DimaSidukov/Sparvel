@@ -15,11 +15,13 @@ import com.sidukov.sparvel.core.ui.CollectionScreen
 fun AlbumsScreen(
     navController: NavController,
     albums: List<MusicCollection>,
+    isTrackSelected: Boolean,
     onNavigatedBack: () -> Unit
 ) {
     CollectionScreen(
         modifier = Modifier.padding(horizontal = 30.dp),
         sectionName = stringResource(R.string.albums_label),
+        isTrackSelected = isTrackSelected,
         collectionList = albums
     )
     BackHandler(onBack = onNavigatedBack)

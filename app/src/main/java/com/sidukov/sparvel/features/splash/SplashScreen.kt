@@ -7,8 +7,7 @@ import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithCache
@@ -23,19 +22,15 @@ import com.sidukov.sparvel.R
 import com.sidukov.sparvel.core.functionality.Screens
 import com.sidukov.sparvel.core.functionality.navigateAndSetRoot
 import com.sidukov.sparvel.core.functionality.systemBarsPadding
-import com.sidukov.sparvel.core.functionality.toJsonString
 import com.sidukov.sparvel.core.theme.SparvelTheme
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 @Composable
 fun SplashScreen(
-    viewModel: SplashViewModel,
     navController: NavHostController
 ) {
 
-    val uiState = viewModel.uiState
+    var isAnimationVisible by remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
@@ -49,7 +44,7 @@ fun SplashScreen(
         val gradient = SparvelTheme.colors.logoGradient
 
         AnimatedVisibility(
-            visible = uiState.isAnimationVisible,
+            visible = true,
             enter = slideInVertically(tween(duration)) {
                 with(density) { -30.dp.roundToPx() }
             } + fadeIn(tween(duration / 3))
@@ -69,7 +64,7 @@ fun SplashScreen(
         }
         Spacer(modifier = Modifier.height(15.dp))
         AnimatedVisibility(
-            visible = uiState.isAnimationVisible,
+            visible = isAnimationVisible,
             enter = slideInVertically(tween(duration)) {
                 with(density) { 30.dp.roundToPx() }
             } + fadeIn(tween(duration / 3))) {
@@ -79,17 +74,11 @@ fun SplashScreen(
                 color = SparvelTheme.colors.text
             )
         }
-        LaunchedEffect(uiState.isDataLoaded) {
-            viewModel.setAnimationVisible()
-            if (uiState.isDataLoaded) {
-                delay(duration.toLong())
-                launch(Dispatchers.Main) {
-                    navController.navigateAndSetRoot(Screens.Home.passTrackList(uiState.trackList.toJsonString()))
-                }
-            }
-            launch {
-                viewModel.readTracks()
-            }
+
+        LaunchedEffect(true) {
+            isAnimationVisible = true
+            delay(duration.toLong())
+            navController.navigateAndSetRoot(Screens.Home.route)
         }
     }
 }

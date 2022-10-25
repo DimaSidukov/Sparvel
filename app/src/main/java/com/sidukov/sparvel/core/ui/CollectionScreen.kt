@@ -12,6 +12,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.sidukov.sparvel.R
+import com.sidukov.sparvel.core.functionality.SelectedTrackPadding
 import com.sidukov.sparvel.core.model.MusicCollection
 import com.sidukov.sparvel.core.theme.SparvelTheme
 
@@ -19,6 +20,7 @@ import com.sidukov.sparvel.core.theme.SparvelTheme
 fun CollectionScreen(
     modifier: Modifier = Modifier,
     sectionName: String,
+    isTrackSelected: Boolean,
     collectionList: List<MusicCollection>
 ) {
     Column(
@@ -66,7 +68,11 @@ fun CollectionScreen(
                 }
             }
             item {
-                Spacer(modifier = Modifier.height(5.dp))
+                SelectedTrackPadding(
+                    isTrackSelected = isTrackSelected,
+                    padding = 260.dp,
+                    defaultPadding = 50.dp
+                )
             }
         }
     }

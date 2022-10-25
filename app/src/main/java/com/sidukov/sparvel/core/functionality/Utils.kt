@@ -6,7 +6,7 @@ import android.provider.MediaStore.Images.Media.getBitmap
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.draw.clip
@@ -16,7 +16,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
-import com.google.gson.Gson
 import com.sidukov.sparvel.BuildConfig
 import com.sidukov.sparvel.core.model.MusicCollection
 import com.sidukov.sparvel.core.model.Track
@@ -45,15 +44,6 @@ fun List<Track>.toMusicCollection() = this.groupBy { it.album }.map {
         it.value[0].year
     )
 }
-
-fun List<Track>.toJsonString(): String =
-    Gson().toJson(this.toTypedArray(), Array<Track>::class.java).toString()
-
-fun String?.toTrackList() =
-    Gson().fromJson(
-        this,
-        Array<Track>::class.java
-    ).toList()
 
 fun List<Track>.filter(query: String): List<Track> {
     val words = query.trim().split("\\s+".toRegex()).toList()
@@ -106,9 +96,9 @@ fun String.decodeBitmap(): ImageBitmap? {
 }
 
 @Composable
-fun SelectedTrackPadding(isTrackSelected: Boolean = false, defaultPadding: Dp = 10.dp) =
+fun SelectedTrackPadding(isTrackSelected: Boolean = false, padding: Dp = 60.dp, defaultPadding: Dp = 10.dp) =
     Spacer(
         modifier = Modifier.height(
-            if (isTrackSelected) 60.dp else defaultPadding
+            if (isTrackSelected) padding else defaultPadding
         )
     )

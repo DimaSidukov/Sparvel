@@ -20,6 +20,7 @@ import com.sidukov.sparvel.core.ui.TrackList
 fun HomeScreen(
     navController: NavHostController,
     trackList: List<Track>,
+    isTrackSelected: Boolean,
     onPlaylistSectionClicked: () -> Unit,
     onAlbumSectionClicked: () -> Unit,
     onLibrarySectionClicked: () -> Unit,
@@ -29,6 +30,7 @@ fun HomeScreen(
         TrackList(
             modifier = Modifier.padding(start = 30.dp, end = 30.dp),
             itemList = trackList,
+            isTrackSelected = isTrackSelected,
             onItemClicked = onTrackClicked
         ) {
             Column(modifier = Modifier.padding(start = 30.dp)) {

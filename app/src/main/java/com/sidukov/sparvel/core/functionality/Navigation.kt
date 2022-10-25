@@ -21,9 +21,7 @@ sealed class Screens(val route: String) {
 
     object Splash : Screens(splashTitle)
     object DrawerContainer : Screens(drawerContainerTitle)
-    object Home : Screens("$homeTitle?tracks={tracks}") {
-        fun passTrackList(tracks: String) = "$homeTitle?tracks=$tracks"
-    }
+    object Home : Screens(homeTitle)
     object Playlists : Screens(playlistsTitle)
     object Playlist : Screens(playlistTitle)
     object NewPlaylist : Screens(newPlaylistTitle)

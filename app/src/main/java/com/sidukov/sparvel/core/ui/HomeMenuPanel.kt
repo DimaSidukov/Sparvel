@@ -6,9 +6,11 @@ import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.sidukov.sparvel.R
+import com.sidukov.sparvel.core.functionality.background
 import com.sidukov.sparvel.core.functionality.systemBarsPadding
 import com.sidukov.sparvel.core.theme.SparvelTheme
 
