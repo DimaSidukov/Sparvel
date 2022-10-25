@@ -56,7 +56,7 @@ fun PlayerView(
         minHeight = minHeight,
         shouldMoveDown = shouldMoveDown
     ) { currentHeight, isLayoutExpanded ->
-        val ratio = 0.35f
+        val ratio = 0.2f
         val heightNormalized = currentHeight.value.normalize(screenHeight.value, minHeight.value)
         val alpha = if (heightNormalized < ratio) 0f else heightNormalized.normalize(1f, ratio)
 
@@ -66,7 +66,7 @@ fun PlayerView(
             }
         }
         Column(
-            modifier = Modifier.alpha(alpha.normalize(1f, 0.3f))
+            modifier = Modifier.alpha(alpha)
         ) {
             Box {
                 HQImageOrPlaceholder(

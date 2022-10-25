@@ -1,6 +1,6 @@
 package com.sidukov.sparvel.features.player
 
-import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.animate
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.Orientation
@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.sidukov.sparvel.core.theme.SparvelTheme
+import kotlinx.coroutines.launch
 
 @Composable
 fun DraggableView(
@@ -32,14 +33,42 @@ fun DraggableView(
 
     var isExpanded by remember { mutableStateOf(false) }
     var height by remember { mutableStateOf(minHeight) }
-    val offset by animateDpAsState(
-        if (isExpanded) screenHeight else minHeight,
-        tween(300)
-    )
+
+    val animationDuration = 300
+
+    val scope = rememberCoroutineScope()
+
+    fun collapse() {
+        scope.launch {
+            animate(
+                initialValue = height.value,
+                targetValue = minHeight.value,
+                animationSpec = tween(animationDuration),
+                block = { value, _ ->
+                    height = Dp(value)
+                }
+            )
+            isExpanded = false
+        }
+    }
+
+    fun expand() {
+        scope.launch {
+            animate(
+                initialValue = height.value,
+                targetValue = screenHeight.value,
+                animationSpec = tween(animationDuration),
+                block = { value, _ ->
+                    height = Dp(value)
+                }
+            )
+            isExpanded = true
+        }
+    }
 
     SideEffect {
         if (shouldMoveDown) {
-            isExpanded = false
+            collapse()
         }
     }
 
@@ -52,13 +81,15 @@ fun DraggableView(
             modifier = Modifier
                 .fillMaxWidth()
                 .fillMaxHeight()
-                .offset(y = screenHeight - offset)
+                .offset(y = screenHeight - height)
                 .align(Alignment.BottomCenter)
                 .clickable(
-                    enabled = true,
+                    enabled = !isExpanded,
                     indication = null,
                     interactionSource = remember { MutableInteractionSource() },
-                    onClick = { isExpanded = true }
+                    onClick = {
+                        expand()
+                    },
                 )
                 .draggable(
                     enabled = true,
@@ -73,12 +104,11 @@ fun DraggableView(
                     },
                     onDragStopped = {
                         endPosition = height
-                        isExpanded = endPosition > startPosition
-                        height = if (endPosition > startPosition) screenHeight else minHeight
+                        if (endPosition > startPosition) expand() else collapse()
                     }
                 ),
             content = {
-                content(offset, isExpanded)
+                content(height, isExpanded)
             }
         )
     }

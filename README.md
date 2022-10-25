@@ -25,3 +25,4 @@
 * change ripple effect color for all elements
 * Long Time No See Rue des Saules no plus sign, fix it
 * padding when track is selected, fix it
+* blur for player background
