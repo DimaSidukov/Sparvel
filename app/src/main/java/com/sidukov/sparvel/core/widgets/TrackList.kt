@@ -1,4 +1,4 @@
-package com.sidukov.sparvel.core.ui
+package com.sidukov.sparvel.core.widgets
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource

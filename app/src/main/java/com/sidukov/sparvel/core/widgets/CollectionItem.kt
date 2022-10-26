@@ -1,4 +1,4 @@
-package com.sidukov.sparvel.core.ui
+package com.sidukov.sparvel.core.widgets
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding

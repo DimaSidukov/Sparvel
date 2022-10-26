@@ -25,8 +25,8 @@ import com.sidukov.sparvel.core.functionality.normalize
 import com.sidukov.sparvel.core.functionality.toMinutesAndSeconds
 import com.sidukov.sparvel.core.model.Track
 import com.sidukov.sparvel.core.theme.SparvelTheme
-import com.sidukov.sparvel.core.ui.HQImageOrPlaceholder
-import com.sidukov.sparvel.core.ui.Toolbar
+import com.sidukov.sparvel.core.widgets.HQImageOrPlaceholder
+import com.sidukov.sparvel.core.widgets.Toolbar
 import kotlinx.coroutines.launch
 
 @Composable

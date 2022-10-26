@@ -9,7 +9,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.sidukov.sparvel.R
 import com.sidukov.sparvel.core.model.MusicCollection
-import com.sidukov.sparvel.core.ui.CollectionScreen
+import com.sidukov.sparvel.core.widgets.CollectionScreen
 
 @Composable
 fun AlbumsScreen(

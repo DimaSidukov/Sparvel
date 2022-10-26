@@ -1,4 +1,4 @@
-package com.sidukov.sparvel.core.ui
+package com.sidukov.sparvel.core.widgets
 
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.layout.padding

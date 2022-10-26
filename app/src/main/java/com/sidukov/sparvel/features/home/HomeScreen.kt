@@ -1,6 +1,5 @@
 package com.sidukov.sparvel.features.home
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -11,10 +10,10 @@ import com.sidukov.sparvel.R
 import com.sidukov.sparvel.core.functionality.Screens
 import com.sidukov.sparvel.core.functionality.toMusicCollection
 import com.sidukov.sparvel.core.model.Track
-import com.sidukov.sparvel.core.ui.AddPlaylistItem
-import com.sidukov.sparvel.core.ui.CollectionSection
-import com.sidukov.sparvel.core.ui.SectionName
-import com.sidukov.sparvel.core.ui.TrackList
+import com.sidukov.sparvel.core.widgets.AddPlaylistItem
+import com.sidukov.sparvel.core.widgets.CollectionSection
+import com.sidukov.sparvel.core.widgets.SectionName
+import com.sidukov.sparvel.core.widgets.TrackList
 
 @Composable
 fun HomeScreen(
@@ -33,9 +32,8 @@ fun HomeScreen(
             isTrackSelected = isTrackSelected,
             onItemClicked = onTrackClicked
         ) {
-            Column(modifier = Modifier.padding(start = 30.dp)) {
+            Column(modifier = Modifier.padding(start = 25.dp)) {
                 CollectionSection(
-                    modifier = Modifier.padding(end = 30.dp),
                     sectionName = stringResource(R.string.playlists_label),
                     itemList = emptyList(),
                     onSectionNameClicked = onPlaylistSectionClicked,
@@ -51,7 +49,6 @@ fun HomeScreen(
                 }
                 Spacer(modifier = Modifier.height(30.dp))
                 CollectionSection(
-                    modifier = Modifier.padding(end = 30.dp),
                     sectionName = stringResource(R.string.albums_label),
                     itemList = trackList.toMusicCollection(),
                     onSectionNameClicked = onAlbumSectionClicked,
@@ -60,14 +57,14 @@ fun HomeScreen(
                         // navController.navigate(Screens.Albums.route)
                     }
                 )
-                SectionName(
-                    sectionName = stringResource(R.string.library_label),
-                    modifier = Modifier
-                        .padding(bottom = 20.dp, top = 30.dp)
-                        .clickable {
-                            onLibrarySectionClicked()
-                        }
-                )
+                Box(
+                    modifier = Modifier.padding(top = 30.dp, bottom = 20.dp)
+                ) {
+                    SectionName(
+                        sectionName = stringResource(R.string.library_label),
+                        onItemClicked = onLibrarySectionClicked
+                    )
+                }
             }
         }
     }

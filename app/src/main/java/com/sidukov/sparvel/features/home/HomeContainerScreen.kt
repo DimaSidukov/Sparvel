@@ -25,7 +25,7 @@ import com.sidukov.sparvel.core.functionality.filter
 import com.sidukov.sparvel.core.functionality.toMusicCollection
 import com.sidukov.sparvel.core.model.Track
 import com.sidukov.sparvel.core.theme.SparvelTheme
-import com.sidukov.sparvel.core.ui.HomeMenuPanel
+import com.sidukov.sparvel.core.widgets.HomeMenuPanel
 import com.sidukov.sparvel.features.home.HomeScreen.*
 import com.sidukov.sparvel.features.player.PlayerView
 import com.sidukov.sparvel.features.playlist.PlaylistsScreen
