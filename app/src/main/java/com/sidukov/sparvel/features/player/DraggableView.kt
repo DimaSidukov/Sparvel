@@ -8,12 +8,15 @@ import androidx.compose.foundation.gestures.draggable
 import androidx.compose.foundation.gestures.rememberDraggableState
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.Surface
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.sidukov.sparvel.core.functionality.background
 import com.sidukov.sparvel.core.theme.SparvelTheme
 import kotlinx.coroutines.launch
 
@@ -31,10 +34,12 @@ fun DraggableView(
     var startPosition by remember { mutableStateOf(0.dp) }
     var endPosition by remember { mutableStateOf(0.dp) }
 
+    val touchThreshold = 150.dp
+
     var isExpanded by remember { mutableStateOf(false) }
     var height by remember { mutableStateOf(minHeight) }
 
-    val animationDuration = 300
+    val animationDuration = 250
 
     val scope = rememberCoroutineScope()
 
@@ -75,14 +80,13 @@ fun DraggableView(
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
-        Surface(
-            shadowElevation = 10.dp,
-            color = SparvelTheme.colors.playerBackground,
+        Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .fillMaxHeight()
                 .offset(y = screenHeight - height)
                 .align(Alignment.BottomCenter)
+                .shadow(10.dp, clip = true)
                 .clickable(
                     enabled = !isExpanded,
                     indication = null,
@@ -104,10 +108,22 @@ fun DraggableView(
                     },
                     onDragStopped = {
                         endPosition = height
-                        if (endPosition > startPosition) expand() else collapse()
+                        if (endPosition > startPosition) {
+                            if (endPosition - startPosition > touchThreshold) expand() else collapse()
+                        } else {
+                            if (startPosition - endPosition > touchThreshold) collapse() else expand()
+                        }
                     }
                 ),
             content = {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .blur(100.dp)
+                        .background(
+                            Brush.sweepGradient(SparvelTheme.colors.playerBackground)
+                        )
+                )
                 content(height, isExpanded)
             }
         )
