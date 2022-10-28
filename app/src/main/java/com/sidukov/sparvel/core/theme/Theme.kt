@@ -1,5 +1,7 @@
 package com.sidukov.sparvel.core.theme
 
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.text.selection.LocalTextSelectionColors
 import androidx.compose.foundation.text.selection.TextSelectionColors
@@ -47,7 +49,7 @@ fun SparvelTheme(
     darkTheme: Boolean = SparvelApplication.preferences.appTheme == AppTheme.DARK.code,
     content: @Composable () -> Unit
 ) {
-    val colors = if (darkTheme) DarkColors else LightColors
+    val colors = (if (darkTheme) DarkColors else LightColors)
 
     val typography = SparvelTypography()
 

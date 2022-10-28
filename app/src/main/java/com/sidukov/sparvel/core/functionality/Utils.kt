@@ -1,5 +1,6 @@
 package com.sidukov.sparvel.core.functionality
 
+import android.graphics.Bitmap
 import android.graphics.ImageDecoder
 import android.os.Build
 import android.provider.MediaStore.Images.Media.getBitmap
@@ -19,9 +20,9 @@ import androidx.core.net.toUri
 import com.sidukov.sparvel.BuildConfig
 import com.sidukov.sparvel.core.model.MusicCollection
 import com.sidukov.sparvel.core.model.Track
+import com.sidukov.sparvel.core.theme.SparvelTheme
 
-var appVersion: String =
-    "Version ${BuildConfig.VERSION_CODE}.${BuildConfig.VERSION_NAME}-${BuildConfig.BUILD_TYPE}"
+var appVersion: String = "Version ${BuildConfig.VERSION_NAME}"
 
 inline fun Modifier.applyIf(condition: Boolean, modifier: Modifier.() -> Modifier): Modifier =
     if (condition) then(modifier(this)) else this
@@ -80,6 +81,30 @@ fun Float.normalize(max: Float, min: Float): Float = (this - min) / (max - min)
 
 fun Int.toMinutesAndSeconds() = String.format("%d:%02d", this / 60, this % 60)
 
+fun ULong.isCloserToBlack(max: ULong, min: ULong): Float =
+    ((this.toString().take(5).toFloat() - min.toString().take(5).toFloat()) / (max.toString()
+        .take(5).toFloat() - min.toString().take(5).toFloat()))
+
+fun Color.firstFiveDigits(): Float = this.value.toString().take(5).toFloat()
+
+@Composable
+fun ImageBitmap?.deriveIconColor(): Color {
+    return this?.asAndroidBitmap()?.let { bitmap ->
+        val stableBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true)
+        val pixels = IntArray(stableBitmap.height * stableBitmap.width)
+        stableBitmap.getPixels(pixels, 0, stableBitmap.width, 40, 30, 200, 200)
+        val dominantColor = Color(pixels.average().toInt()).firstFiveDigits()
+
+        if (dominantColor <= 0) return SparvelTheme.colors.navigation
+        val isCloserToBlack =
+            (dominantColor - Color.Black.firstFiveDigits()) /
+                    (Color.White.firstFiveDigits() - Color.Black.firstFiveDigits())
+
+        if (isCloserToBlack > 0.98) Color.Black else Color.White
+    }
+        ?: SparvelTheme.colors.navigation
+}
+
 @Composable
 fun String.decodeBitmap(): ImageBitmap? {
     val cr = LocalContext.current.contentResolver
@@ -96,7 +121,11 @@ fun String.decodeBitmap(): ImageBitmap? {
 }
 
 @Composable
-fun SelectedTrackPadding(isTrackSelected: Boolean = false, padding: Dp = 60.dp, defaultPadding: Dp = 10.dp) =
+fun SelectedTrackPadding(
+    isTrackSelected: Boolean = false,
+    padding: Dp = 60.dp,
+    defaultPadding: Dp = 10.dp
+) =
     Spacer(
         modifier = Modifier.height(
             if (isTrackSelected) padding else defaultPadding

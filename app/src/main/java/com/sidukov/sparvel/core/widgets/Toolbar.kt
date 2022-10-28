@@ -21,6 +21,7 @@ fun Toolbar(
     isEnabled: Boolean = true,
     onNavigationClicked: () -> Unit,
     onActionClicked: () -> Unit,
+    iconColor: Color
 ) = CenterAlignedTopAppBar(
     modifier = Modifier
         .systemBarsPadding(),
@@ -45,7 +46,7 @@ fun Toolbar(
             Icon(
                 painter = painterResource(navigationIcon),
                 contentDescription = null,
-                tint = SparvelTheme.colors.navigation
+                tint = iconColor
             )
         }
     },
@@ -58,7 +59,7 @@ fun Toolbar(
             Icon(
                 painter = painterResource(actionIcon),
                 contentDescription = null,
-                tint = SparvelTheme.colors.navigation
+                tint = iconColor
             )
         }
     }

@@ -33,6 +33,7 @@ import kotlinx.coroutines.launch
 fun PlayerView(
     track: Track,
     image: ImageBitmap?,
+    iconColor: Color,
     onSettingsClicked: () -> Unit
 ) {
 
@@ -82,7 +83,8 @@ fun PlayerView(
                             shouldMoveDown = true
                         }
                     },
-                    onActionClicked = onSettingsClicked
+                    onActionClicked = onSettingsClicked,
+                    iconColor = iconColor
                 )
             }
             Box(

@@ -2,6 +2,7 @@ package com.sidukov.sparvel.features.home
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.graphics.Bitmap
 import androidx.compose.animation.*
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -11,6 +12,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -20,9 +23,7 @@ import androidx.navigation.NavHostController
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import com.sidukov.sparvel.R
-import com.sidukov.sparvel.core.functionality.decodeBitmap
-import com.sidukov.sparvel.core.functionality.filter
-import com.sidukov.sparvel.core.functionality.toMusicCollection
+import com.sidukov.sparvel.core.functionality.*
 import com.sidukov.sparvel.core.model.Track
 import com.sidukov.sparvel.core.theme.SparvelTheme
 import com.sidukov.sparvel.core.widgets.HomeMenuPanel
@@ -150,9 +151,12 @@ fun HomeScreenApprovedState(
         }
     }
     uiState.selectedTrack?.let {
+        val img = it.coverId.decodeBitmap()
+        val iconColor = img.deriveIconColor()
         PlayerView(
             track = it,
-            image = it.coverId.decodeBitmap(),
+            image = img,
+            iconColor = iconColor,
             onSettingsClicked = {
 
             }
