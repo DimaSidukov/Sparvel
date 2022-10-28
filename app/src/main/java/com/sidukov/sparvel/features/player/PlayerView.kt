@@ -90,7 +90,7 @@ fun PlayerView(
             Box(
                 contentAlignment = Alignment.BottomCenter,
                 modifier = Modifier
-                    .padding(start = 25.dp, end = 25.dp)
+                    .padding(horizontal = 15.dp)
                     .fillMaxWidth()
                     .fillMaxHeight()
             ) {
@@ -98,18 +98,24 @@ fun PlayerView(
                     TrackInfo(
                         name = track.name,
                         artist = track.artist,
+                        modifier = Modifier.padding(horizontal = 10.dp)
                     )
                     Spacer(modifier = Modifier.height(50.dp))
-                    PlayerProgress(playbackTimestamp) { value ->
+                    PlayerProgress(
+                        modifier = Modifier.padding(horizontal = 3.dp),
+                        value = playbackTimestamp
+                    ) { value ->
                         playbackTimestamp = value
                     }
                     Spacer(modifier = Modifier.height(8.dp))
                     Timestamps(
                         start = 0,
-                        end = track.duration
+                        end = track.duration,
+                        modifier = Modifier.padding(horizontal = 10.dp)
                     )
                     Spacer(modifier = Modifier.height(40.dp))
                     PlayerController(
+                        modifier = Modifier.padding(horizontal = 10.dp),
                         isPlaying = isPlaying,
                         onRepeatClicked = {
 
@@ -137,9 +143,12 @@ fun PlayerView(
 fun Timestamps(
     start: Int,
     end: Int,
+    modifier: Modifier = Modifier
 ) {
     Row(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .then(modifier),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Text(
@@ -180,8 +189,10 @@ fun TrackInfo(
 @Composable
 fun PlayerProgress(
     value: Float,
+    modifier: Modifier = Modifier,
     onValueChange: (Float) -> Unit
 ) = Slider(
+    modifier = modifier,
     value = value,
     onValueChange = onValueChange,
     colors = SliderDefaults.colors(
@@ -204,6 +215,7 @@ fun PlayerProgress(
 
 @Composable
 fun PlayerController(
+    modifier: Modifier = Modifier,
     isPlaying: Boolean,
     onRepeatClicked: () -> Unit,
     onPreviousClicked: () -> Unit,
@@ -217,7 +229,8 @@ fun PlayerController(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(bottom = 70.dp),
+            .padding(bottom = 70.dp)
+            .then(modifier),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {

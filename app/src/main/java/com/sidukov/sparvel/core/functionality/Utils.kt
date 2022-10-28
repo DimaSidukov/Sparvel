@@ -81,10 +81,6 @@ fun Float.normalize(max: Float, min: Float): Float = (this - min) / (max - min)
 
 fun Int.toMinutesAndSeconds() = String.format("%d:%02d", this / 60, this % 60)
 
-fun ULong.isCloserToBlack(max: ULong, min: ULong): Float =
-    ((this.toString().take(5).toFloat() - min.toString().take(5).toFloat()) / (max.toString()
-        .take(5).toFloat() - min.toString().take(5).toFloat()))
-
 fun Color.firstFiveDigits(): Float = this.value.toString().take(5).toFloat()
 
 @Composable

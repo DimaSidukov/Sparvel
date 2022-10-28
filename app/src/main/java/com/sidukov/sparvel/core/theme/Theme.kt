@@ -1,10 +1,6 @@
 package com.sidukov.sparvel.core.theme
 
-import androidx.compose.animation.animateColorAsState
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.text.selection.LocalTextSelectionColors
-import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.material.ripple.LocalRippleTheme
 import androidx.compose.material.ripple.RippleAlpha
 import androidx.compose.material.ripple.RippleTheme
@@ -30,16 +26,13 @@ object SparvelTheme {
 internal val LocalColors = staticCompositionLocalOf { LightColors }
 internal val LocalTypography = staticCompositionLocalOf { SparvelTypography() }
 
-private object Ripple : RippleTheme {
+object RippleEffect : RippleTheme {
     @Composable
-    override fun defaultColor(): Color = RippleTheme.defaultRippleColor(
-        Color.Red,
-        lightTheme = !isSystemInDarkTheme()
-    )
+    override fun defaultColor(): Color = SparvelTheme.colors.rippleColor
 
     @Composable
     override fun rippleAlpha(): RippleAlpha = RippleTheme.defaultRippleAlpha(
-        Color.Red,
+        SparvelTheme.colors.rippleColor,
         lightTheme = !isSystemInDarkTheme()
     )
 }
@@ -50,7 +43,6 @@ fun SparvelTheme(
     content: @Composable () -> Unit
 ) {
     val colors = (if (darkTheme) DarkColors else LightColors)
-
     val typography = SparvelTypography()
 
     val systemUiController = rememberSystemUiController()
@@ -58,13 +50,13 @@ fun SparvelTheme(
         systemUiController.setSystemBarsColor(Color.Transparent)
     }
 
-    CompositionLocalProvider(
-        LocalColors provides colors,
-        LocalRippleTheme provides Ripple
+    MaterialTheme(
+        colorScheme = colors.material,
+        typography = typography.material
     ) {
-        MaterialTheme(
-            colorScheme = colors.material,
-            typography = typography.material,
+        CompositionLocalProvider(
+            LocalColors provides colors,
+            LocalRippleTheme provides RippleEffect,
             content = content
         )
     }
