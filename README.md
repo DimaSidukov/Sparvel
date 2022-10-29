@@ -20,4 +20,5 @@
 **TODO list**:
 * add playlist creation/removal etc screens + local database for storing them
 * recommendation: when implementing playlists, it's better store only track ids in database and then when user opens the screen, load data by these ids. No sense in storing track data, since user may not open some playlist for undefined period of time
-* one of these samples have nice animation for theme switch. copy it: https://github.com/android/compose-samples
+* draw play/pause icons and animate them
+* set clickable region of player to text and image only, so the user could click on play button without being interpreted mistouched
