@@ -1,5 +1,6 @@
 package com.sidukov.sparvel.core.functionality
 
+import android.content.ContentResolver
 import android.graphics.Bitmap
 import android.graphics.ImageDecoder
 import android.os.Build
@@ -101,9 +102,7 @@ fun ImageBitmap?.deriveIconColor(): Color {
         ?: SparvelTheme.colors.navigation
 }
 
-@Composable
-fun String.decodeBitmap(): ImageBitmap? {
-    val cr = LocalContext.current.contentResolver
+fun String.decodeBitmap(cr: ContentResolver): ImageBitmap? {
     return try {
         when {
             Build.VERSION.SDK_INT < 28 -> getBitmap(cr, this.toUri())

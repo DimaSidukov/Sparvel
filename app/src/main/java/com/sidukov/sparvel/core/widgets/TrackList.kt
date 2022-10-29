@@ -76,7 +76,7 @@ fun TrackList(
                             item.artist,
                             item.album
                         ),
-                        style = SparvelTheme.typography.collectionTitleSmall,
+                        style = SparvelTheme.typography.collectionInfo,
                         color = SparvelTheme.colors.secondary,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis

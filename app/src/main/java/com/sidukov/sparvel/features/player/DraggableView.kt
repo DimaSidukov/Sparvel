@@ -93,7 +93,7 @@ fun DraggableView(
                     interactionSource = remember { MutableInteractionSource() },
                     onClick = {
                         expand()
-                    },
+                    }
                 )
                 .draggable(
                     enabled = true,
