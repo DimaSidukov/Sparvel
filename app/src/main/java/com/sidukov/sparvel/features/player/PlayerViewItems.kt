@@ -169,75 +169,10 @@ fun PlayButton(
 
     val iconColor = SparvelTheme.colors.playerActions
 
-    var x1path1Start by remember { mutableStateOf(40f) }
-    var y1path1Start by remember { mutableStateOf(30f) }
-    var x2path1Start by remember { mutableStateOf(50f) }
-    var y2path1Start by remember { mutableStateOf(30f) }
-    var x3path1Start by remember { mutableStateOf(50f) }
-    var y3path1Start by remember { mutableStateOf(83.4f) }
-    var x4path1Start by remember { mutableStateOf(40f) }
-    var y4path1Start by remember { mutableStateOf(83.4f) }
-
-    var x1path2Start by remember { mutableStateOf(60f) }
-    var y1path2Start by remember { mutableStateOf(30f) }
-    var x2path2Start by remember { mutableStateOf(70f) }
-    var y2path2Start by remember { mutableStateOf(30f) }
-    var x3path2Start by remember { mutableStateOf(70f) }
-    var y3path2Start by remember { mutableStateOf(83.4f) }
-    var x4path2Start by remember { mutableStateOf(60f) }
-    var y4path2Start by remember { mutableStateOf(83.4f) }
-
-    var shouldAnimate by remember { mutableStateOf(false) }
-
-    var rotation by remember { mutableStateOf(0f) }
-
-    if (shouldAnimate) {
-        LaunchedEffect(Unit) {
-            animate(
-                initialValue = rotation,
-                targetValue = 90f,
-                animationSpec = tween(100),
-                block = { value, _ ->
-                    rotation = value
-                }
-            )
-        }
+    com.sidukov.sparvel.core.widgets.PlayButton(isPlaying = isPlaying, color = iconColor) {
+        isPlaying != isPlaying
     }
 
-    Canvas(
-        modifier = Modifier
-            .size(40.dp)
-            .clip(RoundedCornerShape(50))
-            .clickable {
-                onClick()
-                shouldAnimate = true
-            }
-            .rotate(rotation)
-    ) {
-
-        val path1 = Path()
-        path1.moveTo(x1path1Start, y1path1Start)
-        path1.lineTo(x2path1Start, y2path1Start)
-        path1.lineTo(x3path1Start, y3path1Start)
-        path1.lineTo(x4path1Start, y4path1Start)
-        path1.close()
-
-        val path2 = Path()
-        path2.moveTo(x1path2Start, y1path2Start)
-        path2.lineTo(x2path2Start, y2path2Start)
-        path2.lineTo(x3path2Start, y3path2Start)
-        path2.lineTo(x4path2Start, y4path2Start)
-        path2.close()
-
-        drawPath(
-            path = path1,
-            color = iconColor,
-        )
-        drawPath(
-            path = path2,
-            color = iconColor
-        )
-    }
 }
 
 @Composable
