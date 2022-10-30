@@ -160,21 +160,6 @@ fun PlayerController(
     }
 }
 
-@Preview
-@Composable
-fun PlayButton(
-    isPlaying: Boolean = false,
-    onClick: () -> Unit = { }
-) {
-
-    val iconColor = SparvelTheme.colors.playerActions
-
-    com.sidukov.sparvel.core.widgets.PlayButton(isPlaying = isPlaying, color = iconColor) {
-        isPlaying != isPlaying
-    }
-
-}
-
 @Composable
 fun EncircledPlayButton(
     isPlaying: Boolean,

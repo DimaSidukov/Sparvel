@@ -1,37 +1,28 @@
 package com.sidukov.sparvel.features.player
 
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.*
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.sidukov.sparvel.R
 import com.sidukov.sparvel.core.functionality.normalize
-import com.sidukov.sparvel.core.functionality.toMinutesAndSeconds
 import com.sidukov.sparvel.core.model.Track
 import com.sidukov.sparvel.core.theme.SparvelTheme
 import com.sidukov.sparvel.core.widgets.HQImageOrPlaceholder
 import com.sidukov.sparvel.core.widgets.ImageOrPlaceholder
+import com.sidukov.sparvel.core.widgets.PlayButton
 import com.sidukov.sparvel.core.widgets.Toolbar
 import kotlinx.coroutines.launch
 
@@ -159,7 +150,10 @@ fun CollapsedPlayerLayout(
         ) {
             PlayButton(
                 isPlaying = isPlaying,
-                onClick = onClick
+                color = SparvelTheme.colors.playerActions,
+                onButtonClick = {
+
+                }
             )
         }
     }
