@@ -87,14 +87,6 @@ fun DraggableView(
                 .offset(y = screenHeight - height)
                 .align(Alignment.BottomCenter)
                 .shadow(10.dp, clip = true)
-                .clickable(
-                    enabled = !isExpanded,
-                    indication = null,
-                    interactionSource = remember { MutableInteractionSource() },
-                    onClick = {
-                        expand()
-                    }
-                )
                 .draggable(
                     enabled = true,
                     orientation = Orientation.Vertical,
@@ -125,6 +117,19 @@ fun DraggableView(
                         )
                 )
                 content(height, isExpanded)
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(end = 80.dp)
+                        .clickable(
+                            enabled = !isExpanded,
+                            indication = null,
+                            interactionSource = remember { MutableInteractionSource() },
+                            onClick = {
+                                expand()
+                            }
+                        )
+                )
             }
         )
     }

@@ -77,7 +77,9 @@ fun HomeScreenApprovedState(
             query = it
         }
     ) {
-        trackList = trackList.filter(query)
+
+        val filteredTrackList by remember { derivedStateOf { trackList.filter(query) } }
+
         AnimatedContent(
             targetState = uiState.currentScreen,
             transitionSpec = {
@@ -96,7 +98,7 @@ fun HomeScreenApprovedState(
                 FULL -> {
                     HomeScreen(
                         navController = navController,
-                        trackList = trackList,
+                        trackList = filteredTrackList,
                         isTrackSelected = uiState.selectedTrack != null,
                         onPlaylistSectionClicked = {
                             viewModel.setScreen(PLAYLISTS)
@@ -129,7 +131,7 @@ fun HomeScreenApprovedState(
                     AlbumsScreen(
                         navController = navController,
                         isTrackSelected = uiState.selectedTrack != null,
-                        albums = trackList.toMusicCollection(),
+                        albums = filteredTrackList.toMusicCollection(),
                         onNavigatedBack = {
                             viewModel.setScreen(FULL)
                         }
@@ -137,7 +139,7 @@ fun HomeScreenApprovedState(
                 }
                 LIBRARY -> {
                     LibraryScreen(
-                        tracks = trackList,
+                        tracks = filteredTrackList,
                         isTrackSelected = uiState.selectedTrack != null,
                         onTrackClicked = {
                             scope.launch {
@@ -164,7 +166,11 @@ fun HomeScreenApprovedState(
         PlayerView(
             track = it,
             image = img,
+            playerState = uiState.playerState,
             iconColor = iconColor,
+            onPlayButtonClicked = {
+                viewModel.updatePlayerState()
+            },
             onSettingsClicked = {
 
             }

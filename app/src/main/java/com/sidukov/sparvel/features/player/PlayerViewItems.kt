@@ -1,9 +1,5 @@
 package com.sidukov.sparvel.features.player
 
-import androidx.compose.animation.animateContentSize
-import androidx.compose.animation.core.animate
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -15,19 +11,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Path
-import androidx.compose.ui.graphics.drawscope.rotate
-import androidx.compose.ui.graphics.drawscope.withTransform
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import com.sidukov.sparvel.R
-import com.sidukov.sparvel.core.functionality.background
 import com.sidukov.sparvel.core.functionality.toMinutesAndSeconds
 import com.sidukov.sparvel.core.theme.SparvelTheme
-import kotlinx.coroutines.launch
+import com.sidukov.sparvel.features.home.PlayerState
 
 @Composable
 fun Timestamps(
@@ -106,7 +96,7 @@ fun PlayerProgress(
 @Composable
 fun PlayerController(
     modifier: Modifier = Modifier,
-    isPlaying: Boolean,
+    playerState: PlayerState,
     onRepeatClicked: () -> Unit,
     onPreviousClicked: () -> Unit,
     onPlayClicked: () -> Unit,
@@ -139,7 +129,7 @@ fun PlayerController(
             )
         }
         EncircledPlayButton(
-            isPlaying = isPlaying,
+            playerState = playerState,
             onClick = onPlayClicked
         )
         IconButton(onClick = onNextClicked, modifier = Modifier.size(25.dp)) {
@@ -162,7 +152,7 @@ fun PlayerController(
 
 @Composable
 fun EncircledPlayButton(
-    isPlaying: Boolean,
+    playerState: PlayerState,
     onClick: () -> Unit
 ) {
     // https://stackoverflow.com/questions/71232511/jetpack-compose-play-pause-animation

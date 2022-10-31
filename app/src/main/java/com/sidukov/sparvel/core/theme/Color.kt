@@ -9,6 +9,7 @@ import androidx.compose.ui.graphics.Color
 private val black = Color.Black
 private val white = Color.White
 private val lightBlue = Color(0xFF748CAB)
+private val navyBlue = Color(0xFF087AE6)
 private val darkestBlue = Color(0xFF00081C)
 private val darkBlue = Color(0xFF030017)
 private val darkGrey = Color(0xFF5F5F5F)
@@ -77,7 +78,7 @@ val LightColors = SparvelColors(
     thumb = lightGrey3,
     activeTrack = lightGrey3,
     inactiveTrack = dimGrey2,
-    rippleColor = black,
+    rippleColor = navyBlue,
     secondaryMaterial = black,
     backgroundMaterial = white
 )

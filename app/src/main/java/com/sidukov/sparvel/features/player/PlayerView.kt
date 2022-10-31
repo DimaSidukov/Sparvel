@@ -24,14 +24,17 @@ import com.sidukov.sparvel.core.widgets.HQImageOrPlaceholder
 import com.sidukov.sparvel.core.widgets.ImageOrPlaceholder
 import com.sidukov.sparvel.core.widgets.PlayButton
 import com.sidukov.sparvel.core.widgets.Toolbar
+import com.sidukov.sparvel.features.home.PlayerState
 import kotlinx.coroutines.launch
 
 @Composable
 fun PlayerView(
     track: Track,
     image: ImageBitmap?,
+    playerState: PlayerState,
     iconColor: Color,
-    onSettingsClicked: () -> Unit
+    onPlayButtonClicked: () -> Unit,
+    onSettingsClicked: () -> Unit,
 ) {
 
     val screenHeight =
@@ -40,7 +43,6 @@ fun PlayerView(
     val minHeight = 120.dp
 
     var shouldMoveDown by remember { mutableStateOf(false) }
-    var isPlaying by remember { mutableStateOf(false) }
     var playbackTimestamp by remember { mutableStateOf(0.3f) }
 
     BackHandler {
@@ -75,13 +77,13 @@ fun PlayerView(
             alpha = collapsedAlpha,
             height = minHeight / 2,
             track = track,
-            isPlaying = isPlaying,
-            onClick = { isPlaying = !isPlaying }
+            playerState = playerState,
+            onPlayerButtonClicked = onPlayButtonClicked
         )
         ExpandedPlayerLayout(
             alpha = expandedAlpha,
             playbackTimestamp = playbackTimestamp,
-            isPlaying = isPlaying,
+            playerState = playerState,
             track = track,
             image = image,
             iconColor = iconColor,
@@ -90,7 +92,7 @@ fun PlayerView(
             onSliderValueChanged = { playbackTimestamp = it },
             onRepeatClicked = { },
             onPreviousClicked = { },
-            onPlayClicked = { isPlaying = !isPlaying },
+            onPlayClicked = onPlayButtonClicked,
             onNextClicked = { },
             onCurrentPlaylistClicked = { }
         )
@@ -102,8 +104,8 @@ fun CollapsedPlayerLayout(
     alpha: Float,
     height: Dp,
     track: Track,
-    isPlaying: Boolean,
-    onClick: () -> Unit
+    playerState: PlayerState,
+    onPlayerButtonClicked: () -> Unit
 ) {
     Box(
         modifier = Modifier
@@ -149,11 +151,9 @@ fun CollapsedPlayerLayout(
             modifier = Modifier.align(Alignment.CenterEnd)
         ) {
             PlayButton(
-                isPlaying = isPlaying,
+                playerState = playerState,
                 color = SparvelTheme.colors.playerActions,
-                onButtonClick = {
-
-                }
+                onButtonClick = onPlayerButtonClicked
             )
         }
     }
@@ -164,7 +164,7 @@ fun CollapsedPlayerLayout(
 fun ExpandedPlayerLayout(
     alpha: Float,
     playbackTimestamp: Float,
-    isPlaying: Boolean,
+    playerState: PlayerState,
     track: Track,
     image: ImageBitmap?,
     iconColor: Color,
@@ -231,7 +231,7 @@ fun ExpandedPlayerLayout(
                 Spacer(modifier = Modifier.height(40.dp))
                 PlayerController(
                     modifier = Modifier.padding(horizontal = 10.dp),
-                    isPlaying = isPlaying,
+                    playerState = playerState,
                     onRepeatClicked = onRepeatClicked,
                     onPreviousClicked = onPreviousClicked,
                     onPlayClicked = onPlayClicked,
