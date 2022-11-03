@@ -1,15 +1,12 @@
 package com.sidukov.sparvel.features.player
 
-import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.DpSize
@@ -17,6 +14,7 @@ import androidx.compose.ui.unit.dp
 import com.sidukov.sparvel.R
 import com.sidukov.sparvel.core.functionality.toMinutesAndSeconds
 import com.sidukov.sparvel.core.theme.SparvelTheme
+import com.sidukov.sparvel.core.widgets.EncircledPlayButton
 import com.sidukov.sparvel.features.home.PlayerState
 
 @Composable
@@ -103,9 +101,6 @@ fun PlayerController(
     onNextClicked: () -> Unit,
     onCurrentPlaylistClicked: () -> Unit
 ) {
-
-    val playerActionColor = SparvelTheme.colors.playerActions
-
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -130,7 +125,7 @@ fun PlayerController(
         }
         EncircledPlayButton(
             playerState = playerState,
-            onClick = onPlayClicked
+            onButtonClick = onPlayClicked
         )
         IconButton(onClick = onNextClicked, modifier = Modifier.size(25.dp)) {
             Icon(
@@ -147,33 +142,5 @@ fun PlayerController(
                 tint = SparvelTheme.colors.playerActions
             )
         }
-    }
-}
-
-@Composable
-fun EncircledPlayButton(
-    playerState: PlayerState,
-    onClick: () -> Unit
-) {
-    // https://stackoverflow.com/questions/71232511/jetpack-compose-play-pause-animation
-
-    val backgroundColor = SparvelTheme.colors.playerActions
-    val iconColor = SparvelTheme.colors.playerIcon
-
-    Canvas(
-        modifier = Modifier
-            .size(75.dp)
-            .clip(RoundedCornerShape(50))
-            .clickable(
-                interactionSource = remember { MutableInteractionSource() },
-                indication = null,
-            ) {
-                onClick()
-            }
-    ) {
-        drawCircle(
-            color = backgroundColor,
-            radius = 100f
-        )
     }
 }

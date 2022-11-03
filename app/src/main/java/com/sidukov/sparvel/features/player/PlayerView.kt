@@ -152,7 +152,6 @@ fun CollapsedPlayerLayout(
         ) {
             PlayButton(
                 playerState = playerState,
-                color = SparvelTheme.colors.playerActions,
                 onButtonClick = onPlayerButtonClicked
             )
         }
