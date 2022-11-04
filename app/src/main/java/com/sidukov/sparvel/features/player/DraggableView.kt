@@ -117,19 +117,20 @@ fun DraggableView(
                         )
                 )
                 content(height, isExpanded)
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(end = 80.dp)
-                        .clickable(
-                            enabled = !isExpanded,
-                            indication = null,
-                            interactionSource = remember { MutableInteractionSource() },
-                            onClick = {
-                                expand()
-                            }
-                        )
-                )
+                if (!isExpanded) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(end = 80.dp)
+                            .clickable(
+                                indication = null,
+                                interactionSource = remember { MutableInteractionSource() },
+                                onClick = {
+                                    expand()
+                                }
+                            )
+                    )
+                }
             }
         )
     }

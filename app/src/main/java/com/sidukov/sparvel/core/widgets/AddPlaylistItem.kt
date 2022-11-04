@@ -34,9 +34,7 @@ fun AddPlaylistItem(
             modifier = Modifier
                 .size(size)
                 .background(Color.Transparent)
-                .clickable {
-                    onCreateClicked()
-                },
+                .clickable(onClick = onCreateClicked),
             contentAlignment = Alignment.Center
         ) {
             Canvas(modifier = Modifier.fillMaxSize()) {
@@ -54,7 +52,9 @@ fun AddPlaylistItem(
         }
 
         Text(
-            modifier = Modifier.width(size.width).padding(top = 10.dp),
+            modifier = Modifier
+                .width(size.width)
+                .padding(top = 10.dp),
             text = stringResource(R.string.add_new_playlist),
             style = SparvelTheme.typography.collectionTitleSmall,
             textAlign = TextAlign.Center,

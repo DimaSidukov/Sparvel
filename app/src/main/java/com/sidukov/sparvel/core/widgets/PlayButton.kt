@@ -1,7 +1,7 @@
 package com.sidukov.sparvel.core.widgets
 
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.tween
+import androidx.compose.animation.core.spring
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -22,88 +22,89 @@ import com.sidukov.sparvel.core.theme.SparvelTheme
 import com.sidukov.sparvel.features.home.PlayerState
 import com.sidukov.sparvel.features.home.PlayerState.Playing
 
+internal val animationSpec = spring<Float>()
+
 @Composable
 fun PlayButton(
     playerState: PlayerState,
     onButtonClick: () -> Unit
 ) {
 
-    val animationTime = 100
     val iconColor = SparvelTheme.colors.playerActions
 
     val firstStick = ButtonPoints(
         x1 = animateFloatAsState(
             if (playerState == Playing) 65f else 80f,
-            tween(animationTime)
+            animationSpec
         ),
         y1 = animateFloatAsState(
             if (playerState == Playing) 60f else 55f,
-            tween(animationTime)
+            animationSpec
         ),
         x2 = animateFloatAsState(
             if (playerState == Playing) 75f else 80f,
-            tween(animationTime)
+            animationSpec
         ),
         y2 = animateFloatAsState(
             if (playerState == Playing) 60f else 55f,
-            tween(animationTime)
+            animationSpec
         ),
         x3 = animateFloatAsState(
             if (playerState == Playing) 75f else 80f,
-            tween(animationTime)
+            animationSpec
         ),
         y3 = animateFloatAsState(
             if (playerState == Playing) 103.4f else 98.4f,
-            tween(animationTime)
+            animationSpec
         ),
         x4 = animateFloatAsState(
             if (playerState == Playing) 65f else 55f,
-            tween(animationTime)
+            animationSpec
         ),
         y4 = animateFloatAsState(
             if (playerState == Playing) 103.4f else 98.4f,
-            tween(animationTime)
+            animationSpec
         )
     )
 
     val secondStick = ButtonPoints(
         x1 = animateFloatAsState(
             if (playerState == Playing) 85f else 80f,
-            tween(animationTime)
+            animationSpec
         ),
         y1 = animateFloatAsState(
             if (playerState == Playing) 60f else 55f,
-            tween(animationTime)
+            animationSpec
         ),
         x2 = animateFloatAsState(
             if (playerState == Playing) 95f else 80f,
-            tween(animationTime)
+            animationSpec
         ),
         y2 = animateFloatAsState(
             if (playerState == Playing) 60f else 55f,
-            tween(animationTime)
+            animationSpec
         ),
         x3 = animateFloatAsState(
             if (playerState == Playing) 95f else 105f,
-            tween(animationTime)
+            animationSpec
         ),
         y3 = animateFloatAsState(
             if (playerState == Playing) 103.4f else 98.4f,
-            tween(animationTime)
+            animationSpec
         ),
         x4 = animateFloatAsState(
             if (playerState == Playing) 85f else 80f,
-            tween(animationTime)
+            animationSpec
         ),
         y4 = animateFloatAsState(
             if (playerState == Playing) 103.4f else 98.4f,
-            tween(animationTime)
+            animationSpec
         )
     )
 
     val rotation by animateFloatAsState(
         targetValue = if (playerState == Playing) 0f else 90f,
-        animationSpec = tween(animationTime)
+        animationSpec = animationSpec
     )
 
     val path1 = Path().apply {
@@ -153,83 +154,82 @@ fun EncircledPlayButton(
     onButtonClick: () -> Unit
 ) {
 
-    val animationTime = 100
     val backgroundColor = SparvelTheme.colors.playerActions
     val iconColor = SparvelTheme.colors.playerIcon
 
     val firstStick = ButtonPoints(
         x1 = animateFloatAsState(
             if (playerState == Playing) 78f else 103f,
-            tween(animationTime)
+            animationSpec
         ),
         y1 = animateFloatAsState(
             if (playerState == Playing) 73f else 70f,
-            tween(animationTime)
+            animationSpec
         ),
         x2 = animateFloatAsState(
             if (playerState == Playing) 92f else 103f,
-            tween(animationTime)
+            animationSpec
         ),
         y2 = animateFloatAsState(
             if (playerState == Playing) 73f else 70f,
-            tween(animationTime)
+            animationSpec
         ),
         x3 = animateFloatAsState(
             if (playerState == Playing) 92f else 103f,
-            tween(animationTime)
+            animationSpec
         ),
         y3 = animateFloatAsState(
             if (playerState == Playing) 133.76f else 120f,
-            tween(animationTime)
+            animationSpec
         ),
         x4 = animateFloatAsState(
             if (playerState == Playing) 78f else 70f,
-            tween(animationTime)
+            animationSpec
         ),
         y4 = animateFloatAsState(
             if (playerState == Playing) 133.76f else 120f,
-            tween(animationTime)
+            animationSpec
         )
     )
 
     val secondStick = ButtonPoints(
         x1 = animateFloatAsState(
             if (playerState == Playing) 111f else 103f,
-            tween(animationTime)
+            animationSpec
         ),
         y1 = animateFloatAsState(
             if (playerState == Playing) 73f else 70f,
-            tween(animationTime)
+            animationSpec
         ),
         x2 = animateFloatAsState(
             if (playerState == Playing) 125f else 103f,
-            tween(animationTime)
+            animationSpec
         ),
         y2 = animateFloatAsState(
             if (playerState == Playing) 73f else 70f,
-            tween(animationTime)
+            animationSpec
         ),
         x3 = animateFloatAsState(
             if (playerState == Playing) 125f else 136f,
-            tween(animationTime)
+            animationSpec
         ),
         y3 = animateFloatAsState(
             if (playerState == Playing) 133.76f else 120f,
-            tween(animationTime)
+            animationSpec
         ),
         x4 = animateFloatAsState(
             if (playerState == Playing) 111f else 103f,
-            tween(animationTime)
+            animationSpec
         ),
         y4 = animateFloatAsState(
             if (playerState == Playing) 133.76f else 120f,
-            tween(animationTime)
+            animationSpec
         )
     )
 
     val rotation by animateFloatAsState(
         targetValue = if (playerState == Playing) 0f else 90f,
-        animationSpec = tween(animationTime)
+        animationSpec = animationSpec
     )
 
     val path1 = Path().apply {
@@ -254,7 +254,13 @@ fun EncircledPlayButton(
             .clip(RoundedCornerShape(50))
             .background(backgroundColor)
             .rotate(rotation)
-            .clickable(onClick = onButtonClick)
+            .clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = rememberRipple(
+                    color = SparvelTheme.colors.text
+                ),
+                onClick = onButtonClick
+            )
     ) {
         drawPath(
             path = path1,

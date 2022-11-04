@@ -13,8 +13,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.compose.rememberNavController
-import com.sidukov.sparvel.core.functionality.storage.AppTheme
 import com.sidukov.sparvel.core.functionality.background
+import com.sidukov.sparvel.core.functionality.storage.AppTheme
 import com.sidukov.sparvel.core.theme.SparvelTheme
 import com.sidukov.sparvel.di.ViewModelFactory
 import com.sidukov.sparvel.features.main.MainContainerScreen
