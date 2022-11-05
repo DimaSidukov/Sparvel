@@ -21,11 +21,6 @@ class SparvelApplication : Application(), HasAndroidInjector {
 
     companion object {
         lateinit var appComponent: AppComponent
-        lateinit var preferences: SharedPrefsManager
-
-        init {
-            System.loadLibrary("sparvel")
-        }
     }
 
     override fun onCreate() {
@@ -35,6 +30,5 @@ class SparvelApplication : Application(), HasAndroidInjector {
             .appModule(AppModule(this))
             .resourceModule(ResourceModule())
             .build()
-        preferences = SharedPrefsManager(this)
     }
 }

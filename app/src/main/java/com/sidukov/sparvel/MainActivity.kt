@@ -4,10 +4,9 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.material3.Surface
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.core.view.WindowCompat
@@ -20,30 +19,31 @@ import com.sidukov.sparvel.di.ViewModelFactory
 import com.sidukov.sparvel.features.main.MainContainerScreen
 import javax.inject.Inject
 
-
 class MainActivity : ComponentActivity() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
+    private lateinit var viewModel: MainViewModel
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, false)
         SparvelApplication.appComponent.inject(this)
+
+        val viewModelProvider = ViewModelProvider(this, viewModelFactory)
+        viewModel = viewModelProvider[MainViewModel::class.java]
+
         setContent {
 
             val navController = rememberNavController()
-            val viewModelProvider = ViewModelProvider(this, viewModelFactory)
-
-            var theme by remember { mutableStateOf(SparvelApplication.preferences.appTheme) }
-
-            val useDarkColors = when (theme) {
-                AppTheme.DARK.code -> true
-                AppTheme.LIGHT.code -> false
-                else -> true
+            val isDarkTheme by remember {
+                derivedStateOf {
+                    viewModel.appTheme == AppTheme.DARK.code
+                }
             }
 
-            SparvelTheme(darkTheme = useDarkColors) {
+            SparvelTheme(darkTheme = isDarkTheme) {
                 Surface(
                     modifier = Modifier
                         .background(
@@ -51,12 +51,13 @@ class MainActivity : ComponentActivity() {
                         ),
                     color = Color.Transparent
                 ) {
-                    MainContainerScreen(navController, viewModelProvider) {
-                        SparvelApplication.preferences.appTheme =
-                            if (theme == AppTheme.LIGHT.code) AppTheme.DARK.code else AppTheme.LIGHT.code
-                        theme =
-                            if (theme == AppTheme.LIGHT.code) AppTheme.DARK.code else AppTheme.LIGHT.code
-                    }
+                    MainContainerScreen(
+                        navController = navController,
+                        viewModelProvider = viewModelProvider,
+                        onAppThemeChanged = {
+                            viewModel.switchAppTheme()
+                        }
+                    )
                 }
             }
         }

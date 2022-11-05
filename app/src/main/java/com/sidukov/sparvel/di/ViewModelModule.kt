@@ -2,6 +2,7 @@ package com.sidukov.sparvel.di
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.sidukov.sparvel.MainViewModel
 import com.sidukov.sparvel.features.home.HomeViewModel
 import dagger.Binds
 import dagger.MapKey
@@ -26,7 +27,7 @@ class ViewModelFactory @Inject constructor(private val viewModels: MutableMap<Cl
     AnnotationTarget.PROPERTY_GETTER,
     AnnotationTarget.PROPERTY_SETTER
 )
-@kotlin.annotation.Retention(AnnotationRetention.RUNTIME)
+@Retention(AnnotationRetention.RUNTIME)
 @MapKey
 internal annotation class ViewModelKey(val value: KClass<out ViewModel>)
 
@@ -35,6 +36,11 @@ abstract class ViewModelModule {
 
     @Binds
     abstract fun bindViewModelFactory(factory: ViewModelFactory): ViewModelProvider.Factory
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(MainViewModel::class)
+    abstract fun provideMainViewModel(viewModel: MainViewModel): ViewModel
 
     @Binds
     @IntoMap

@@ -8,8 +8,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.Color
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
-import com.sidukov.sparvel.SparvelApplication
-import com.sidukov.sparvel.core.functionality.storage.AppTheme
 
 object SparvelTheme {
     val colors: SparvelColors
@@ -39,7 +37,7 @@ object RippleEffect : RippleTheme {
 
 @Composable
 fun SparvelTheme(
-    darkTheme: Boolean = SparvelApplication.preferences.appTheme == AppTheme.DARK.code,
+    darkTheme: Boolean,
     content: @Composable () -> Unit
 ) {
     val colors = (if (darkTheme) DarkColors else LightColors)
