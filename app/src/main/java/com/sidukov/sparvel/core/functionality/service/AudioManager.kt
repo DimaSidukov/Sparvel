@@ -10,4 +10,6 @@ class AudioManager {
 
     external fun pause()
 
+    external fun finish()
+
 }

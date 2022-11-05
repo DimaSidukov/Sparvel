@@ -18,6 +18,11 @@ android {
         vectorDrawables {
             useSupportLibrary true
         }
+        externalNativeBuild {
+            cmake {
+                arguments "-DANDROID_STL=c++_shared"
+            }
+        }
     }
 
     buildTypes {
@@ -38,6 +43,7 @@ android {
     }
     buildFeatures {
         compose true
+        prefab true
     }
     composeOptions {
         kotlinCompilerExtensionVersion "1.2.0-alpha08"
@@ -103,6 +109,9 @@ dependencies {
 
     // Coil
     implementation "io.coil-kt:coil-compose:2.2.1"
+
+    // Oboe
+    implementation "com.google.oboe:oboe:1.6.1"
 
     // This one adds @Preview
     // remove when won't be needed
