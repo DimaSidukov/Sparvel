@@ -1,4 +1,4 @@
-package com.sidukov.sparvel.core.functionality.providers
+package com.sidukov.sparvel.core.functionality.service
 
 import android.content.ContentUris
 import android.content.Context

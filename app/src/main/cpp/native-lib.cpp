@@ -1,10 +1,13 @@
 #include <jni.h>
 #include <string>
 
-extern "C" JNIEXPORT jstring JNICALL
-Java_com_siduk_sparvel_SparvelApplication_stringFromJNI(
-        JNIEnv* env,
-        jobject /* this */) {
-    std::string hello = "Hello from C++";
-    return env->NewStringUTF(hello.c_str());
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_sidukov_sparvel_core_functionality_service_AudioManager_play(JNIEnv *env, jobject thiz, jint trackId) {
+    // TODO: implement play()
+}
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_sidukov_sparvel_core_functionality_service_AudioManager_pause(JNIEnv *env, jobject thiz) {
+    // TODO: implement pause()
 }

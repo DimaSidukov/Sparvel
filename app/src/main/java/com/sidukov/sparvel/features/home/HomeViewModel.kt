@@ -5,7 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.sidukov.sparvel.core.functionality.providers.MusicDataProvider
+import com.sidukov.sparvel.core.functionality.service.MusicDataProvider
 import com.sidukov.sparvel.core.functionality.storage.StorageManager
 import com.sidukov.sparvel.core.model.MusicCollection
 import com.sidukov.sparvel.core.model.Track
