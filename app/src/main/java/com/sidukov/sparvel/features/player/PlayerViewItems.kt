@@ -1,20 +1,30 @@
 package com.sidukov.sparvel.features.player
 
+import androidx.compose.animation.graphics.ExperimentalAnimationGraphicsApi
+import androidx.compose.animation.graphics.res.animatedVectorResource
+import androidx.compose.animation.graphics.res.rememberAnimatedVectorPainter
+import androidx.compose.animation.graphics.vector.AnimatedImageVector
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import com.sidukov.sparvel.R
+import com.sidukov.sparvel.core.functionality.background
 import com.sidukov.sparvel.core.functionality.toMinutesAndSeconds
 import com.sidukov.sparvel.core.theme.SparvelTheme
-import com.sidukov.sparvel.core.widgets.EncircledPlayButton
 import com.sidukov.sparvel.features.home.PlayerState
 
 @Composable
@@ -91,6 +101,7 @@ fun PlayerProgress(
     }
 )
 
+@OptIn(ExperimentalAnimationGraphicsApi::class)
 @Composable
 fun PlayerController(
     modifier: Modifier = Modifier,
@@ -123,10 +134,32 @@ fun PlayerController(
                 tint = SparvelTheme.colors.playerActions
             )
         }
-        EncircledPlayButton(
-            playerState = playerState,
-            onButtonClick = onPlayClicked
-        )
+        Box(
+            modifier = Modifier
+                .size(75.dp)
+                .clip(RoundedCornerShape(50))
+                .background(SparvelTheme.colors.playerActions)
+                .clickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = rememberRipple(
+                        color = SparvelTheme.colors.text
+                    ),
+                    onClick = onPlayClicked
+                )
+        ) {
+            Image(
+                modifier = Modifier
+                    .size(35.dp)
+                    .align(Alignment.Center),
+                painter = rememberAnimatedVectorPainter(
+                    animatedImageVector = AnimatedImageVector.animatedVectorResource(
+                        id = R.drawable.anim_play_pause
+                    ), atEnd = playerState == PlayerState.Playing
+                ),
+                contentDescription = null,
+                colorFilter = ColorFilter.tint(SparvelTheme.colors.playerIcon)
+            )
+        }
         IconButton(onClick = onNextClicked, modifier = Modifier.size(25.dp)) {
             Icon(
                 painter = painterResource(R.drawable.ic_player_arrow),

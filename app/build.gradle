@@ -56,7 +56,7 @@ android {
 
     tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
         kotlinOptions {
-            freeCompilerArgs += "-Xopt-in=kotlin.RequiresOptIn"
+            freeCompilerArgs += "-opt-in=kotlin.RequiresOptIn"
         }
     }
 }
@@ -97,6 +97,9 @@ dependencies {
     // Accompanist
     implementation "com.google.accompanist:accompanist-systemuicontroller:0.26.1-alpha"
     implementation 'com.google.accompanist:accompanist-permissions:0.26.2-beta'
+
+    // Compose animation
+    implementation "androidx.compose.animation:animation-graphics:$compose_version"
 
     // Coil
     implementation "io.coil-kt:coil-compose:2.2.1"
