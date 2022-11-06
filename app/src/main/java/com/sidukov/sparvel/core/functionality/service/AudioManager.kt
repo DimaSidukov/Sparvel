@@ -1,6 +1,14 @@
 package com.sidukov.sparvel.core.functionality.service
 
-class AudioManager {
+import android.content.Context
+import androidx.core.content.getSystemService
+import javax.inject.Inject
+import android.media.AudioManager as AndroidAudioManager
+
+class AudioManager @Inject constructor(private val context: Context) {
+
+    private var defaultSampleRate = -1
+    private var defaultFramesPerBurst = -1
 
     companion object {
         init {
@@ -8,7 +16,21 @@ class AudioManager {
         }
     }
 
-    external fun play(fullPath: String)
+    init {
+        val am = context.getSystemService<AndroidAudioManager>()
+        defaultSampleRate = am?.getProperty(
+            AndroidAudioManager.PROPERTY_OUTPUT_SAMPLE_RATE
+        )?.toInt() ?: -1
+        defaultFramesPerBurst = am?.getProperty(
+            AndroidAudioManager.PROPERTY_OUTPUT_FRAMES_PER_BUFFER
+        )?.toInt() ?: -1
+    }
+
+    external fun play(
+        fullPath: String,
+        defaultSampleRate: Int = this.defaultSampleRate,
+        defaultFramesPerBurst: Int = this.defaultFramesPerBurst
+    )
 
     external fun pause()
 

@@ -135,7 +135,7 @@ fun CollapsedPlayerLayout(
             Column(
                 modifier = Modifier
                     .height(40.dp)
-                    .padding(start = 8.dp, end = 35.dp),
+                    .padding(start = 8.dp, end = 45.dp),
                 verticalArrangement = Arrangement.SpaceAround
             ) {
                 Text(

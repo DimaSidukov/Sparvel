@@ -4,8 +4,14 @@
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_sidukov_sparvel_core_functionality_service_AudioManager_play(JNIEnv *env, jobject thiz, jstring path) {
-    auto *player = new SparvelAudioPlayer();
+Java_com_sidukov_sparvel_core_functionality_service_AudioManager_play(
+        JNIEnv *env,
+        jobject thiz,
+        jstring path,
+        jint defaultSampleRate,
+        jint defaultFramesPerBurst
+) {
+    auto *player = new SparvelAudioPlayer((int32_t)defaultSampleRate, (int32_t)defaultFramesPerBurst);
     player->play_audio();
 }
 extern "C"

@@ -22,6 +22,6 @@ class ResourceModule {
 
     @Singleton
     @Provides
-    fun provideAudioManager() = AudioManager()
+    fun provideAudioManager(context: Context) = AudioManager(context)
 
 }

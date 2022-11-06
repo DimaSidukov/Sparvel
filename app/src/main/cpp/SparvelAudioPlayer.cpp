@@ -9,6 +9,14 @@
 // https://chromium.googlesource.com/external/github.com/google/oboe/+/refs/tags/1.1.1/docs/FullGuide.md
 // https://github.com/google/oboe/tree/main/samples/RhythmGame
 
+SparvelAudioPlayer::SparvelAudioPlayer(int32_t defaultSampleRate, int32_t defaultFramesPerBurst) {
+    this->_sampleRate = defaultSampleRate;
+    this->_framesPerBurst = defaultFramesPerBurst;
+
+    oboe::DefaultStreamValues::SampleRate = defaultSampleRate;
+    oboe::DefaultStreamValues::FramesPerBurst = defaultFramesPerBurst;
+}
+
 bool SparvelAudioPlayer::init()
 {
     std::lock_guard <std::mutex> lock(_lock);
@@ -16,20 +24,20 @@ bool SparvelAudioPlayer::init()
 
     oboe::Result result = builder.setSharingMode(oboe::SharingMode::Exclusive)
             ->setPerformanceMode(oboe::PerformanceMode::PowerSaving)
-            // add a method for figuring out channel count (it might be that audio has only one)
-            ->setChannelCount(kChannelCount)
-            ->setSampleRate(kSampleRate)
-            ->setSampleRateConversionQuality(oboe::SampleRateConversionQuality::Medium)
+            // add a method for figuring out channel count (it might be that audio has only one - quite rare case though)
+            ->setChannelCount(oboe::ChannelCount::Stereo)
+            ->setSampleRate(_sampleRate)
+            ->setSampleRateConversionQuality(oboe::SampleRateConversionQuality::Best)
             ->setFormat(oboe::AudioFormat::Float)
+            ->setDirection(oboe::Direction::Output)
             ->setDataCallback(this)
             ->openStream(_stream);
 
     if (result != oboe::Result::OK)
     {
-        // LOGE("Failed to create stream. Error: %s", oboe::convertToText(result));
+        __android_log_print(ANDROID_LOG_DEBUG, "NativePlayer", "Failed to create stream. Error: %s", oboe::convertToText(result));
         return false;
     }
-
     return true;
 }
 
