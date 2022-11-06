@@ -8,7 +8,7 @@
 class AudioPlayer {
 public:
     virtual ~AudioPlayer() = default;
-    virtual void init() = 0;
+    virtual bool init() = 0;
     virtual void play_audio() = 0;
     virtual void pause_audio() = 0;
     virtual void finish_process() = 0;

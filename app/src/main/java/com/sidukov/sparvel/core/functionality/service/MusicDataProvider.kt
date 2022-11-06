@@ -31,7 +31,8 @@ class MusicDataProvider @Inject constructor(private val context: Context) {
                 MediaStore.Audio.Media.ALBUM,
                 MediaStore.Audio.Media.YEAR,
                 MediaStore.Audio.Media.ALBUM_ID,
-                MediaStore.Audio.Media.DATE_ADDED
+                MediaStore.Audio.Media.DATE_ADDED,
+                MediaStore.Audio.Media.DATA
             ),
             MediaStore.Audio.Media.IS_MUSIC,
             null,
@@ -53,7 +54,8 @@ class MusicDataProvider @Inject constructor(private val context: Context) {
                         ).toString(),
                         duration = ceil(c.getString(4).toDouble() / 1000).toInt(),
                         year = (c.getString(6) ?: "-1").toInt(),
-                        dateAdded = c.getInt(8)
+                        dateAdded = c.getInt(8),
+                        fullPath = c.getString(9)
                     )
                 )
             }

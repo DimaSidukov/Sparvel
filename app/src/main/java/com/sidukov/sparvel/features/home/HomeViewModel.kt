@@ -41,9 +41,12 @@ class HomeViewModel @Inject constructor(
         uiState = if (uiState.playerState == Playing) {
             uiState.copy(playerState = Paused)
         } else {
+            uiState.selectedTrack?.let(::playTrack)
             uiState.copy(playerState = Playing)
         }
     }
+
+    private fun playTrack(track: Track) = audioManager.play(track.fullPath)
 
     suspend fun readTracks(): List<Track> {
         return withContext(viewModelScope.coroutineContext + Dispatchers.IO) {

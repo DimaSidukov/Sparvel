@@ -7,7 +7,7 @@ cmake_minimum_required(VERSION 3.18.1)
 
 # Declares and names the project.
 
-project("sparvel")
+project("audioplayer")
 
 # Creates and names a library, sets it as either STATIC
 # or SHARED, and provides the relative paths to its source code.
@@ -15,19 +15,26 @@ project("sparvel")
 # Gradle automatically packages shared libraries with your APK.
 
 add_library( # Sets the name of the library.
-        sparvel
+        audioplayer
 
         # Sets the library as a shared library.
         SHARED
 
         # Provides a relative path to your source file(s).
-        main/cpp/native-lib.cpp)
+        native-lib.cpp
+        SparvelAudioPlayer.cpp)
+
+find_package (oboe REQUIRED CONFIG)
+
+include_directories(include)
 
 # Searches for a specified prebuilt library and stores the path as a
 # variable. Because CMake includes system libraries in the search path by
 # default, you only need to specify the name of the public NDK library
 # you want to add. CMake verifies that the library exists before
 # completing its build.
+
+
 
 find_library( # Sets the name of the path variable.
         log-lib
@@ -36,17 +43,14 @@ find_library( # Sets the name of the path variable.
         # you want CMake to locate.
         log)
 
-find_package (oboe REQUIRED CONFIG)
-
 # Specifies libraries CMake should link to your target library. You
 # can link multiple libraries, such as libraries you define in this
 # build script, prebuilt third-party libraries, or system libraries.
 
 target_link_libraries( # Specifies the target library.
-        sparvel
+        audioplayer
 
         # Links the target library to the log library
         # included in the NDK.
+        oboe::oboe
         ${log-lib})
-
-target_link_libraries(sparvel log oboe::oboe)

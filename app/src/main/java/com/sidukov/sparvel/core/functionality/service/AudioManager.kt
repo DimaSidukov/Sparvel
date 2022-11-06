@@ -2,11 +2,13 @@ package com.sidukov.sparvel.core.functionality.service
 
 class AudioManager {
 
-    init {
-        System.loadLibrary("sparvel")
+    companion object {
+        init {
+            System.loadLibrary("audioplayer")
+        }
     }
 
-    external fun play(trackId: Int)
+    external fun play(fullPath: String)
 
     external fun pause()
 

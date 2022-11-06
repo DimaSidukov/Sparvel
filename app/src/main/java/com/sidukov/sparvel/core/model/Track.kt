@@ -11,5 +11,6 @@ class Track(
     var coverId: String,
     val duration: Int,
     val year: Int,
-    val dateAdded: Int
+    val dateAdded: Int,
+    val fullPath: String
 ) : Serializable
