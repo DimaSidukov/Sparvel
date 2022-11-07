@@ -6,10 +6,10 @@
 #define SPARVEL_SPARVELAUDIOPLAYER_H
 
 #include <oboe/Oboe.h>
-#include "AudioPlayer.h"
 #include <android/log.h>
 #include <math.h>
 #include <memory>
+#include "AudioPlayer.h"
 
 class SparvelAudioPlayer :
         public AudioPlayer,
@@ -27,10 +27,11 @@ private:
     // static double constexpr mPhaseIncrement = kFrequency * kTwoPi / (double)_sampleRate;
     // Keeps track of where the wave is
     float mPhase = 0.0;
+    int32_t* userAudioData;
 
 public:
     ~SparvelAudioPlayer() = default;
-    SparvelAudioPlayer(int32_t defaultSampleRate, int32_t defaultFramesPerBurst);
+    SparvelAudioPlayer(int32_t defaultSampleRate, int32_t defaultFramesPerBurst, int32_t* audioData);
 
     bool init();
 

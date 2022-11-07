@@ -9,22 +9,22 @@
 // https://chromium.googlesource.com/external/github.com/google/oboe/+/refs/tags/1.1.1/docs/FullGuide.md
 // https://github.com/google/oboe/tree/main/samples/RhythmGame
 
-SparvelAudioPlayer::SparvelAudioPlayer(int32_t defaultSampleRate, int32_t defaultFramesPerBurst) {
+SparvelAudioPlayer::SparvelAudioPlayer(int32_t defaultSampleRate, int32_t defaultFramesPerBurst, int32_t* audioData) {
     this->_sampleRate = defaultSampleRate;
     this->_framesPerBurst = defaultFramesPerBurst;
+    this->userAudioData = audioData;
 
     oboe::DefaultStreamValues::SampleRate = defaultSampleRate;
     oboe::DefaultStreamValues::FramesPerBurst = defaultFramesPerBurst;
 }
 
-bool SparvelAudioPlayer::init()
-{
-    std::lock_guard <std::mutex> lock(_lock);
+bool SparvelAudioPlayer::init() {
+    std::lock_guard<std::mutex> lock(_lock);
     oboe::AudioStreamBuilder builder;
 
     oboe::Result result = builder.setSharingMode(oboe::SharingMode::Exclusive)
             ->setPerformanceMode(oboe::PerformanceMode::PowerSaving)
-            // add a method for figuring out channel count (it might be that audio has only one - quite rare case though)
+                    // add a method for figuring out channel count (it might be that audio has only one - quite rare case though)
             ->setChannelCount(oboe::ChannelCount::Stereo)
             ->setSampleRate(_sampleRate)
             ->setSampleRateConversionQuality(oboe::SampleRateConversionQuality::Best)
@@ -33,29 +33,39 @@ bool SparvelAudioPlayer::init()
             ->setDataCallback(this)
             ->openStream(_stream);
 
-    if (result != oboe::Result::OK)
-    {
-        __android_log_print(ANDROID_LOG_DEBUG, "NativePlayer", "Failed to create stream. Error: %s", oboe::convertToText(result));
+    if (result != oboe::Result::OK) {
+        __android_log_print(
+                ANDROID_LOG_DEBUG,
+                "NativePlayer",
+                "Failed to create stream. Error: %s",
+                oboe::convertToText(result)
+        );
         return false;
     }
     return true;
 }
 
-void SparvelAudioPlayer::play_audio()
-{
+void SparvelAudioPlayer::play_audio() {
     init();
     _stream->requestStart();
 }
 
-void SparvelAudioPlayer::pause_audio()
-{
+void SparvelAudioPlayer::pause_audio() {
 }
 
-void SparvelAudioPlayer::finish_process()
-{
+void SparvelAudioPlayer::finish_process() {
 }
 
-oboe::DataCallbackResult SparvelAudioPlayer::onAudioReady(oboe::AudioStream* oboeStream, void* audioData, int32_t numFrames)
-{
+oboe::DataCallbackResult
+SparvelAudioPlayer::onAudioReady(oboe::AudioStream *oboeStream, void *audioData,
+                                 int32_t numFrames) {
+
+    auto *outputData = static_cast<float *>(audioData);
+
+    for (int i = 0; i < numFrames; ++i){
+        outputData[i] = userAudioData[i];
+    }
+
+
     return oboe::DataCallbackResult();
 }
