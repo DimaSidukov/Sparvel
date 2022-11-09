@@ -4,15 +4,17 @@
 
 #include "include/SparvelAudioPlayer.h"
 
+#include <utility>
+
 // articles and samples to refer to:
 // https://github.com/google/oboe/blob/main/docs/GettingStarted.md
 // https://chromium.googlesource.com/external/github.com/google/oboe/+/refs/tags/1.1.1/docs/FullGuide.md
 // https://github.com/google/oboe/tree/main/samples/RhythmGame
 
-SparvelAudioPlayer::SparvelAudioPlayer(int32_t defaultSampleRate, int32_t defaultFramesPerBurst, int32_t* audioData) {
+SparvelAudioPlayer::SparvelAudioPlayer(int32_t defaultSampleRate, int32_t defaultFramesPerBurst, std::vector<float> audioData) {
     this->_sampleRate = defaultSampleRate;
     this->_framesPerBurst = defaultFramesPerBurst;
-    this->userAudioData = audioData;
+    this->userAudioData = std::move(audioData);
 
     oboe::DefaultStreamValues::SampleRate = defaultSampleRate;
     oboe::DefaultStreamValues::FramesPerBurst = defaultFramesPerBurst;
@@ -65,7 +67,6 @@ SparvelAudioPlayer::onAudioReady(oboe::AudioStream *oboeStream, void *audioData,
     for (int i = 0; i < numFrames; ++i){
         outputData[i] = userAudioData[i];
     }
-
 
     return oboe::DataCallbackResult();
 }

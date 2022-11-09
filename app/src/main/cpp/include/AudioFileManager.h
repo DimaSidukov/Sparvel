@@ -11,6 +11,6 @@
 #include <iterator>
 #include <vector>
 
-char* getAudioStreamFromFile(const std::string& path);
+std::vector<float> getAudioStreamFromFile(const std::string& path);
 
 #endif //SPARVEL_AUDIOFILEMANAGER_H

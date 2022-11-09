@@ -9,6 +9,7 @@
 #include <android/log.h>
 #include <math.h>
 #include <memory>
+#include <vector>
 #include "AudioPlayer.h"
 
 class SparvelAudioPlayer :
@@ -27,11 +28,12 @@ private:
     // static double constexpr mPhaseIncrement = kFrequency * kTwoPi / (double)_sampleRate;
     // Keeps track of where the wave is
     float mPhase = 0.0;
-    int32_t* userAudioData;
+    std::vector<float> userAudioData;
 
 public:
     ~SparvelAudioPlayer() = default;
-    SparvelAudioPlayer(int32_t defaultSampleRate, int32_t defaultFramesPerBurst, int32_t* audioData);
+    SparvelAudioPlayer(int32_t defaultSampleRate, int32_t defaultFramesPerBurst,
+                       std::vector<float> audioData);
 
     bool init();
 

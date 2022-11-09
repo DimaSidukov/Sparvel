@@ -6,15 +6,16 @@
 #include "include/AudioFileManager.h"
 #include <oboe/AudioStream.h>
 
-char* getAudioStreamFromFile(const std::string& path) {
+std::vector<float> getAudioStreamFromFile(const std::string& path) {
 
     std::ifstream inputAudioFile(path, std::ios::binary);
 
-    std::vector<char> audioAsBytes(
-            (std::istreambuf_iterator<char>(inputAudioFile)),
-            (std::istreambuf_iterator<char>()));
-
+    inputAudioFile.seekg(0, std::ios_base::end);
+    std::size_t size = inputAudioFile.tellg();
+    inputAudioFile.seekg(0, std::ios_base::beg);
+    std::vector<float> v(size/sizeof(float));
+    inputAudioFile.read((char*) &v[0], size);
     inputAudioFile.close();
 
-    return reinterpret_cast<char*>(audioAsBytes.data());
+    return v;
 }

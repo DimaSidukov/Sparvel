@@ -6,6 +6,7 @@ plugins {
 
 android {
     compileSdk 33
+    ndkVersion "25.1.8937393"
 
     defaultConfig {
         applicationId "com.sidukov.sparvel"
@@ -56,8 +57,8 @@ android {
     }
     externalNativeBuild {
         cmake {
-            path file('src/main/cpp/CMakeLists.txt')
-            version '3.18.1'
+            path 'src/main/cpp/CMakeLists.txt'
+            version '3.22.1'
         }
     }
 
