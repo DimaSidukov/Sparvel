@@ -2,9 +2,7 @@
 // Created by sidukov on 07.11.2022.
 //
 
-#include <android/log.h>
 #include "include/AudioFileManager.h"
-#include <oboe/AudioStream.h>
 
 std::vector<float> getAudioStreamFromFile(const std::string& path) {
 

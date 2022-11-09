@@ -14,6 +14,9 @@ project("audioplayer")
 # You can define multiple libraries, and CMake builds them for you.
 # Gradle automatically packages shared libraries with your APK.
 
+# In order to run build, it is necessary to have Oboe library plugged from source
+# More details here: https://github.com/google/oboe/blob/main/docs/GettingStarted.md
+
 add_library( # Sets the name of the library.
         audioplayer
 
@@ -25,9 +28,12 @@ add_library( # Sets the name of the library.
         AudioFileManager.cpp
         SparvelAudioPlayer.cpp)
 
-find_package (oboe REQUIRED CONFIG)
+set(OBOE_DIR oboe)
+
+add_subdirectory (${OBOE_DIR} ./oboe)
 
 include_directories(include)
+include_directories (${OBOE_DIR}/include)
 
 # Searches for a specified prebuilt library and stores the path as a
 # variable. Because CMake includes system libraries in the search path by
@@ -53,5 +59,5 @@ target_link_libraries( # Specifies the target library.
 
         # Links the target library to the log library
         # included in the NDK.
-        oboe::oboe
+        oboe
         ${log-lib})

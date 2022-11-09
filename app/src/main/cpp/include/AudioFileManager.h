@@ -10,6 +10,11 @@
 #include <fstream>
 #include <iterator>
 #include <vector>
+#include <oboe/AudioStream.h>
+#include <media/NdkMediaCodec.h>
+#include <media/NdkMediaExtractor.h>
+#include <oboe/Oboe.h>
+#include <android/log.h>
 
 std::vector<float> getAudioStreamFromFile(const std::string& path);
 

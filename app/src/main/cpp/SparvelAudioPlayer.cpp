@@ -4,8 +4,6 @@
 
 #include "include/SparvelAudioPlayer.h"
 
-#include <utility>
-
 // articles and samples to refer to:
 // https://github.com/google/oboe/blob/main/docs/GettingStarted.md
 // https://chromium.googlesource.com/external/github.com/google/oboe/+/refs/tags/1.1.1/docs/FullGuide.md
@@ -14,7 +12,7 @@
 SparvelAudioPlayer::SparvelAudioPlayer(int32_t defaultSampleRate, int32_t defaultFramesPerBurst, std::vector<float> audioData) {
     this->_sampleRate = defaultSampleRate;
     this->_framesPerBurst = defaultFramesPerBurst;
-    this->userAudioData = std::move(audioData);
+    this->_userAudioData = std::move(audioData);
 
     oboe::DefaultStreamValues::SampleRate = defaultSampleRate;
     oboe::DefaultStreamValues::FramesPerBurst = defaultFramesPerBurst;
@@ -26,7 +24,7 @@ bool SparvelAudioPlayer::init() {
 
     oboe::Result result = builder.setSharingMode(oboe::SharingMode::Exclusive)
             ->setPerformanceMode(oboe::PerformanceMode::PowerSaving)
-                    // add a method for figuring out channel count (it might be that audio has only one - quite rare case though)
+            // add a method for figuring out channel count (it might be that audio has only one - quite rare case though)
             ->setChannelCount(oboe::ChannelCount::Stereo)
             ->setSampleRate(_sampleRate)
             ->setSampleRateConversionQuality(oboe::SampleRateConversionQuality::Best)
@@ -64,8 +62,8 @@ SparvelAudioPlayer::onAudioReady(oboe::AudioStream *oboeStream, void *audioData,
 
     auto *outputData = static_cast<float *>(audioData);
 
-    for (int i = 0; i < numFrames; ++i){
-        outputData[i] = userAudioData[i];
+    for (int i = 500; i < 1000; ++i){
+        outputData[i] = _userAudioData[i];
     }
 
     return oboe::DataCallbackResult();

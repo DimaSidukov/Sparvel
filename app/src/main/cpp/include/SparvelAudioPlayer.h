@@ -10,6 +10,7 @@
 #include <math.h>
 #include <memory>
 #include <vector>
+#include <utility>
 #include "AudioPlayer.h"
 
 class SparvelAudioPlayer :
@@ -21,14 +22,14 @@ private:
     int _sampleRate = 48000;
     int _framesPerBurst;
     // Wave params, these could be instance variables in order to modify at runtime
-    static float constexpr kAmplitude = 0.5f;
-    static float constexpr kFrequency = 440;
-    static float constexpr kPI = 3.14;
-    static float constexpr kTwoPi = kPI * 2;
-    // static double constexpr mPhaseIncrement = kFrequency * kTwoPi / (double)_sampleRate;
+    static float constexpr _amplitude = 0.5f;
+    static float constexpr _frequency = 440;
+    static float constexpr _pi = 3.14;
+    static float constexpr _twoPi = _pi * 2;
+    // static double constexpr mPhaseIncrement = _frequency * _twoPi / (double)_sampleRate;
     // Keeps track of where the wave is
-    float mPhase = 0.0;
-    std::vector<float> userAudioData;
+    float _phase = 0.0;
+    std::vector<float> _userAudioData;
 
 public:
     ~SparvelAudioPlayer() = default;
