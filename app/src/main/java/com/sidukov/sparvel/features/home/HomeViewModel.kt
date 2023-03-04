@@ -46,7 +46,9 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    private fun playTrack(track: Track) = audioManager.play(track.fullPath)
+    private fun playTrack(track: Track) = {
+        // audioManager.play(track.fullPath)
+    }
 
     suspend fun readTracks(): List<Track> {
         return withContext(viewModelScope.coroutineContext + Dispatchers.IO) {

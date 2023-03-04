@@ -12,7 +12,7 @@ class AudioManager @Inject constructor(private val context: Context) {
 
     companion object {
         init {
-            System.loadLibrary("audioplayer")
+            // System.loadLibrary("audioplayer")
         }
     }
 
@@ -26,14 +26,14 @@ class AudioManager @Inject constructor(private val context: Context) {
         )?.toInt() ?: -1
     }
 
-    external fun play(
-        fullPath: String,
-        defaultSampleRate: Int = this.defaultSampleRate,
-        defaultFramesPerBurst: Int = this.defaultFramesPerBurst
-    )
-
-    external fun pause()
-
-    external fun finish()
+//    external fun play(
+//        fullPath: String,
+//        defaultSampleRate: Int = this.defaultSampleRate,
+//        defaultFramesPerBurst: Int = this.defaultFramesPerBurst
+//    )
+//
+//    external fun pause()
+//
+//    external fun finish()
 
 }
