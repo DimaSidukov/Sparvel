@@ -33,8 +33,10 @@ import com.sidukov.sparvel.core.theme.SparvelTheme
 import com.sidukov.sparvel.di.HomeViewModelFactory
 import com.sidukov.sparvel.features.album.AlbumScreen
 import com.sidukov.sparvel.features.equalizer.EqualizerScreen
-import com.sidukov.sparvel.features.home.HomeScreenContainer
+import com.sidukov.sparvel.features.home.GetStoragePermission
+import com.sidukov.sparvel.features.home.PermissionDeniedMessage
 import com.sidukov.sparvel.features.home.PlaylistScreen
+import com.sidukov.sparvel.features.home.TracksScreen
 import com.sidukov.sparvel.features.playlist.NewPlaylistScreen
 import com.sidukov.sparvel.features.splash.SplashScreen
 import com.sidukov.sparvel.features.track.AddTracksScreen
@@ -42,7 +44,7 @@ import com.sidukov.sparvel.features.track.EditTrackInfoScreen
 import kotlinx.coroutines.launch
 
 @Composable
-fun MainContainerScreen(
+fun MainScreen(
     navController: NavHostController,
     onAppThemeChanged: () -> Unit
 ) {
@@ -122,16 +124,23 @@ fun NavGraphBuilder.drawerContainerGraph(
 ) {
     navigation(startDestination = Screens.Home.route, route = Screens.DrawerContainer.route) {
         composable(route = Screens.Home.route) {
-            HomeScreenContainer(
-                viewModel(
-                    factory = HomeViewModelFactory(
-                        SparvelApplication.getInjector().musicDataProvider,
-                        SparvelApplication.getInjector().storageManager,
-                        SparvelApplication.getInjector().audioManager
+            GetStoragePermission(
+                onPermissionGranted = {
+                    TracksScreen(
+                        viewModel = viewModel(
+                            factory = HomeViewModelFactory(
+                                SparvelApplication.getInjector().musicDataProvider,
+                                SparvelApplication.getInjector().storageManager,
+                                SparvelApplication.getInjector().audioManager
+                            )
+                        ),
+                        navController = navController,
+                        onMenuClicked = onMenuClicked
                     )
-                ),
-                navController,
-                onMenuClicked
+                },
+                onPermissionDenied = {
+                    PermissionDeniedMessage()
+                }
             )
         }
         composable(Screens.Playlist.route) {

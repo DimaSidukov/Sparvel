@@ -19,7 +19,6 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
@@ -31,20 +30,16 @@ import com.sidukov.sparvel.R
 import com.sidukov.sparvel.core.functionality.normalize
 import com.sidukov.sparvel.core.model.Track
 import com.sidukov.sparvel.core.theme.SparvelTheme
-import com.sidukov.sparvel.core.widgets.HQImageOrPlaceholder
-import com.sidukov.sparvel.core.widgets.ImageOrPlaceholder
+import com.sidukov.sparvel.core.widgets.BorderlessImage
+import com.sidukov.sparvel.core.widgets.BoxedImage
 import com.sidukov.sparvel.core.widgets.Toolbar
+import com.sidukov.sparvel.features.home.HomeViewModel
 import com.sidukov.sparvel.features.home.PlayerState
-import kotlinx.coroutines.launch
 
 @Composable
-fun PlayerView(
-    track: Track,
-    image: ImageBitmap?,
-    playerState: PlayerState,
+fun PlayerBottomSheet(
+    viewModel: HomeViewModel,
     iconColor: Color,
-    onPlayButtonClicked: () -> Unit,
-    onSettingsClicked: () -> Unit,
 ) {
 
     val screenHeight =
@@ -59,7 +54,7 @@ fun PlayerView(
         shouldMoveDown = true
     }
 
-    DraggableView(
+    DraggableBottomSheet(
         screenHeight = screenHeight,
         minHeight = minHeight,
         shouldMoveDown = shouldMoveDown
@@ -83,40 +78,30 @@ fun PlayerView(
                 shouldMoveDown = false
             }
         }
-        CollapsedPlayerLayout(
+        CollapsedPlayer(
+            viewModel = viewModel,
             alpha = collapsedAlpha,
             height = minHeight / 2,
-            track = track,
-            playerState = playerState,
-            onPlayerButtonClicked = onPlayButtonClicked
+            track = viewModel.uiState.selectedTrack!!,
         )
-        ExpandedPlayerLayout(
+        ExpandedPlayer(
+            viewModel = viewModel,
             alpha = expandedAlpha,
             playbackTimestamp = playbackTimestamp,
-            playerState = playerState,
-            track = track,
-            image = image,
             iconColor = iconColor,
             onCollapseClicked = { shouldMoveDown = true },
-            onSettingsClicked = onSettingsClicked,
             onSliderValueChanged = { playbackTimestamp = it },
-            onRepeatClicked = { },
-            onPreviousClicked = { },
-            onPlayClicked = onPlayButtonClicked,
-            onNextClicked = { },
-            onCurrentPlaylistClicked = { }
         )
     }
 }
 
 @OptIn(ExperimentalAnimationGraphicsApi::class)
 @Composable
-fun CollapsedPlayerLayout(
+fun CollapsedPlayer(
+    viewModel: HomeViewModel,
     alpha: Float,
     height: Dp,
-    track: Track,
-    playerState: PlayerState,
-    onPlayerButtonClicked: () -> Unit
+    track: Track
 ) {
     Box(
         modifier = Modifier
@@ -127,8 +112,8 @@ fun CollapsedPlayerLayout(
         contentAlignment = Alignment.CenterStart
     ) {
         Row {
-            ImageOrPlaceholder(
-                imageUrl = track.coverId,
+            BoxedImage(
+                imageUri = track.coverId,
                 imageSize = 40,
                 needGradient = false
             )
@@ -168,7 +153,7 @@ fun CollapsedPlayerLayout(
                     indication = rememberRipple(
                         radius = 20.dp
                     ),
-                    onClick = onPlayerButtonClicked
+                    onClick = { viewModel.updatePlayerState() }
                 )
 
         ) {
@@ -178,7 +163,7 @@ fun CollapsedPlayerLayout(
                 painter = rememberAnimatedVectorPainter(
                     animatedImageVector = AnimatedImageVector.animatedVectorResource(
                         id = R.drawable.anim_play_pause
-                    ), atEnd = playerState == PlayerState.Playing
+                    ), atEnd = viewModel.uiState.playerState == PlayerState.Playing
                 ),
                 contentDescription = null,
                 colorFilter = ColorFilter.tint(SparvelTheme.colors.playerActions)
@@ -189,43 +174,37 @@ fun CollapsedPlayerLayout(
 
 
 @Composable
-fun ExpandedPlayerLayout(
+fun ExpandedPlayer(
+    viewModel: HomeViewModel,
     alpha: Float,
     playbackTimestamp: Float,
-    playerState: PlayerState,
-    track: Track,
-    image: ImageBitmap?,
     iconColor: Color,
     onCollapseClicked: () -> Unit,
-    onSettingsClicked: () -> Unit,
     onSliderValueChanged: (Float) -> Unit,
-    onRepeatClicked: () -> Unit,
-    onPreviousClicked: () -> Unit,
-    onPlayClicked: () -> Unit,
-    onNextClicked: () -> Unit,
-    onCurrentPlaylistClicked: () -> Unit
 ) {
-
-    val scope = rememberCoroutineScope()
 
     Column(
         modifier = Modifier.alpha(alpha)
     ) {
         Box {
-            HQImageOrPlaceholder(
-                image = image,
-                imageSize = 500,
-                needGradient = true
-            )
+            Box(
+                modifier = Modifier.height(500.dp)
+            ) {
+                BorderlessImage(
+                    imageUri = viewModel.uiState.selectedTrack!!.coverId,
+                    imageSize = 500,
+                    needGradient = true
+                )
+            }
             Toolbar(
                 navigationIcon = R.drawable.ic_arrow,
                 actionIcon = R.drawable.ic_equalizer,
                 onNavigationClicked = {
-                    scope.launch {
-                        onCollapseClicked()
-                    }
+                    onCollapseClicked()
                 },
-                onActionClicked = onSettingsClicked,
+                onActionClicked = {
+                    // What to do when clicking on settings
+                },
                 iconColor = iconColor
             )
         }
@@ -238,8 +217,8 @@ fun ExpandedPlayerLayout(
         ) {
             Column {
                 TrackInfo(
-                    name = track.name,
-                    artist = track.artist,
+                    name = viewModel.uiState.selectedTrack!!.name,
+                    artist = viewModel.uiState.selectedTrack!!.artist,
                     modifier = Modifier.padding(horizontal = 10.dp)
                 )
                 Spacer(modifier = Modifier.height(50.dp))
@@ -253,18 +232,28 @@ fun ExpandedPlayerLayout(
                 Spacer(modifier = Modifier.height(8.dp))
                 Timestamps(
                     start = 0,
-                    end = track.duration,
+                    end = viewModel.uiState.selectedTrack!!.duration,
                     modifier = Modifier.padding(horizontal = 10.dp)
                 )
                 Spacer(modifier = Modifier.height(40.dp))
                 PlayerController(
                     modifier = Modifier.padding(horizontal = 10.dp),
-                    playerState = playerState,
-                    onRepeatClicked = onRepeatClicked,
-                    onPreviousClicked = onPreviousClicked,
-                    onPlayClicked = onPlayClicked,
-                    onNextClicked = onNextClicked,
-                    onCurrentPlaylistClicked = onCurrentPlaylistClicked
+                    playerState = viewModel.uiState.playerState,
+                    onRepeatClicked = {
+
+                    },
+                    onPreviousClicked = {
+
+                    },
+                    onPlayClicked = {
+                        viewModel.updatePlayerState()
+                    },
+                    onNextClicked = {
+
+                    },
+                    onCurrentPlaylistClicked = {
+
+                    }
                 )
             }
         }

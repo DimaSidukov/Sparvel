@@ -28,41 +28,21 @@ import com.sidukov.sparvel.core.functionality.filter
 import com.sidukov.sparvel.core.functionality.toMusicCollection
 import com.sidukov.sparvel.core.model.Track
 import com.sidukov.sparvel.core.theme.SparvelTheme
-import com.sidukov.sparvel.core.widgets.HomeMenuPanel
+import com.sidukov.sparvel.core.widgets.MenuSearchPanel
 import com.sidukov.sparvel.features.home.HomeScreen.*
-import com.sidukov.sparvel.features.player.PlayerView
+import com.sidukov.sparvel.features.player.PlayerBottomSheet
 import com.sidukov.sparvel.features.playlist.PlaylistsScreen
-import kotlinx.coroutines.launch
 
-@Composable
-fun HomeScreenContainer(
-    viewModel: HomeViewModel,
-    navController: NavHostController,
-    onMenuClicked: () -> Unit,
-) {
-    GetStoragePermission(
-        onPermissionGranted = {
-            HomeScreenApprovedState(
-                viewModel = viewModel,
-                navController = navController,
-                onMenuClicked = onMenuClicked
-            )
-        },
-        onPermissionDenied = {
-            HomeScreenDeniedState()
-        }
-    )
-}
-
+@SuppressLint("ProduceStateDoesNotAssignValue")
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
-fun HomeScreenApprovedState(
+fun TracksScreen(
     viewModel: HomeViewModel,
     navController: NavHostController,
     onMenuClicked: () -> Unit
 ) {
     val uiState = viewModel.uiState
-    val scope = rememberCoroutineScope()
+    val cr = LocalContext.current.contentResolver
 
     var trackList by remember { mutableStateOf<List<Track>>(emptyList()) }
     var query by remember { mutableStateOf("") }
@@ -71,11 +51,9 @@ fun HomeScreenApprovedState(
         trackList = viewModel.readTracks()
     }
 
-    HomeMenuPanel(
+    MenuSearchPanel(
         onMenuClicked = onMenuClicked,
-        onTextUpdated = {
-            query = it
-        }
+        onTextUpdated = { query = it }
     ) {
 
         val filteredTrackList by remember { derivedStateOf { trackList.filter(query) } }
@@ -96,7 +74,7 @@ fun HomeScreenApprovedState(
         ) { screen ->
             when (screen) {
                 FULL -> {
-                    HomeScreen(
+                    TracksScreen(
                         navController = navController,
                         trackList = filteredTrackList,
                         isTrackSelected = uiState.selectedTrack != null,
@@ -107,14 +85,10 @@ fun HomeScreenApprovedState(
                             viewModel.setScreen(ALBUMS)
                         },
                         onLibrarySectionClicked = {
-                            scope.launch {
-                                viewModel.setScreen(LIBRARY)
-                            }
+                            viewModel.setScreen(LIBRARY)
                         },
                         onTrackClicked = {
-                            scope.launch {
-                                viewModel.showPlayer(it)
-                            }
+                            viewModel.showPlayer(it)
                         }
                     )
                 }
@@ -142,9 +116,7 @@ fun HomeScreenApprovedState(
                         tracks = filteredTrackList,
                         isTrackSelected = uiState.selectedTrack != null,
                         onTrackClicked = {
-                            scope.launch {
-                                viewModel.showPlayer(it)
-                            }
+                            viewModel.showPlayer(it)
                         },
                         onNavigatedBack = {
                             viewModel.setScreen(FULL)
@@ -156,30 +128,19 @@ fun HomeScreenApprovedState(
     }
     uiState.selectedTrack?.let {
         var img by remember { mutableStateOf<ImageBitmap?>(null) }
-        val cr = LocalContext.current.contentResolver
-
         LaunchedEffect(it) {
             img = it.coverId.decodeBitmap(cr)
         }
 
-        val iconColor = img.deriveIconColor()
-        PlayerView(
-            track = it,
-            image = img,
-            playerState = uiState.playerState,
-            iconColor = iconColor,
-            onPlayButtonClicked = {
-                viewModel.updatePlayerState()
-            },
-            onSettingsClicked = {
-
-            }
+        PlayerBottomSheet(
+            viewModel = viewModel,
+            iconColor = img.deriveIconColor()
         )
     }
 }
 
 @Composable
-fun HomeScreenDeniedState() {
+fun PermissionDeniedMessage() {
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -197,7 +158,6 @@ fun HomeScreenDeniedState() {
     }
 }
 
-@SuppressLint("PermissionLaunchedDuringComposition")
 @OptIn(ExperimentalPermissionsApi::class, ExperimentalPermissionsApi::class)
 @Composable
 fun GetStoragePermission(

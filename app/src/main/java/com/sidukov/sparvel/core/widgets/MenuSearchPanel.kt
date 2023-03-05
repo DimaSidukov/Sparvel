@@ -13,7 +13,7 @@ import com.sidukov.sparvel.core.functionality.systemBarsPadding
 import com.sidukov.sparvel.core.theme.SparvelTheme
 
 @Composable
-fun HomeMenuPanel(
+fun MenuSearchPanel(
     onMenuClicked: () -> Unit,
     onTextUpdated: (String) -> Unit,
     content: @Composable () -> Unit,

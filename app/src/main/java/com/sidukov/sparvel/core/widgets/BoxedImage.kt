@@ -26,8 +26,8 @@ import com.sidukov.sparvel.core.functionality.applyIf
 import com.sidukov.sparvel.core.theme.SparvelTheme
 
 @Composable
-fun ImageOrPlaceholder(
-    imageUrl: String,
+fun BoxedImage(
+    imageUri: String,
     imageSize: Int,
     needGradient: Boolean,
     onImageClicked: (() -> Unit)? = null
@@ -67,7 +67,7 @@ fun ImageOrPlaceholder(
             }
         }
         AsyncImage(
-            model = imageUrl,
+            model = imageUri,
             contentDescription = null,
             onSuccess = { isImageLoaded = true },
             onError = { isImageLoaded = false },

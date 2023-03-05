@@ -10,20 +10,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
 import com.sidukov.sparvel.R
 import com.sidukov.sparvel.core.functionality.applyGradient
 import com.sidukov.sparvel.core.functionality.applyIf
 import com.sidukov.sparvel.core.theme.SparvelTheme
 
 @Composable
-fun HQImageOrPlaceholder(
-    image: ImageBitmap?,
+fun BorderlessImage(
+    imageUri: String,
     imageSize: Int,
     needGradient: Boolean,
     onImageClicked: (() -> Unit)? = null
@@ -35,7 +35,8 @@ fun HQImageOrPlaceholder(
         endY = dynamicImageSize.height * 0.9f
     )
 
-    if (image == null) {
+    var isImageLoaded by remember { mutableStateOf(false) }
+    if (!isImageLoaded) {
         Image(
             painter = painterResource(R.drawable.ic_melody),
             contentDescription = null,
@@ -47,18 +48,19 @@ fun HQImageOrPlaceholder(
                 },
             colorFilter = ColorFilter.tint(SparvelTheme.colors.secondary)
         )
-    } else {
-        Image(
-            bitmap = image,
-            contentDescription = null,
-            contentScale = ContentScale.FillWidth,
-            modifier = Modifier
-                .width(imageSize.dp)
-                .onGloballyPositioned { dynamicImageSize = it.size }
-                .applyGradient(needGradient, gradient)
-                .applyIf(onImageClicked != null) {
-                    clickable(onClick = onImageClicked!!)
-                }
-        )
     }
+    AsyncImage(
+        model = imageUri,
+        contentDescription = null,
+        onSuccess = { isImageLoaded = true },
+        onError = { isImageLoaded = false },
+        contentScale = ContentScale.FillWidth,
+        modifier = Modifier
+            .width(imageSize.dp)
+            .onGloballyPositioned { dynamicImageSize = it.size }
+            .applyGradient(needGradient, gradient)
+            .applyIf(onImageClicked != null) {
+                clickable(onClick = onImageClicked!!)
+            }
+    )
 }

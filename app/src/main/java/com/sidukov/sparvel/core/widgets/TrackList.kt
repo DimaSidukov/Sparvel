@@ -52,8 +52,8 @@ fun TrackList(
                     ) { onItemClicked(item) },
                 horizontalArrangement = Arrangement.Start
             ) {
-                ImageOrPlaceholder(
-                    imageUrl = item.coverId,
+                BoxedImage(
+                    imageUri = item.coverId,
                     imageSize = 50,
                     needGradient = false
                 )

@@ -14,7 +14,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.sidukov.sparvel.core.functionality.background
@@ -22,7 +21,7 @@ import com.sidukov.sparvel.core.theme.SparvelTheme
 import kotlinx.coroutines.launch
 
 @Composable
-fun DraggableView(
+fun DraggableBottomSheet(
     screenHeight: Dp,
     minHeight: Dp,
     shouldMoveDown: Boolean,

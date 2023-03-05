@@ -16,7 +16,7 @@ import com.sidukov.sparvel.core.widgets.SectionName
 import com.sidukov.sparvel.core.widgets.TrackList
 
 @Composable
-fun HomeScreen(
+fun TracksScreen(
     navController: NavHostController,
     trackList: List<Track>,
     isTrackSelected: Boolean,

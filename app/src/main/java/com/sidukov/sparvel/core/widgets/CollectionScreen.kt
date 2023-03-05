@@ -40,8 +40,8 @@ fun CollectionScreen(
         ) {
             items(collectionList) { collection ->
                 Column {
-                    ImageOrPlaceholder(
-                        imageUrl = collection.coverId,
+                    BoxedImage(
+                        imageUri = collection.coverId,
                         imageSize = contentWidth,
                         needGradient = true
                     )

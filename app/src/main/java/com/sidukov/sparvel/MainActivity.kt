@@ -16,7 +16,7 @@ import com.sidukov.sparvel.core.functionality.background
 import com.sidukov.sparvel.core.functionality.storage.AppTheme
 import com.sidukov.sparvel.core.theme.SparvelTheme
 import com.sidukov.sparvel.di.MainViewModelFactory
-import com.sidukov.sparvel.features.main.MainContainerScreen
+import com.sidukov.sparvel.features.main.MainScreen
 
 class MainActivity : ComponentActivity() {
 
@@ -45,7 +45,7 @@ class MainActivity : ComponentActivity() {
                         ),
                     color = Color.Transparent
                 ) {
-                    MainContainerScreen(
+                    MainScreen(
                         navController = navController,
                         onAppThemeChanged = {
                             viewModel.switchAppTheme()

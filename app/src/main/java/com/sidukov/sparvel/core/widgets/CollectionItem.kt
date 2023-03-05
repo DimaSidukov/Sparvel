@@ -20,9 +20,9 @@ fun CollectionItem(
     onItemClicked: () -> Unit
 ) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        ImageOrPlaceholder(
+        BoxedImage(
             imageSize = 100,
-            imageUrl = playlistImage,
+            imageUri = playlistImage,
             needGradient = needGradient,
             onImageClicked = onItemClicked
         )
