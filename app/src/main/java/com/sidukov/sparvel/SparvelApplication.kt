@@ -1,34 +1,22 @@
 package com.sidukov.sparvel
 
 import android.app.Application
-import com.sidukov.sparvel.core.functionality.storage.SharedPrefsManager
-import com.sidukov.sparvel.di.AppComponent
-import com.sidukov.sparvel.di.AppModule
-import com.sidukov.sparvel.di.DaggerAppComponent
-import com.sidukov.sparvel.di.ResourceModule
-import dagger.android.AndroidInjector
-import dagger.android.DispatchingAndroidInjector
-import dagger.android.HasAndroidInjector
-import javax.inject.Inject
+import android.content.Context
+import com.sidukov.sparvel.di.Injector
 
-class SparvelApplication : Application(), HasAndroidInjector {
-
-    @Inject
-    lateinit var androidInjector: DispatchingAndroidInjector<Any>
-    var instance: SparvelApplication? = null
-
-    override fun androidInjector(): AndroidInjector<Any> = androidInjector
+class SparvelApplication : Application() {
 
     companion object {
-        lateinit var appComponent: AppComponent
+        private var injector: Injector? = null
+        private fun init(context: Context) {
+            injector = Injector(context)
+        }
+
+        fun getInjector() = injector!!
     }
 
     override fun onCreate() {
         super.onCreate()
-        instance = this
-        appComponent = DaggerAppComponent.builder()
-            .appModule(AppModule(this))
-            .resourceModule(ResourceModule())
-            .build()
+        init(this)
     }
 }

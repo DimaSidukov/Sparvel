@@ -19,20 +19,21 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.sidukov.sparvel.R
+import com.sidukov.sparvel.SparvelApplication
 import com.sidukov.sparvel.core.functionality.Screens
 import com.sidukov.sparvel.core.functionality.appVersion
 import com.sidukov.sparvel.core.theme.SparvelTheme
+import com.sidukov.sparvel.di.HomeViewModelFactory
 import com.sidukov.sparvel.features.album.AlbumScreen
 import com.sidukov.sparvel.features.equalizer.EqualizerScreen
 import com.sidukov.sparvel.features.home.HomeScreenContainer
-import com.sidukov.sparvel.features.home.HomeViewModel
 import com.sidukov.sparvel.features.home.PlaylistScreen
 import com.sidukov.sparvel.features.playlist.NewPlaylistScreen
 import com.sidukov.sparvel.features.splash.SplashScreen
@@ -40,11 +41,9 @@ import com.sidukov.sparvel.features.track.AddTracksScreen
 import com.sidukov.sparvel.features.track.EditTrackInfoScreen
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainContainerScreen(
     navController: NavHostController,
-    viewModelProvider: ViewModelProvider,
     onAppThemeChanged: () -> Unit
 ) {
     val drawerState = rememberDrawerState(DrawerValue.Closed)
@@ -83,7 +82,7 @@ fun MainContainerScreen(
             }
         },
         content = {
-            AppNavigationGraph(navController, viewModelProvider) {
+            AppNavigationGraph(navController) {
                 scope.launch {
                     drawerState.open()
                 }
@@ -95,14 +94,13 @@ fun MainContainerScreen(
 @Composable
 fun AppNavigationGraph(
     navController: NavHostController,
-    viewModelProvider: ViewModelProvider,
     onMenuClicked: () -> Unit
 ) {
     NavHost(navController, startDestination = Screens.Splash.route) {
         composable(Screens.Splash.route) {
             SplashScreen(navController)
         }
-        drawerContainerGraph(navController, viewModelProvider, onMenuClicked)
+        drawerContainerGraph(navController, onMenuClicked)
         composable(Screens.NewPlaylist.route) {
             NewPlaylistScreen()
         }
@@ -120,13 +118,18 @@ fun AppNavigationGraph(
 
 fun NavGraphBuilder.drawerContainerGraph(
     navController: NavHostController,
-    viewModelProvider: ViewModelProvider,
     onMenuClicked: () -> Unit
 ) {
     navigation(startDestination = Screens.Home.route, route = Screens.DrawerContainer.route) {
         composable(route = Screens.Home.route) {
             HomeScreenContainer(
-                viewModelProvider[HomeViewModel::class.java],
+                viewModel(
+                    factory = HomeViewModelFactory(
+                        SparvelApplication.getInjector().musicDataProvider,
+                        SparvelApplication.getInjector().storageManager,
+                        SparvelApplication.getInjector().audioManager
+                    )
+                ),
                 navController,
                 onMenuClicked
             )

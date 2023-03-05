@@ -6,11 +6,8 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.sidukov.sparvel.core.functionality.storage.AppTheme
 import com.sidukov.sparvel.core.functionality.storage.StorageManager
-import javax.inject.Inject
 
-class MainViewModel @Inject constructor(
-    private val storageManager: StorageManager
-) : ViewModel() {
+class MainViewModel(private val storageManager: StorageManager) : ViewModel() {
 
     var appTheme by mutableStateOf(storageManager.settings.appTheme)
 

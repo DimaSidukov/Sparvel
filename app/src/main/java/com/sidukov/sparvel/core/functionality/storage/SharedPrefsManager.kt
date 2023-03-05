@@ -3,9 +3,8 @@ package com.sidukov.sparvel.core.functionality.storage
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.core.content.edit
-import javax.inject.Inject
 
-class SharedPrefsManager @Inject constructor(context: Context) {
+class SharedPrefsManager(context: Context) {
 
     companion object {
         private const val APP_PREFERENCES = "app_preferences"

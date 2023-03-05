@@ -2,10 +2,9 @@ package com.sidukov.sparvel.core.functionality.service
 
 import android.content.Context
 import androidx.core.content.getSystemService
-import javax.inject.Inject
 import android.media.AudioManager as AndroidAudioManager
 
-class AudioManager @Inject constructor(private val context: Context) {
+class AudioManager(private val context: Context) {
 
     private var defaultSampleRate = -1
     private var defaultFramesPerBurst = -1

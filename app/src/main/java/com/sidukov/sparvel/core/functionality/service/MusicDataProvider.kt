@@ -6,10 +6,9 @@ import android.net.Uri
 import android.provider.MediaStore
 import android.util.Log
 import com.sidukov.sparvel.core.model.Track
-import javax.inject.Inject
 import kotlin.math.ceil
 
-class MusicDataProvider @Inject constructor(private val context: Context) {
+class MusicDataProvider(private val context: Context) {
 
     companion object {
         private const val UNKNOWN_PATTERN = "unknown"

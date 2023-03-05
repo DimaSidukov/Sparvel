@@ -14,9 +14,8 @@ import com.sidukov.sparvel.features.home.PlayerState.Paused
 import com.sidukov.sparvel.features.home.PlayerState.Playing
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import javax.inject.Inject
 
-class HomeViewModel @Inject constructor(
+class HomeViewModel(
     private val musicDataProvider: MusicDataProvider,
     private val storageManager: StorageManager,
     private val audioManager: AudioManager
