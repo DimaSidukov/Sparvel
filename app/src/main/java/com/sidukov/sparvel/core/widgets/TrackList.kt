@@ -52,7 +52,7 @@ fun TrackList(
                     ) { onItemClicked(item) },
                 horizontalArrangement = Arrangement.Start
             ) {
-                BoxedImage(
+                SparvelImage(
                     imageUri = item.coverId,
                     imageSize = 50,
                     needGradient = false

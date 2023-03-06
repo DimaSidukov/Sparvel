@@ -20,7 +20,7 @@ fun CollectionItem(
     onItemClicked: () -> Unit
 ) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        BoxedImage(
+        SparvelImage(
             imageSize = 100,
             imageUri = playlistImage,
             needGradient = needGradient,

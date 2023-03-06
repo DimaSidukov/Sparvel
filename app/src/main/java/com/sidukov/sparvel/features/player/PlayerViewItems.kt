@@ -4,8 +4,7 @@ import androidx.compose.animation.graphics.ExperimentalAnimationGraphicsApi
 import androidx.compose.animation.graphics.res.animatedVectorResource
 import androidx.compose.animation.graphics.res.rememberAnimatedVectorPainter
 import androidx.compose.animation.graphics.vector.AnimatedImageVector
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.*
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -52,20 +51,28 @@ fun Timestamps(
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun TrackInfo(
     name: String,
     artist: String,
     modifier: Modifier = Modifier
 ) {
+    val animationDelay = 1000
     Column(modifier = modifier) {
         Text(
+            modifier = Modifier.basicMarquee(
+                delayMillis = animationDelay
+            ),
             text = name,
             style = SparvelTheme.typography.trackNameMedium,
             color = SparvelTheme.colors.text
         )
         Spacer(modifier = Modifier.height(10.dp))
         Text(
+            modifier = Modifier.basicMarquee(
+                delayMillis = animationDelay
+            ),
             text = artist,
             style = SparvelTheme.typography.artistMedium,
             color = SparvelTheme.colors.text

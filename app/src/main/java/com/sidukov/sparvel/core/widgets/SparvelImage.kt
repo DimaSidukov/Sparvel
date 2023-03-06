@@ -4,9 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -15,6 +13,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.IntSize
@@ -25,11 +24,17 @@ import com.sidukov.sparvel.core.functionality.applyGradient
 import com.sidukov.sparvel.core.functionality.applyIf
 import com.sidukov.sparvel.core.theme.SparvelTheme
 
+sealed class ImageType {
+    object Borderless : ImageType()
+    object Boxed : ImageType()
+}
+
 @Composable
-fun BoxedImage(
+fun SparvelImage(
     imageUri: String,
     imageSize: Int,
     needGradient: Boolean,
+    imageType: ImageType = ImageType.Boxed,
     onImageClicked: (() -> Unit)? = null
 ) {
     var dynamicImageSize by remember { mutableStateOf(IntSize.Zero) }
@@ -39,19 +44,28 @@ fun BoxedImage(
         endY = dynamicImageSize.height * 0.9f
     )
 
+    val isBoxed = imageType == ImageType.Boxed
+
     Box(
-        modifier = Modifier
-            .size(imageSize.dp)
-            .clip(RoundedCornerShape(10.dp))
+        modifier = Modifier.applyIf(isBoxed) {
+            size(imageSize.dp).clip(RoundedCornerShape(10.dp))
+        }
     ) {
         var isImageLoaded by remember { mutableStateOf(false) }
         if (!isImageLoaded) {
             Box(
                 modifier = Modifier
-                    .fillMaxSize()
-                    .background(gradient)
-                    .applyGradient(needGradient, gradient)
-                    .border(1.dp, SparvelTheme.colors.textPlaceholder, RoundedCornerShape(10.dp))
+                    .applyIf(isBoxed) {
+                        fillMaxSize()
+                            .background(gradient)
+                            .applyGradient(needGradient, gradient)
+                            .border(
+                                1.dp,
+                                SparvelTheme.colors.textPlaceholder,
+                                RoundedCornerShape(10.dp)
+                            )
+
+                    }
                     .applyIf(onImageClicked != null) {
                         clickable(onClick = onImageClicked!!)
                     }
@@ -60,8 +74,12 @@ fun BoxedImage(
                     painter = painterResource(R.drawable.ic_melody),
                     contentDescription = null,
                     modifier = Modifier
-                        .align(Alignment.Center)
-                        .size((0.4 * imageSize).dp),
+                        .applyIf(isBoxed) {
+                            align(Alignment.Center).size((0.4 * imageSize).dp)
+                        }
+                        .applyIf(!isBoxed) {
+                            padding((0.3 * imageSize).dp).size((0.4 * imageSize).dp)
+                        },
                     colorFilter = ColorFilter.tint(SparvelTheme.colors.secondary)
                 )
             }
@@ -71,14 +89,15 @@ fun BoxedImage(
             contentDescription = null,
             onSuccess = { isImageLoaded = true },
             onError = { isImageLoaded = false },
+            contentScale = if (isBoxed) ContentScale.FillWidth else ContentScale.Fit,
             modifier = Modifier
-                .size(imageSize.dp)
+                .applyIf(isBoxed) { size(imageSize.dp) }
+                .applyIf(!isBoxed) { width(imageSize.dp) }
                 .onGloballyPositioned { dynamicImageSize = it.size }
                 .applyGradient(needGradient, gradient)
                 .applyIf(onImageClicked != null) {
                     clickable(onClick = onImageClicked!!)
                 }
         )
-
     }
 }

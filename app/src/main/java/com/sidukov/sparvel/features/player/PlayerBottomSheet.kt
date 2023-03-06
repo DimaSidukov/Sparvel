@@ -30,8 +30,8 @@ import com.sidukov.sparvel.R
 import com.sidukov.sparvel.core.functionality.normalize
 import com.sidukov.sparvel.core.model.Track
 import com.sidukov.sparvel.core.theme.SparvelTheme
-import com.sidukov.sparvel.core.widgets.BorderlessImage
-import com.sidukov.sparvel.core.widgets.BoxedImage
+import com.sidukov.sparvel.core.widgets.ImageType
+import com.sidukov.sparvel.core.widgets.SparvelImage
 import com.sidukov.sparvel.core.widgets.Toolbar
 import com.sidukov.sparvel.features.home.HomeViewModel
 import com.sidukov.sparvel.features.home.PlayerState
@@ -112,7 +112,7 @@ fun CollapsedPlayer(
         contentAlignment = Alignment.CenterStart
     ) {
         Row {
-            BoxedImage(
+            SparvelImage(
                 imageUri = track.coverId,
                 imageSize = 40,
                 needGradient = false
@@ -190,10 +190,11 @@ fun ExpandedPlayer(
             Box(
                 modifier = Modifier.height(500.dp)
             ) {
-                BorderlessImage(
+                SparvelImage(
                     imageUri = viewModel.uiState.selectedTrack!!.coverId,
                     imageSize = 500,
-                    needGradient = true
+                    needGradient = true,
+                    imageType = ImageType.Borderless
                 )
             }
             Toolbar(

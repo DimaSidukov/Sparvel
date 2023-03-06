@@ -40,7 +40,7 @@ fun CollectionScreen(
         ) {
             items(collectionList) { collection ->
                 Column {
-                    BoxedImage(
+                    SparvelImage(
                         imageUri = collection.coverId,
                         imageSize = contentWidth,
                         needGradient = true
