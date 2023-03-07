@@ -40,7 +40,7 @@ fun SparvelImage(
     var dynamicImageSize by remember { mutableStateOf(IntSize.Zero) }
     val gradient = Brush.verticalGradient(
         colors = listOf(SparvelTheme.colors.background, Color.Transparent),
-        startY = dynamicImageSize.height * 0.3f,
+        startY = dynamicImageSize.height * 0.6f,
         endY = dynamicImageSize.height * 0.9f
     )
 
@@ -64,7 +64,6 @@ fun SparvelImage(
                                 SparvelTheme.colors.textPlaceholder,
                                 RoundedCornerShape(10.dp)
                             )
-
                     }
                     .applyIf(onImageClicked != null) {
                         clickable(onClick = onImageClicked!!)

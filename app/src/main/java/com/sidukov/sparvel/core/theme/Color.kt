@@ -12,6 +12,8 @@ private val lightBlue = Color(0xFF748CAB)
 private val navyBlue = Color(0xFF087AE6)
 private val darkestBlue = Color(0xFF00081C)
 private val darkBlue = Color(0xFF030017)
+private val windsorPurple = Color(0xFF490E7C)
+private val tyrianPurple = Color(0xFF57034C)
 private val darkGrey = Color(0xFF5F5F5F)
 private val darkGrey2 = Color(0xFF3C3D46)
 private val gloomyBlue = Color(0xFF01232E)
@@ -96,7 +98,14 @@ val DarkColors = SparvelColors(
     backgroundGradient = Brush.verticalGradient(listOf(darkestBlue, gloomyBlue)),
     logoGradient = Brush.verticalGradient(listOf(darkestBlue, white)),
     permissionDenied = lightGrey2,
-    playerBackground = listOf(darkestBlue, gloomyBlue, darkBlue, black),
+    playerBackground = listOf(
+        darkestBlue,
+        windsorPurple,
+        tyrianPurple,
+        gloomyBlue,
+        darkBlue,
+        black
+    ),
     playerIcon = black,
     toolbarTitle = dimGrey,
     playerActions = white,

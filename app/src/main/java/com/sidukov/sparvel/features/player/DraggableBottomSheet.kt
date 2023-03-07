@@ -1,7 +1,6 @@
 package com.sidukov.sparvel.features.player
 
-import androidx.compose.animation.core.animate
-import androidx.compose.animation.core.tween
+import androidx.compose.animation.core.*
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.draggable
@@ -13,7 +12,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.sidukov.sparvel.core.functionality.background
@@ -111,9 +112,12 @@ fun DraggableBottomSheet(
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
-                        .blur(100.dp)
+                        .blur(150.dp)
                         .background(
-                            Brush.sweepGradient(SparvelTheme.colors.playerBackground)
+                            Brush.sweepGradient(
+                                SparvelTheme.colors.playerBackground,
+                                // center = Offset()
+                            )
                         )
                 )
                 content(height, isExpanded)
