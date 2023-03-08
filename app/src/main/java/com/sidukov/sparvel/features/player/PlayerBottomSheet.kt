@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.sidukov.sparvel.R
+import com.sidukov.sparvel.core.functionality.background
 import com.sidukov.sparvel.core.functionality.normalize
 import com.sidukov.sparvel.core.model.Track
 import com.sidukov.sparvel.core.theme.SparvelTheme
@@ -45,7 +46,7 @@ fun PlayerBottomSheet(
     val screenHeight =
         LocalConfiguration.current.screenHeightDp.dp +
                 WindowInsets.systemBars.getTop(LocalDensity.current).dp
-    val minHeight = 120.dp
+    val minHeight = 150.dp
 
     var shouldMoveDown by remember { mutableStateOf(false) }
     var playbackTimestamp by remember { mutableStateOf(0.3f) }
@@ -103,59 +104,80 @@ fun CollapsedPlayer(
     height: Dp,
     track: Track
 ) {
-    Box(
-        modifier = Modifier
-            .height(height)
-            .fillMaxWidth()
-            .padding(horizontal = 30.dp)
-            .alpha(alpha),
-        contentAlignment = Alignment.CenterStart
-    ) {
-        Row {
-            SparvelImage(
-                imageUri = track.coverId,
-                imageSize = 40,
-                needGradient = false
-            )
-            Column(
+    Box {
+        Column(
+            modifier = Modifier
+                .height(height)
+                .fillMaxWidth()
+                .padding(horizontal = 30.dp)
+                .alpha(alpha),
+            horizontalAlignment = Alignment.Start
+        ) {
+            Spacer(modifier = Modifier.height(10.dp))
+            Box(
                 modifier = Modifier
-                    .height(40.dp)
-                    .padding(start = 8.dp, end = 45.dp),
-                verticalArrangement = Arrangement.SpaceAround
-            ) {
-                Text(
-                    track.name,
-                    style = SparvelTheme.typography.trackNameSmall.copy(fontSize = 12.sp),
-                    color = SparvelTheme.colors.secondary,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
-                Text(
-                    text = stringResource(
-                        R.string.artist_album_label,
-                        track.artist,
-                        track.album
-                    ),
-                    style = SparvelTheme.typography.collectionInfo.copy(fontSize = 11.sp),
-                    color = SparvelTheme.colors.secondary,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
+                    .height(5.dp)
+                    .width(40.dp)
+                    .clip(RoundedCornerShape(50))
+                    .align(Alignment.CenterHorizontally)
+                    .background(SparvelTheme.colors.playerDragStrokeColor)
+            )
+            Spacer(modifier = Modifier.height(10.dp))
+            Box {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    SparvelImage(
+                        imageUri = track.coverId,
+                        imageSize = 40,
+                        needGradient = false
+                    )
+                    Column(
+                        modifier = Modifier
+                            .height(40.dp)
+                            .padding(start = 8.dp, end = 45.dp),
+                        verticalArrangement = Arrangement.SpaceAround
+                    ) {
+                        Text(
+                            track.name,
+                            style = SparvelTheme.typography.trackNameSmall.copy(fontSize = 12.sp),
+                            color = SparvelTheme.colors.secondary,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                        Text(
+                            text = stringResource(
+                                R.string.artist_album_label,
+                                track.artist,
+                                track.album
+                            ),
+                            style = SparvelTheme.typography.collectionInfo.copy(fontSize = 11.sp),
+                            color = SparvelTheme.colors.secondary,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
+                }
             }
         }
         Box(
             modifier = Modifier
+                .padding(end = 30.dp)
                 .size(60.dp)
+                //.padding(top = 10.dp, end = 30.dp)
+                //.padding(top = 10.dp, end = 30.dp)
                 .clip(RoundedCornerShape(50))
                 .align(Alignment.CenterEnd)
                 .clickable(
                     interactionSource = remember { MutableInteractionSource() },
                     indication = rememberRipple(
-                        radius = 20.dp
+                        radius = 30.dp
                     ),
-                    onClick = { viewModel.updatePlayerState() }
+                    onClick = {
+                        viewModel.updatePlayerState()
+                        println("CLICKED")
+                    }
                 )
-
         ) {
             Image(
                 modifier = Modifier

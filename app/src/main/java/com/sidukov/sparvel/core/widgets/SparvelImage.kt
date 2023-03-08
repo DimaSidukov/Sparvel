@@ -88,7 +88,7 @@ fun SparvelImage(
             contentDescription = null,
             onSuccess = { isImageLoaded = true },
             onError = { isImageLoaded = false },
-            contentScale = if (isBoxed) ContentScale.FillWidth else ContentScale.Fit,
+            contentScale = if (isBoxed) ContentScale.FillWidth else ContentScale.Crop,
             modifier = Modifier
                 .applyIf(isBoxed) { size(imageSize.dp) }
                 .applyIf(!isBoxed) { width(imageSize.dp) }

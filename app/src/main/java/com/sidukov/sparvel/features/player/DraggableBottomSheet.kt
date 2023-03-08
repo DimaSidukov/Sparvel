@@ -7,14 +7,17 @@ import androidx.compose.foundation.gestures.draggable
 import androidx.compose.foundation.gestures.rememberDraggableState
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.sidukov.sparvel.core.functionality.background
@@ -78,6 +81,43 @@ fun DraggableBottomSheet(
         }
     }
 
+    val gradientAnimationDuration = 20000
+    val gradientStartX = with(LocalDensity.current) {
+        LocalConfiguration.current.screenWidthDp.dp.toPx() / 1.4f
+    }
+    val gradientStartY = with(LocalDensity.current) {
+        LocalConfiguration.current.screenHeightDp.dp.toPx() / 1.3f
+    }
+    val gradientX by rememberInfiniteTransition().animateFloat(
+        initialValue = gradientStartX,
+        targetValue = gradientStartX,
+        animationSpec = infiniteRepeatable(
+            animation = keyframes {
+                durationMillis = gradientAnimationDuration
+                gradientStartX at 0 with FastOutSlowInEasing
+                gradientStartX + 500f at gradientAnimationDuration / 4 with FastOutSlowInEasing
+                gradientStartX at gradientAnimationDuration / 3 with FastOutSlowInEasing
+                gradientStartX - 500f at gradientAnimationDuration / 2 with FastOutSlowInEasing
+                gradientStartX at gradientAnimationDuration with FastOutSlowInEasing
+            },
+            repeatMode = RepeatMode.Reverse
+        )
+    )
+    val gradientY by rememberInfiniteTransition().animateFloat(
+        initialValue = gradientStartY,
+        targetValue = gradientStartY,
+        animationSpec = infiniteRepeatable(
+            animation = keyframes {
+                durationMillis = gradientAnimationDuration
+                gradientStartY at 0 with FastOutSlowInEasing
+                gradientStartY - 300f at gradientAnimationDuration / 4 with FastOutSlowInEasing
+                gradientStartY at gradientAnimationDuration / 3 with FastOutSlowInEasing
+                gradientStartY + 300f at gradientAnimationDuration / 2 with FastOutSlowInEasing
+                gradientStartY at gradientAnimationDuration with FastOutSlowInEasing
+            }
+        )
+    )
+
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -87,7 +127,10 @@ fun DraggableBottomSheet(
                 .fillMaxHeight()
                 .offset(y = screenHeight - height)
                 .align(Alignment.BottomCenter)
-                .shadow(10.dp, clip = true)
+                .clip(
+                    RoundedCornerShape(5, 5)
+                )
+                .shadow(10.dp, clip = false)
                 .draggable(
                     enabled = true,
                     orientation = Orientation.Vertical,
@@ -112,11 +155,12 @@ fun DraggableBottomSheet(
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
+                        .background(SparvelTheme.colors.background)
                         .blur(150.dp)
                         .background(
                             Brush.sweepGradient(
                                 SparvelTheme.colors.playerBackground,
-                                // center = Offset()
+                                center = Offset(gradientX, gradientY)
                             )
                         )
                 )

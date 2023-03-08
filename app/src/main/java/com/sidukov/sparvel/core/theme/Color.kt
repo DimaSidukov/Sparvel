@@ -45,6 +45,7 @@ data class SparvelColors(
     val activeTrack: Color,
     val inactiveTrack: Color,
     val rippleColor: Color,
+    val playerDragStrokeColor: Color,
     private val secondaryMaterial: Color,
     private val backgroundMaterial: Color
 ) {
@@ -81,6 +82,7 @@ val LightColors = SparvelColors(
     activeTrack = lightGrey3,
     inactiveTrack = dimGrey2,
     rippleColor = navyBlue,
+    playerDragStrokeColor = black,
     secondaryMaterial = black,
     backgroundMaterial = white
 )
@@ -113,6 +115,7 @@ val DarkColors = SparvelColors(
     activeTrack = white,
     inactiveTrack = lightGrey4,
     rippleColor = white,
+    playerDragStrokeColor = dimGrey2,
     secondaryMaterial = white,
     backgroundMaterial = darkestBlue
 )
