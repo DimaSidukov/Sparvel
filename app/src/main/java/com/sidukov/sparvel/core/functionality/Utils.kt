@@ -117,7 +117,7 @@ fun String.decodeBitmap(cr: ContentResolver): ImageBitmap? {
 @Composable
 fun SelectedTrackPadding(
     isTrackSelected: Boolean = false,
-    padding: Dp = 60.dp,
+    padding: Dp = 100.dp,
     defaultPadding: Dp = 10.dp
 ) =
     Spacer(

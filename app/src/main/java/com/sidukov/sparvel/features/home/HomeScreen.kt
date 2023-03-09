@@ -1,7 +1,6 @@
 package com.sidukov.sparvel.features.home
 
 import android.Manifest
-import android.annotation.SuppressLint
 import androidx.compose.animation.*
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -33,10 +32,9 @@ import com.sidukov.sparvel.features.home.HomeScreen.*
 import com.sidukov.sparvel.features.player.PlayerBottomSheet
 import com.sidukov.sparvel.features.playlist.PlaylistsScreen
 
-@SuppressLint("ProduceStateDoesNotAssignValue")
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
-fun TracksScreen(
+fun HomeScreen(
     viewModel: HomeViewModel,
     navController: NavHostController,
     onMenuClicked: () -> Unit
@@ -74,7 +72,7 @@ fun TracksScreen(
         ) { screen ->
             when (screen) {
                 FULL -> {
-                    TracksScreen(
+                    TrackListScreen(
                         navController = navController,
                         trackList = filteredTrackList,
                         isTrackSelected = uiState.selectedTrack != null,

@@ -36,7 +36,7 @@ import com.sidukov.sparvel.features.equalizer.EqualizerScreen
 import com.sidukov.sparvel.features.home.GetStoragePermission
 import com.sidukov.sparvel.features.home.PermissionDeniedMessage
 import com.sidukov.sparvel.features.home.PlaylistScreen
-import com.sidukov.sparvel.features.home.TracksScreen
+import com.sidukov.sparvel.features.home.HomeScreen
 import com.sidukov.sparvel.features.playlist.NewPlaylistScreen
 import com.sidukov.sparvel.features.splash.SplashScreen
 import com.sidukov.sparvel.features.track.AddTracksScreen
@@ -126,7 +126,7 @@ fun NavGraphBuilder.drawerContainerGraph(
         composable(route = Screens.Home.route) {
             GetStoragePermission(
                 onPermissionGranted = {
-                    TracksScreen(
+                    HomeScreen(
                         viewModel = viewModel(
                             factory = HomeViewModelFactory(
                                 SparvelApplication.getInjector().musicDataProvider,
