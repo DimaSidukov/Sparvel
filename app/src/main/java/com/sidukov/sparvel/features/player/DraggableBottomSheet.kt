@@ -89,14 +89,14 @@ fun DraggableBottomSheet(
         LocalConfiguration.current.screenHeightDp.dp.toPx() / 1.3f
     }
     val gradientX by rememberInfiniteTransition().animateFloat(
-        initialValue = gradientStartX,
-        targetValue = gradientStartX,
+        initialValue = gradientStartX - 300f,
+        targetValue = gradientStartX - 300f,
         animationSpec = infiniteRepeatable(
             animation = keyframes {
                 durationMillis = gradientAnimationDuration
-                gradientStartX at 0 with FastOutSlowInEasing
-                gradientStartX + 500f at gradientAnimationDuration / 4 with FastOutSlowInEasing
-                gradientStartX at gradientAnimationDuration / 3 with FastOutSlowInEasing
+                gradientStartX - 300f at 0 with FastOutSlowInEasing
+                gradientStartX - 500f at gradientAnimationDuration / 4 with FastOutSlowInEasing
+                gradientStartX + 100f at gradientAnimationDuration / 3 with FastOutSlowInEasing
                 gradientStartX - 500f at gradientAnimationDuration / 2 with FastOutSlowInEasing
                 gradientStartX at gradientAnimationDuration with FastOutSlowInEasing
             },
@@ -104,16 +104,16 @@ fun DraggableBottomSheet(
         )
     )
     val gradientY by rememberInfiniteTransition().animateFloat(
-        initialValue = gradientStartY,
-        targetValue = gradientStartY,
+        initialValue = gradientStartY + 300f,
+        targetValue = gradientStartY + 300f,
         animationSpec = infiniteRepeatable(
             animation = keyframes {
                 durationMillis = gradientAnimationDuration
-                gradientStartY at 0 with FastOutSlowInEasing
-                gradientStartY - 300f at gradientAnimationDuration / 4 with FastOutSlowInEasing
-                gradientStartY at gradientAnimationDuration / 3 with FastOutSlowInEasing
-                gradientStartY + 300f at gradientAnimationDuration / 2 with FastOutSlowInEasing
-                gradientStartY at gradientAnimationDuration with FastOutSlowInEasing
+                gradientStartY + 300f at 0 with FastOutSlowInEasing
+                gradientStartY + 500f at gradientAnimationDuration / 4 with FastOutSlowInEasing
+                gradientStartY + 400f at gradientAnimationDuration / 3 with FastOutSlowInEasing
+                gradientStartY - 100f at gradientAnimationDuration / 2 with FastOutSlowInEasing
+                gradientStartY + 300f at gradientAnimationDuration with FastOutSlowInEasing
             }
         )
     )
