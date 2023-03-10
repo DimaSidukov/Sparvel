@@ -75,7 +75,8 @@ fun HomeScreen(
                     TrackListScreen(
                         navController = navController,
                         trackList = filteredTrackList,
-                        isTrackSelected = uiState.selectedTrack != null,
+                        selectedTrackId = uiState.selectedTrack?.id,
+                        isAudioPlaying = uiState.playerState == PlayerState.Playing,
                         onPlaylistSectionClicked = {
                             viewModel.setScreen(PLAYLISTS)
                         },
@@ -112,7 +113,8 @@ fun HomeScreen(
                 LIBRARY -> {
                     LibraryScreen(
                         tracks = filteredTrackList,
-                        isTrackSelected = uiState.selectedTrack != null,
+                        selectedTrackId = uiState.selectedTrack?.id,
+                        isAudioPlaying = uiState.playerState == PlayerState.Playing,
                         onTrackClicked = {
                             viewModel.showPlayer(it)
                         },

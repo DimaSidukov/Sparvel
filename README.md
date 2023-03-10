@@ -7,7 +7,9 @@
 * Room
 * MediaPlayer
 * TalkBack
-* Firebase Analytics (maybe?)
+* Firebase Analytics
+* Coil
+* Lottie Animation
 
 **Package organization**:
 * album - everything related to album (Albums Screen, Album Screen)
@@ -17,4 +19,5 @@
 * equalizer - equalizer screen
 * main - main screen with left drawer
 
-**TODO list** is avaiable on Notion
+**TODO list** is available on Notion
+**Figma** https://www.figma.com/file/qkTJZf2iM7XdQNWj8Hq0Sd/Sparvel---Music-PLayer?t=j6vZlRDmzzYT4cn1-0

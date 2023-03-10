@@ -104,6 +104,11 @@ fun CollapsedPlayer(
     height: Dp,
     track: Track
 ) {
+
+    var shouldRunPlayAnimation by remember {
+        mutableStateOf(false)
+    }
+
     Box {
         Column(
             modifier = Modifier
@@ -173,7 +178,9 @@ fun CollapsedPlayer(
                         radius = 30.dp
                     ),
                     onClick = {
+                        shouldRunPlayAnimation = true
                         viewModel.updatePlayerState()
+                        shouldRunPlayAnimation = false
                     }
                 )
         ) {

@@ -19,7 +19,8 @@ import com.sidukov.sparvel.core.widgets.TrackList
 fun TrackListScreen(
     navController: NavHostController,
     trackList: List<Track>,
-    isTrackSelected: Boolean,
+    selectedTrackId: String?,
+    isAudioPlaying: Boolean,
     onPlaylistSectionClicked: () -> Unit,
     onAlbumSectionClicked: () -> Unit,
     onLibrarySectionClicked: () -> Unit,
@@ -29,7 +30,9 @@ fun TrackListScreen(
         TrackList(
             modifier = Modifier.padding(start = 30.dp, end = 30.dp),
             itemList = trackList,
-            isTrackSelected = isTrackSelected,
+            isAudioPlaying = isAudioPlaying,
+            selectedTrackId = selectedTrackId,
+            needShowSettings = true,
             onItemClicked = onTrackClicked
         ) {
             Column(modifier = Modifier.padding(start = 25.dp)) {

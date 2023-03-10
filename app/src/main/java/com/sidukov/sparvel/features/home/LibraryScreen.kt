@@ -18,7 +18,8 @@ import com.sidukov.sparvel.core.widgets.TrackList
 fun LibraryScreen(
     modifier: Modifier = Modifier,
     tracks: List<Track>,
-    isTrackSelected: Boolean,
+    selectedTrackId: String?,
+    isAudioPlaying: Boolean,
     onTrackClicked: (Track) -> Unit,
     onNavigatedBack: () -> Unit
 ) {
@@ -30,7 +31,9 @@ fun LibraryScreen(
         TrackList(
             itemList = tracks,
             modifier = Modifier.padding(start = 30.dp, end = 30.dp),
-            isTrackSelected = isTrackSelected,
+            selectedTrackId = selectedTrackId,
+            isAudioPlaying = isAudioPlaying,
+            needShowSettings = true,
             onItemClicked = onTrackClicked
         ) {
             Box(
