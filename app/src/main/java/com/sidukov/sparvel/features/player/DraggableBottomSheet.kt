@@ -127,10 +127,10 @@ fun DraggableBottomSheet(
                 .fillMaxHeight()
                 .offset(y = screenHeight - height)
                 .align(Alignment.BottomCenter)
+                .shadow(20.dp, clip = true, shape = RoundedCornerShape(5, 5))
                 .clip(
                     RoundedCornerShape(5, 5)
                 )
-                .shadow(10.dp, clip = false)
                 .draggable(
                     enabled = true,
                     orientation = Orientation.Vertical,
