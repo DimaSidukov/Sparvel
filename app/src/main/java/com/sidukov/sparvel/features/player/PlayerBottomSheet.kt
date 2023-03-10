@@ -210,7 +210,7 @@ fun ExpandedPlayer(
     onSliderValueChanged: (Float) -> Unit,
 ) {
 
-    Column(
+    Box(
         modifier = Modifier.alpha(alpha)
     ) {
         Box {
