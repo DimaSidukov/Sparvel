@@ -162,10 +162,9 @@ fun CollapsedPlayer(
         }
         Box(
             modifier = Modifier
-                .padding(end = 30.dp)
+                .alpha(alpha)
+                .padding(top = 10.dp, end = 15.dp)
                 .size(60.dp)
-                //.padding(top = 10.dp, end = 30.dp)
-                //.padding(top = 10.dp, end = 30.dp)
                 .clip(RoundedCornerShape(50))
                 .align(Alignment.CenterEnd)
                 .clickable(
@@ -175,7 +174,6 @@ fun CollapsedPlayer(
                     ),
                     onClick = {
                         viewModel.updatePlayerState()
-                        println("CLICKED")
                     }
                 )
         ) {
@@ -219,17 +217,19 @@ fun ExpandedPlayer(
                     imageType = ImageType.Borderless
                 )
             }
-            Toolbar(
-                navigationIcon = R.drawable.ic_arrow,
-                actionIcon = R.drawable.ic_equalizer,
-                onNavigationClicked = {
-                    onCollapseClicked()
-                },
-                onActionClicked = {
-                    // What to do when clicking on settings
-                },
-                iconColor = iconColor
-            )
+            if (alpha > 0f) {
+                Toolbar(
+                    navigationIcon = R.drawable.ic_arrow,
+                    actionIcon = R.drawable.ic_equalizer,
+                    onNavigationClicked = {
+                        onCollapseClicked()
+                    },
+                    onActionClicked = {
+                        // What to do when clicking on settings
+                    },
+                    iconColor = iconColor
+                )
+            }
         }
         Box(
             contentAlignment = Alignment.BottomCenter,
