@@ -20,9 +20,12 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.sidukov.sparvel.core.functionality.apiGreaterThan
 import com.sidukov.sparvel.core.functionality.background
 import com.sidukov.sparvel.core.theme.SparvelTheme
 import kotlinx.coroutines.launch
+
+internal const val ANDROID_12 = android.os.Build.VERSION_CODES.S
 
 @Composable
 fun DraggableBottomSheet(
@@ -88,7 +91,7 @@ fun DraggableBottomSheet(
     val gradientStartY = with(LocalDensity.current) {
         LocalConfiguration.current.screenHeightDp.dp.toPx() / 1.3f
     }
-    val gradientX by rememberInfiniteTransition().animateFloat(
+    val gradientX = if (apiGreaterThan(ANDROID_12)) rememberInfiniteTransition().animateFloat(
         initialValue = gradientStartX - 300f,
         targetValue = gradientStartX - 300f,
         animationSpec = infiniteRepeatable(
@@ -102,8 +105,8 @@ fun DraggableBottomSheet(
             },
             repeatMode = RepeatMode.Reverse
         )
-    )
-    val gradientY by rememberInfiniteTransition().animateFloat(
+    ).value else 0f
+    val gradientY = if (apiGreaterThan(ANDROID_12)) rememberInfiniteTransition().animateFloat(
         initialValue = gradientStartY + 300f,
         targetValue = gradientStartY + 300f,
         animationSpec = infiniteRepeatable(
@@ -116,7 +119,7 @@ fun DraggableBottomSheet(
                 gradientStartY + 300f at gradientAnimationDuration with FastOutSlowInEasing
             }
         )
-    )
+    ).value else 0f
 
     Box(
         modifier = Modifier.fillMaxSize()
@@ -158,10 +161,14 @@ fun DraggableBottomSheet(
                         .background(SparvelTheme.colors.background)
                         .blur(150.dp)
                         .background(
-                            Brush.sweepGradient(
+                            if (apiGreaterThan(ANDROID_12)) Brush.sweepGradient(
                                 SparvelTheme.colors.playerBackground,
-                                center = Offset(gradientX, gradientY)
-                            )
+                                Offset(gradientX, gradientY)
+                            ) else {
+                                Brush.verticalGradient(
+                                    SparvelTheme.colors.playerBackground
+                                )
+                            }
                         )
                 )
                 content(height, isExpanded)

@@ -114,6 +114,8 @@ fun String.decodeBitmap(cr: ContentResolver): ImageBitmap? {
     }?.asImageBitmap()
 }
 
+fun apiGreaterThan(apiVersion: Int) = Build.VERSION.SDK_INT >= apiVersion
+
 @Composable
 fun SelectedTrackPadding(
     isTrackSelected: Boolean = false,

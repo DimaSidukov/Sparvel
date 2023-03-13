@@ -48,7 +48,10 @@ fun TrackList(
         }
         items(
             items = itemList,
-            contentType = { it }
+            contentType = { it },
+            key = {
+                it.id
+            }
         ) { item ->
             Box {
                 Row(

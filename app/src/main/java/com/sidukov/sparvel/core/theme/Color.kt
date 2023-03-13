@@ -19,6 +19,8 @@ private val darkGrey2 = Color(0xFF3C3D46)
 private val gloomyBlue = Color(0xFF01232E)
 private val dimGrey = Color(0xFFE3E3E3)
 private val dimGrey2 = Color(0xFFECECEC)
+private val anakiwa = Color(0xFFA7DBFF)
+private val alto = Color(0xFFDBDBDB)
 private val lightGrey = Color(0xFFBEC4CC)
 private val lightGrey2 = Color(0xFF999999)
 private val lightGrey3 = Color(0xFF969696)
@@ -74,7 +76,12 @@ val LightColors = SparvelColors(
     backgroundGradient = null,
     logoGradient = Brush.verticalGradient(listOf(lightBlue, black)),
     permissionDenied = darkGrey,
-    playerBackground = listOf(white, white),
+    playerBackground = listOf(
+        white,
+        anakiwa,
+        alto,
+        white
+    ),
     playerIcon = white,
     toolbarTitle = black,
     playerActions = darkGrey2,

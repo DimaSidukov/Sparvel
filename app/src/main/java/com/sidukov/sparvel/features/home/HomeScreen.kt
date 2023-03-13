@@ -131,7 +131,6 @@ fun HomeScreen(
         LaunchedEffect(it) {
             img = it.coverId.decodeBitmap(cr)
         }
-
         PlayerBottomSheet(
             viewModel = viewModel,
             iconColor = img.deriveIconColor()
