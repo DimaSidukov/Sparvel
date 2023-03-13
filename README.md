@@ -20,4 +20,5 @@
 * main - main screen with left drawer
 
 **TODO list** is available on Notion
+
 **Figma** https://www.figma.com/file/qkTJZf2iM7XdQNWj8Hq0Sd/Sparvel---Music-PLayer?t=j6vZlRDmzzYT4cn1-0
