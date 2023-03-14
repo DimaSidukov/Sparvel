@@ -1,15 +1,14 @@
 package com.sidukov.sparvel.core.widgets
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.ripple.rememberRipple
+import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.sidukov.sparvel.R
@@ -26,38 +25,31 @@ fun MenuSearchPanel(
         modifier = Modifier
             .systemBarsPadding()
     ) {
-        Box(
+        Row(
             modifier = Modifier
-                .padding(end = 30.dp, bottom = 30.dp, top = 30.dp)
                 .fillMaxWidth()
+                .padding(end = 30.dp, bottom = 30.dp, top = 30.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Box(
+            Icon(
+                painter = painterResource(id = R.drawable.ic_menu),
+                contentDescription = null,
+                tint = SparvelTheme.colors.navigation,
                 modifier = Modifier
-                    .padding(20.dp)
-                    .size(50.dp)
-                    .align(Alignment.CenterStart)
+                    .padding(start = 20.dp)
                     .clickable(
-                        interactionSource = remember { MutableInteractionSource() },
+                        interactionSource = remember {
+                            MutableInteractionSource()
+                        },
                         indication = rememberRipple(
                             radius = 25.dp
                         ),
                         onClick = onMenuClicked
                     )
-            ) {
-                Image(
-                    painter = painterResource(id = R.drawable.ic_menu),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .size(25.dp)
-                        .align(Alignment.Center),
-                    colorFilter = ColorFilter.tint(SparvelTheme.colors.navigation)
-                )
-            }
-            SearchBar(
-                modifier = Modifier
-                    .padding(start = 80.dp)
-                    .align(Alignment.CenterStart)
-            ) {
+                    .size(50.dp)
+                    .padding(12.dp)
+            )
+            SearchBar(modifier = Modifier.padding(start = 15.dp)) {
                 onTextUpdated(it)
             }
         }
