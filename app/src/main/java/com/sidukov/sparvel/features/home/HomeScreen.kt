@@ -21,10 +21,7 @@ import androidx.navigation.NavHostController
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import com.sidukov.sparvel.R
-import com.sidukov.sparvel.core.functionality.decodeBitmap
-import com.sidukov.sparvel.core.functionality.deriveIconColor
-import com.sidukov.sparvel.core.functionality.filter
-import com.sidukov.sparvel.core.functionality.toMusicCollection
+import com.sidukov.sparvel.core.functionality.*
 import com.sidukov.sparvel.core.model.Track
 import com.sidukov.sparvel.core.theme.SparvelTheme
 import com.sidukov.sparvel.core.widgets.MenuSearchPanel
@@ -164,7 +161,10 @@ fun GetStoragePermission(
     onPermissionDenied: @Composable () -> Unit
 ) {
     val permissionState = rememberMultiplePermissionsState(
-        permissions = listOf(
+        permissions = if (apiGreaterThan(android.os.Build.VERSION_CODES.TIRAMISU)) listOf(
+            Manifest.permission.READ_MEDIA_AUDIO,
+            Manifest.permission.READ_MEDIA_IMAGES
+        ) else listOf(
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE
         )
