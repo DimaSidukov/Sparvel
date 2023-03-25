@@ -117,7 +117,10 @@ fun TrackList(
                     )
                 }
                 if (needShowSettings) {
-                    Box(
+                    Image(
+                        painter = painterResource(id = R.drawable.ic_three_dots),
+                        contentDescription = null,
+                        colorFilter = ColorFilter.tint(SparvelTheme.colors.playerActions),
                         modifier = Modifier
                             .align(Alignment.CenterEnd)
                             .padding(end = 5.dp)
@@ -133,16 +136,8 @@ fun TrackList(
                                     // share song, edit song info, remove from device, add to playlist
                                 }
                             )
-                    ) {
-                        Image(
-                            modifier = Modifier
-                                .align(Alignment.Center)
-                                .size(30.dp),
-                            painter = painterResource(id = R.drawable.ic_three_dots),
-                            contentDescription = null,
-                            colorFilter = ColorFilter.tint(SparvelTheme.colors.playerActions)
-                        )
-                    }
+                            .padding(5.dp)
+                    )
                 }
             }
             Spacer(modifier = Modifier.height(15.dp))

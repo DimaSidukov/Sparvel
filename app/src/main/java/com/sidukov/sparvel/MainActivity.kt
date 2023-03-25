@@ -15,14 +15,12 @@ import androidx.navigation.compose.rememberNavController
 import com.sidukov.sparvel.core.functionality.background
 import com.sidukov.sparvel.core.functionality.storage.AppTheme
 import com.sidukov.sparvel.core.theme.SparvelTheme
-import com.sidukov.sparvel.di.MainViewModelFactory
+import com.sidukov.sparvel.di.constructViewModel
 import com.sidukov.sparvel.features.main.MainScreen
 
 class MainActivity : ComponentActivity() {
 
-    private val viewModel: MainViewModel by viewModels {
-        MainViewModelFactory(SparvelApplication.getInjector().storageManager)
-    }
+    private val viewModel: MainViewModel by viewModels { constructViewModel<MainViewModel>() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

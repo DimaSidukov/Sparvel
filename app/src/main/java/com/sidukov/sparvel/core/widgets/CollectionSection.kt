@@ -2,7 +2,6 @@ package com.sidukov.sparvel.core.widgets
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyItemScope
@@ -60,21 +59,14 @@ fun SectionName(
     isClickEnabled: Boolean = true,
     onItemClicked: () -> Unit = { }
 ) {
-    Box(
+    Text(
+        text = sectionName,
+        style = SparvelTheme.typography.collectionTitleLarge,
+        color = SparvelTheme.colors.text,
         modifier = Modifier
+            .then(modifier)
             .clip(RoundedCornerShape(50))
             .clickable(enabled = isClickEnabled, onClick = onItemClicked)
-            .then(modifier)
-    ) {
-        Box(
-            modifier = Modifier
-                .padding(horizontal = 5.dp, vertical = 5.dp)
-        ) {
-            Text(
-                text = sectionName,
-                style = SparvelTheme.typography.collectionTitleLarge,
-                color = SparvelTheme.colors.text,
-            )
-        }
-    }
+            .padding(horizontal = 5.dp, vertical = 5.dp)
+    )
 }

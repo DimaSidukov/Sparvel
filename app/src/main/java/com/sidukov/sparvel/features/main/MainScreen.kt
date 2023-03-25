@@ -19,24 +19,22 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.sidukov.sparvel.R
-import com.sidukov.sparvel.SparvelApplication
 import com.sidukov.sparvel.core.functionality.Screens
 import com.sidukov.sparvel.core.functionality.appVersion
 import com.sidukov.sparvel.core.theme.SparvelTheme
-import com.sidukov.sparvel.di.HomeViewModelFactory
+import com.sidukov.sparvel.di.viewModelWithFactory
 import com.sidukov.sparvel.features.album.AlbumScreen
 import com.sidukov.sparvel.features.equalizer.EqualizerScreen
 import com.sidukov.sparvel.features.home.GetStoragePermission
+import com.sidukov.sparvel.features.home.HomeScreen
 import com.sidukov.sparvel.features.home.PermissionDeniedMessage
 import com.sidukov.sparvel.features.home.PlaylistScreen
-import com.sidukov.sparvel.features.home.HomeScreen
 import com.sidukov.sparvel.features.playlist.NewPlaylistScreen
 import com.sidukov.sparvel.features.splash.SplashScreen
 import com.sidukov.sparvel.features.track.AddTracksScreen
@@ -127,13 +125,7 @@ fun NavGraphBuilder.drawerContainerGraph(
             GetStoragePermission(
                 onPermissionGranted = {
                     HomeScreen(
-                        viewModel = viewModel(
-                            factory = HomeViewModelFactory(
-                                SparvelApplication.getInjector().musicDataProvider,
-                                SparvelApplication.getInjector().storageManager,
-                                SparvelApplication.getInjector().audioManager
-                            )
-                        ),
+                        viewModel = viewModelWithFactory(),
                         navController = navController,
                         onMenuClicked = onMenuClicked
                     )
@@ -215,7 +207,7 @@ fun DrawerContent(
 
 @Composable
 fun DrawerSheetItem(img: Int, text: Int, onItemClicked: () -> Unit) {
-    Box(
+    Row(
         modifier = Modifier
             .clip(RoundedCornerShape(50))
             .clickable(
@@ -226,23 +218,19 @@ fun DrawerSheetItem(img: Int, text: Int, onItemClicked: () -> Unit) {
                 role = Role.Button,
                 onClick = onItemClicked
             )
+            .padding(horizontal = 10.dp, vertical = 10.dp),
+        verticalAlignment = Alignment.CenterVertically,
     ) {
-        Row(
-            modifier = Modifier
-                .padding(horizontal = 10.dp, vertical = 10.dp),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            Image(
-                modifier = Modifier.size(25.dp),
-                painter = painterResource(img),
-                contentDescription = null,
-            )
-            Text(
-                modifier = Modifier.padding(start = 20.dp),
-                text = stringResource(text),
-                style = SparvelTheme.typography.drawerText,
-                color = SparvelTheme.colors.drawerText
-            )
-        }
+        Image(
+            modifier = Modifier.size(25.dp),
+            painter = painterResource(img),
+            contentDescription = null,
+        )
+        Text(
+            modifier = Modifier.padding(start = 20.dp),
+            text = stringResource(text),
+            style = SparvelTheme.typography.drawerText,
+            color = SparvelTheme.colors.drawerText
+        )
     }
 }

@@ -16,7 +16,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
@@ -127,21 +126,24 @@ fun PlayerController(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        IconButton(onClick = onRepeatClicked, modifier = Modifier.size(30.dp)) {
-            Icon(
-                painter = painterResource(R.drawable.ic_repeat),
-                contentDescription = null,
-                tint = SparvelTheme.colors.playerActions,
-            )
-        }
-        IconButton(onClick = onPreviousClicked, modifier = Modifier.size(25.dp)) {
-            Icon(
-                painter = painterResource(R.drawable.ic_player_arrow),
-                contentDescription = null,
-                tint = SparvelTheme.colors.playerActions
-            )
-        }
-        Box(
+        PlayerButton(
+            source = R.drawable.ic_repeat,
+            contentDescription = null,
+            onClick = onRepeatClicked
+        )
+        PlayerButton(
+            source = R.drawable.ic_player_arrow,
+            contentDescription = null,
+            onClick = onPreviousClicked
+        )
+        Icon(
+            painter = rememberAnimatedVectorPainter(
+                animatedImageVector = AnimatedImageVector.animatedVectorResource(
+                    id = R.drawable.anim_play_pause
+                ), atEnd = playerState == PlayerState.Playing
+            ),
+            contentDescription = null,
+            tint = SparvelTheme.colors.playerIcon,
             modifier = Modifier
                 .size(75.dp)
                 .clip(RoundedCornerShape(50))
@@ -153,34 +155,44 @@ fun PlayerController(
                     ),
                     onClick = onPlayClicked
                 )
-        ) {
-            Image(
-                modifier = Modifier
-                    .size(35.dp)
-                    .align(Alignment.Center),
-                painter = rememberAnimatedVectorPainter(
-                    animatedImageVector = AnimatedImageVector.animatedVectorResource(
-                        id = R.drawable.anim_play_pause
-                    ), atEnd = playerState == PlayerState.Playing
-                ),
-                contentDescription = null,
-                colorFilter = ColorFilter.tint(SparvelTheme.colors.playerIcon)
-            )
-        }
-        IconButton(onClick = onNextClicked, modifier = Modifier.size(25.dp)) {
-            Icon(
-                painter = painterResource(R.drawable.ic_player_arrow),
-                contentDescription = null,
-                tint = SparvelTheme.colors.playerActions,
-                modifier = Modifier.rotate(180f)
-            )
-        }
-        IconButton(onClick = onCurrentPlaylistClicked, modifier = Modifier.size(30.dp)) {
-            Icon(
-                painter = painterResource(R.drawable.ic_playlist),
-                contentDescription = null,
-                tint = SparvelTheme.colors.playerActions
-            )
-        }
+                .padding(20.dp),
+        )
+        PlayerButton(
+            source = R.drawable.ic_player_arrow,
+            contentDescription = null,
+            modifier = Modifier.rotate(180f),
+            onClick = onNextClicked
+        )
+        PlayerButton(
+            source = R.drawable.ic_playlist,
+            contentDescription = null,
+            onClick = onCurrentPlaylistClicked
+        )
     }
+}
+
+@Composable
+fun PlayerButton(
+    source: Int,
+    contentDescription: String?,
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit
+) {
+    Icon(
+        painter = painterResource(source),
+        contentDescription = contentDescription,
+        tint = SparvelTheme.colors.playerActions,
+        modifier = Modifier
+            .then(modifier)
+            .size(50.dp)
+            .clip(RoundedCornerShape(50))
+            .clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = rememberRipple(
+                    radius = 25.dp
+                ),
+                onClick = onClick
+            )
+            .padding(13.dp)
+    )
 }

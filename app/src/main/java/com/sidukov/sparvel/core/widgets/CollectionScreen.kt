@@ -71,7 +71,7 @@ fun CollectionScreen(
             item {
                 SelectedTrackPadding(
                     isTrackSelected = isTrackSelected,
-                    padding = 300.dp,
+                    padding = 100.dp,
                     defaultPadding = 50.dp
                 )
             }

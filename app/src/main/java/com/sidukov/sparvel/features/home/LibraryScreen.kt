@@ -1,7 +1,6 @@
 package com.sidukov.sparvel.features.home
 
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -36,14 +35,11 @@ fun LibraryScreen(
             needShowSettings = true,
             onItemClicked = onTrackClicked
         ) {
-            Box(
+            SectionName(
+                sectionName = stringResource(R.string.library_label),
+                isClickEnabled = false,
                 modifier = Modifier.padding(start = 25.dp, bottom = 35.dp)
-            ) {
-                SectionName(
-                    sectionName = stringResource(R.string.library_label),
-                    isClickEnabled = false
-                )
-            }
+            )
         }
     }
     BackHandler(onBack = onNavigatedBack)

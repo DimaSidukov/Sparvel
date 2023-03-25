@@ -51,43 +51,38 @@ fun SparvelImage(
             size(imageSize.dp).clip(RoundedCornerShape(10.dp))
         }
     ) {
-        var isImageLoaded by remember { mutableStateOf(false) }
-        if (!isImageLoaded) {
-            Box(
+        Box(
+            modifier = Modifier
+                .applyIf(isBoxed) {
+                    fillMaxSize()
+                        .background(gradient)
+                        .applyGradient(needGradient, gradient)
+                        .border(
+                            1.dp,
+                            SparvelTheme.colors.textPlaceholder,
+                            RoundedCornerShape(10.dp)
+                        )
+                }
+                .applyIf(onImageClicked != null) {
+                    clickable(onClick = onImageClicked!!)
+                }
+        ) {
+            Image(
+                painter = painterResource(R.drawable.ic_melody),
+                contentDescription = null,
                 modifier = Modifier
                     .applyIf(isBoxed) {
-                        fillMaxSize()
-                            .background(gradient)
-                            .applyGradient(needGradient, gradient)
-                            .border(
-                                1.dp,
-                                SparvelTheme.colors.textPlaceholder,
-                                RoundedCornerShape(10.dp)
-                            )
+                        align(Alignment.Center).size((0.4 * imageSize).dp)
                     }
-                    .applyIf(onImageClicked != null) {
-                        clickable(onClick = onImageClicked!!)
-                    }
-            ) {
-                Image(
-                    painter = painterResource(R.drawable.ic_melody),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .applyIf(isBoxed) {
-                            align(Alignment.Center).size((0.4 * imageSize).dp)
-                        }
-                        .applyIf(!isBoxed) {
-                            padding((0.3 * imageSize).dp).size((0.4 * imageSize).dp)
-                        },
-                    colorFilter = ColorFilter.tint(SparvelTheme.colors.secondary)
-                )
-            }
+                    .applyIf(!isBoxed) {
+                        padding((0.3 * imageSize).dp).size((0.4 * imageSize).dp)
+                    },
+                colorFilter = ColorFilter.tint(SparvelTheme.colors.secondary)
+            )
         }
         AsyncImage(
             model = imageUri,
             contentDescription = null,
-            onSuccess = { isImageLoaded = true },
-            onError = { isImageLoaded = false },
             contentScale = if (isBoxed) ContentScale.FillWidth else ContentScale.Crop,
             modifier = Modifier
                 .applyIf(isBoxed) { size(imageSize.dp) }

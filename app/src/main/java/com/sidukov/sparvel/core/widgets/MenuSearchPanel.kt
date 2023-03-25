@@ -47,7 +47,7 @@ fun MenuSearchPanel(
                         onClick = onMenuClicked
                     )
                     .size(50.dp)
-                    .padding(12.dp)
+                    .padding(13.dp)
             )
             SearchBar(modifier = Modifier.padding(start = 15.dp)) {
                 onTextUpdated(it)

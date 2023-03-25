@@ -5,12 +5,12 @@ import androidx.compose.animation.graphics.ExperimentalAnimationGraphicsApi
 import androidx.compose.animation.graphics.res.animatedVectorResource
 import androidx.compose.animation.graphics.res.rememberAnimatedVectorPainter
 import androidx.compose.animation.graphics.vector.AnimatedImageVector
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ripple.rememberRipple
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -18,7 +18,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
@@ -165,12 +164,17 @@ fun CollapsedPlayer(
                 }
             }
         }
-        Box(
+        Icon(
+            painter = rememberAnimatedVectorPainter(
+                animatedImageVector = AnimatedImageVector.animatedVectorResource(
+                    id = R.drawable.anim_play_pause
+                ), atEnd = viewModel.uiState.playerState == PlayerState.Playing
+            ),
+            contentDescription = null,
+            tint = SparvelTheme.colors.playerActions,
             modifier = Modifier
                 .alpha(alpha)
                 .padding(top = 10.dp, end = 15.dp)
-                .size(60.dp)
-                .clip(RoundedCornerShape(50))
                 .align(Alignment.CenterEnd)
                 .clickable(
                     interactionSource = remember { MutableInteractionSource() },
@@ -183,19 +187,9 @@ fun CollapsedPlayer(
                         shouldRunPlayAnimation = false
                     }
                 )
-        ) {
-            Image(
-                modifier = Modifier
-                    .align(Alignment.Center),
-                painter = rememberAnimatedVectorPainter(
-                    animatedImageVector = AnimatedImageVector.animatedVectorResource(
-                        id = R.drawable.anim_play_pause
-                    ), atEnd = viewModel.uiState.playerState == PlayerState.Playing
-                ),
-                contentDescription = null,
-                colorFilter = ColorFilter.tint(SparvelTheme.colors.playerActions)
-            )
-        }
+                .size(60.dp)
+                .padding(18.dp)
+        )
     }
 }
 

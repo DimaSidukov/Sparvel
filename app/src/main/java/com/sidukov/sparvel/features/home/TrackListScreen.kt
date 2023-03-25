@@ -60,14 +60,11 @@ fun TrackListScreen(
                         // navController.navigate(Screens.Albums.route)
                     }
                 )
-                Box(
+                SectionName(
+                    sectionName = stringResource(R.string.library_label),
+                    onItemClicked = onLibrarySectionClicked,
                     modifier = Modifier.padding(top = 30.dp, bottom = 20.dp)
-                ) {
-                    SectionName(
-                        sectionName = stringResource(R.string.library_label),
-                        onItemClicked = onLibrarySectionClicked
-                    )
-                }
+                )
             }
         }
     }
