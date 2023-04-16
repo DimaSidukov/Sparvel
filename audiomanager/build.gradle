@@ -8,11 +8,21 @@ android {
     compileSdk 33
     namespace 'som.sidukov.sparvel.audiomanager'
 
+    ndkVersion "25.1.8937393"
+
     defaultConfig {
         minSdk 26
         targetSdk 33
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        externalNativeBuild {
+            cmake {
+                cppFlags '-std=c++17'
+                abiFilters 'armeabi-v7a', 'arm64-v8a', 'x86', 'x86_64'
+                arguments "-DANDROID_STL=c++_shared"
+            }
+        }
     }
 
     buildTypes {
@@ -28,6 +38,15 @@ android {
     kotlinOptions {
         jvmTarget = '11'
     }
+    externalNativeBuild {
+        cmake {
+            path 'src/main/cpp/CMakeLists.txt'
+            version '3.22.1'
+        }
+    }
+    buildFeatures {
+        prefab true
+    }
 }
 
 dependencies {
@@ -36,4 +55,8 @@ dependencies {
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+
+    // Oboe
+    implementation 'com.google.oboe:oboe:1.7.0'
+
 }

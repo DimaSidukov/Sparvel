@@ -11,7 +11,7 @@ class AudioManager(context: Context) {
 
     companion object {
         init {
-            // System.loadLibrary("audioplayer")
+            System.loadLibrary("audio_engine")
         }
     }
 
