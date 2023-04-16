@@ -1,7 +1,7 @@
 package com.sidukov.sparvel.di
 
 import android.content.Context
-import com.sidukov.sparvel.core.functionality.service.AudioManager
+import com.sidukov.audiomanager.AudioManager
 import com.sidukov.sparvel.core.functionality.service.MusicDataProvider
 import com.sidukov.sparvel.core.functionality.storage.SharedPrefsManager
 import com.sidukov.sparvel.core.functionality.storage.StorageManager

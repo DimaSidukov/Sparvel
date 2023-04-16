@@ -1,13 +1,13 @@
-package com.sidukov.sparvel.core.functionality.service
+package com.sidukov.audiomanager
 
 import android.content.Context
+import android.media.AudioManager
 import androidx.core.content.getSystemService
-import android.media.AudioManager as AndroidAudioManager
 
-class AudioManager(private val context: Context) {
+class AudioManager(context: Context) {
 
-    private var defaultSampleRate = -1
-    private var defaultFramesPerBurst = -1
+    private var defaultSampleRate: Int
+    private var defaultFramesPerBurst: Int
 
     companion object {
         init {
@@ -16,12 +16,12 @@ class AudioManager(private val context: Context) {
     }
 
     init {
-        val am = context.getSystemService<AndroidAudioManager>()
+        val am = context.getSystemService<AudioManager>()
         defaultSampleRate = am?.getProperty(
-            AndroidAudioManager.PROPERTY_OUTPUT_SAMPLE_RATE
+            AudioManager.PROPERTY_OUTPUT_SAMPLE_RATE
         )?.toInt() ?: -1
         defaultFramesPerBurst = am?.getProperty(
-            AndroidAudioManager.PROPERTY_OUTPUT_FRAMES_PER_BUFFER
+            AudioManager.PROPERTY_OUTPUT_FRAMES_PER_BUFFER
         )?.toInt() ?: -1
     }
 
