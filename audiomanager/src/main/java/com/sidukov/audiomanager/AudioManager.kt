@@ -3,9 +3,15 @@ package com.sidukov.audiomanager
 import android.content.Context
 import android.media.AudioManager
 import androidx.core.content.getSystemService
+import androidx.core.net.toUri
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import java.io.File
 
-class AudioManager(context: Context) {
+class AudioManager(private val context: Context) {
 
+    // pass these to oboe and set as default
     private var defaultSampleRate: Int
     private var defaultFramesPerBurst: Int
 
@@ -19,20 +25,26 @@ class AudioManager(context: Context) {
         val am = context.getSystemService<AudioManager>()
         defaultSampleRate = am?.getProperty(
             AudioManager.PROPERTY_OUTPUT_SAMPLE_RATE
-        )?.toInt() ?: -1
+        )?.toInt() ?: 48000
         defaultFramesPerBurst = am?.getProperty(
             AudioManager.PROPERTY_OUTPUT_FRAMES_PER_BUFFER
-        )?.toInt() ?: -1
+        )?.toInt() ?: 192
     }
 
-//    external fun play(
-//        fullPath: String,
-//        defaultSampleRate: Int = this.defaultSampleRate,
-//        defaultFramesPerBurst: Int = this.defaultFramesPerBurst
-//    )
-//
-//    external fun pause()
-//
-//    external fun finish()
+    fun play(uri: String) = CoroutineScope(Dispatchers.IO).launch {
+        context.contentResolver.openFileDescriptor(File(uri).toUri(), "r").use { pfd ->
+            pfd?.fd?.let { nativePlay(it) }
+        }
+    }
+
+    private external fun nativePlay(
+        fileDescriptor: Int,
+        defaultSampleRate: Int = this.defaultSampleRate,
+        defaultFramesPerBurst: Int = this.defaultFramesPerBurst
+    )
+
+    private external fun pause()
+
+    private external fun finish()
 
 }

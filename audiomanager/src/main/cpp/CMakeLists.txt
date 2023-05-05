@@ -20,6 +20,20 @@ project("audio_engine")
 
 find_package (oboe REQUIRED CONFIG)
 
+# Specifying location of ffmpeg shared objects
+set(ffmpeg_DIR ffmpeg)
+add_library(avutil SHARED IMPORTED)
+set_target_properties(avutil PROPERTIES IMPORTED_LOCATION
+        ${ffmpeg_DIR}/lib/${ANDROID_ABI}/libavutil.so)
+
+add_library(avformat SHARED IMPORTED)
+set_target_properties(avformat PROPERTIES IMPORTED_LOCATION
+        ${ffmpeg_DIR}/lib/${ANDROID_ABI}/libavformat.so)
+
+add_library(avcodec SHARED IMPORTED)
+set_target_properties(avcodec PROPERTIES IMPORTED_LOCATION
+        ${ffmpeg_DIR}/lib/${ANDROID_ABI}/libavcodec.so)
+
 add_library( # Sets the name of the library.
         audio_engine
 
@@ -33,6 +47,9 @@ add_library( # Sets the name of the library.
 
         audio_engine.cpp
 )
+
+# Specifying location of ffmpeg headers
+include_directories(${ffmpeg_DIR}/lib/${ANDROID_ABI}/include)
 
 # Specify folders included into this module
 # include_directories(audio)
@@ -57,4 +74,8 @@ target_link_libraries( # Specifies the target library.
         PRIVATE log
         PRIVATE android
         PRIVATE mediandk
+
+        avutil
+        avformat
+        avcodec
 )
