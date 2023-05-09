@@ -32,19 +32,17 @@ class AudioManager(private val context: Context) {
     }
 
     fun play(uri: String) = CoroutineScope(Dispatchers.IO).launch {
-        context.contentResolver.openFileDescriptor(File(uri).toUri(), "r").use { pfd ->
-            pfd?.fd?.let { nativePlay(it) }
-        }
+        nativePlay(uri)
     }
 
     private external fun nativePlay(
-        fileDescriptor: Int,
+        filePath: String,
         defaultSampleRate: Int = this.defaultSampleRate,
         defaultFramesPerBurst: Int = this.defaultFramesPerBurst
     )
 
-    private external fun pause()
-
-    private external fun finish()
+//    private external fun pause()
+//
+//    private external fun finish()
 
 }

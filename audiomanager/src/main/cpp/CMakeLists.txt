@@ -24,15 +24,19 @@ find_package (oboe REQUIRED CONFIG)
 set(ffmpeg_DIR ffmpeg)
 add_library(avutil SHARED IMPORTED)
 set_target_properties(avutil PROPERTIES IMPORTED_LOCATION
-        ${ffmpeg_DIR}/lib/${ANDROID_ABI}/libavutil.so)
+        ${PROJECT_SOURCE_DIR}/${ffmpeg_DIR}/lib/${ANDROID_ABI}/libavutil.so)
 
 add_library(avformat SHARED IMPORTED)
 set_target_properties(avformat PROPERTIES IMPORTED_LOCATION
-        ${ffmpeg_DIR}/lib/${ANDROID_ABI}/libavformat.so)
+        ${PROJECT_SOURCE_DIR}/${ffmpeg_DIR}/lib/${ANDROID_ABI}/libavformat.so)
 
 add_library(avcodec SHARED IMPORTED)
 set_target_properties(avcodec PROPERTIES IMPORTED_LOCATION
-        ${ffmpeg_DIR}/lib/${ANDROID_ABI}/libavcodec.so)
+        ${PROJECT_SOURCE_DIR}/${ffmpeg_DIR}/lib/${ANDROID_ABI}/libavcodec.so)
+
+add_library(swresample SHARED IMPORTED)
+set_target_properties(swresample PROPERTIES IMPORTED_LOCATION
+        ${PROJECT_SOURCE_DIR}/${ffmpeg_DIR}/lib/${ANDROID_ABI}/libswresample.so)
 
 add_library( # Sets the name of the library.
         audio_engine
@@ -41,10 +45,9 @@ add_library( # Sets the name of the library.
         SHARED
 
         # Provides a relative path to your source file(s).
-        # audio/AudioPlayer.cpp
-        # audio/NDKExtractor.cpp
-        # audio/FileDataSource.cpp
-
+        # temporary measure, these two should be header files
+        extractor/DecodingUtilities.h
+        extractor/ffmpeg_headers_wrapper.h
         audio_engine.cpp
 )
 
@@ -52,8 +55,7 @@ add_library( # Sets the name of the library.
 include_directories(${ffmpeg_DIR}/lib/${ANDROID_ABI}/include)
 
 # Specify folders included into this module
-# include_directories(audio)
-# include_directories(utils)
+include_directories(extractor)
 
 # Searches for a specified prebuilt library and stores the path as a
 # variable. Because CMake includes system libraries in the search path by
@@ -78,4 +80,5 @@ target_link_libraries( # Specifies the target library.
         avutil
         avformat
         avcodec
+        swresample
 )

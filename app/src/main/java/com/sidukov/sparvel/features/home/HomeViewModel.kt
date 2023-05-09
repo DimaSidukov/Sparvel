@@ -45,8 +45,8 @@ class HomeViewModel(
         }
     }
 
-    private fun playTrack(track: Track) = {
-        // audioManager.play(track.fullPath)
+    private fun playTrack(track: Track) {
+        audioManager.play(track.fullPath)
     }
 
     suspend fun readTracks(): List<Track> {
