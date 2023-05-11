@@ -31,16 +31,16 @@ Java_com_sidukov_audiomanager_AudioManager_nativePlay(
     auto test = decodeAudioFile(path);
     // remove string from the memory afterwards
     if (test == nullptr) {
+        // callback to show toast
         LOGD("NULL RECEIVED!");
     }
-//    for(int i = 0; i < 100; i++) {
+    env->ReleaseStringUTFChars(filePath, path);
+//    for(int i = 0; i < 10000; i++) {
 //        LOGD("Index at %d is %lf", i, test[i]);
 //    }
 
-    env->ReleaseStringUTFChars(filePath, path);
-
-    // this needed for Oboe
-    int defaultSampleRate = static_cast<int>(defaultSampleRate);
+    // these needed for Oboe
+    int defaultSampleRate = static_cast<int>(default_sample_rate);
     int defaultFramesPerBurst = static_cast<int>(default_frames_per_burst);
 
 }
