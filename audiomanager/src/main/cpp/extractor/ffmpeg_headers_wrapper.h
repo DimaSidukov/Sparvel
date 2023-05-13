@@ -8,4 +8,6 @@ extern "C" {
     #include <libavutil/timestamp.h>
     #include <libavformat/avformat.h>
     #include <libavutil/display.h>
+    #include <libavutil/error.h>
+    #include <libavcodec/avcodec.h>
 }

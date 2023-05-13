@@ -5,6 +5,7 @@ import android.media.AudioManager
 import android.media.AudioManager.PROPERTY_OUTPUT_FRAMES_PER_BUFFER
 import android.media.AudioManager.PROPERTY_OUTPUT_SAMPLE_RATE
 import android.util.Log
+import android.widget.Toast
 import androidx.core.content.getSystemService
 import androidx.core.net.toUri
 import kotlinx.coroutines.CoroutineScope
@@ -35,6 +36,13 @@ class AudioManager(private val context: Context) {
 
     fun play(uri: String) = coroutineScope.launch {
         nativePlay(uri)
+    }
+
+    private fun showToast(message: String) {
+        println("OUTPUT: $message")
+        CoroutineScope(Dispatchers.Main).launch {
+            Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+        }
     }
 
     private external fun nativePlay(

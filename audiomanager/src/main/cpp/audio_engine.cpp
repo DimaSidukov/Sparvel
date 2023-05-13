@@ -2,45 +2,72 @@
 #include <cstdio>
 #include <memory>
 #include <android/file_descriptor_jni.h>
+#include "AudioPlayer.h"
 #include "DecodingUtilities.h"
-#include <android/log.h>
 //
 // Created by siduk on 16.04.2023.
 //
 
-#define LOGD(...) ((void)__android_log_print(ANDROID_LOG_DEBUG, "Audio Engine", __VA_ARGS__))
+static std::unique_ptr<AudioPlayer> audioPlayer;
+
+static JavaVM *gVm = nullptr;
+static jobject gThis = nullptr;
+static jclass gCls = nullptr;
+static jmethodID gMtd = nullptr;
+
+void showToast(const char *message) {
+    if (!gThis) return;
+    JNIEnv *jniEnv = nullptr;
+    if (gVm->GetEnv((void **) &jniEnv, JNI_VERSION_1_6) != JNI_OK) return;
+    if (!gCls) gCls = jniEnv->GetObjectClass(gThis);
+    if (!gMtd) gMtd = jniEnv->GetMethodID(gCls, "showToast", "(Ljava/lang/String;)V");
+    // if another language selected (russian or french) it makes sense sending a key name
+    // and extract it from strings.xml
+    jniEnv->CallVoidMethod(gThis, gMtd, jniEnv->NewStringUTF(message));
+    free(jniEnv);
+}
+
+JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *vm, void *asReserved) {
+    gVm = vm;
+    return JNI_VERSION_1_6;
+}
 
 extern "C"
 JNIEXPORT void JNICALL
 Java_com_sidukov_audiomanager_AudioManager_nativePlay(
-    JNIEnv *env,
-    jobject thiz,
-    jstring filePath,
-    jint default_sample_rate,
-    jint default_frames_per_burst
+        JNIEnv *env,
+        jobject thiz,
+        jstring filePath,
+        jint default_sample_rate,
+        jint default_frames_per_burst
 ) {
 
+    if (!gThis) {
+        env->GetJavaVM(&gVm);
+        gThis = env->NewGlobalRef(thiz);
+    }
+
+    // sample rate should be passed to decoder to resample the audio if its original
+    // sample rate is bigger than the one that the audio device can produce
+    int defaultSampleRate = static_cast<int>(default_sample_rate);
+
     // decoding
-    const char* path = env->GetStringUTFChars(filePath, nullptr);
+    const char *path = env->GetStringUTFChars(filePath, nullptr);
     if (!path) {
-        // show error or something
+        showToast("Error opening the file");
         return;
     }
 
-    // make actual decoding here
-    auto test = decodeAudioFile(path);
-    // remove string from the memory afterwards
-    if (test == nullptr) {
-        // callback to show toast
-        LOGD("NULL RECEIVED!");
+    DecodedData* test = decodeAudioFile(path);
+    if (test->data == nullptr || test->size == 0) {
+        showToast("An error occurred while reading the file");
+        env->ReleaseStringUTFChars(filePath, path);
+        return;
     }
     env->ReleaseStringUTFChars(filePath, path);
-//    for(int i = 0; i < 10000; i++) {
-//        LOGD("Index at %d is %lf", i, test[i]);
-//    }
 
-    // these needed for Oboe
-    int defaultSampleRate = static_cast<int>(default_sample_rate);
-    int defaultFramesPerBurst = static_cast<int>(default_frames_per_burst);
+    gFramesPerCallback = static_cast<int>(default_frames_per_burst);
+
+    audioPlayer = std::make_unique<AudioPlayer>(test);
 
 }

@@ -46,8 +46,9 @@ add_library( # Sets the name of the library.
 
         # Provides a relative path to your source file(s).
         # temporary measure, these two should be header files
-        extractor/DecodingUtilities.h
-        extractor/ffmpeg_headers_wrapper.h
+        player/AudioPlayer.cpp
+        extractor/DecodingUtilities.cpp
+
         audio_engine.cpp
 )
 
@@ -56,6 +57,8 @@ include_directories(${ffmpeg_DIR}/lib/${ANDROID_ABI}/include)
 
 # Specify folders included into this module
 include_directories(extractor)
+include_directories(player)
+include_directories(utils)
 
 # Searches for a specified prebuilt library and stores the path as a
 # variable. Because CMake includes system libraries in the search path by
