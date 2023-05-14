@@ -9,7 +9,7 @@ class Track(
     val artist: String,
     val album: String,
     var coverId: String,
-    val duration: Int,
+    val duration: Long,
     val year: Int,
     val dateAdded: Int,
     val fullPath: String

@@ -4,23 +4,25 @@ import android.content.Context
 import android.media.AudioManager
 import android.media.AudioManager.PROPERTY_OUTPUT_FRAMES_PER_BUFFER
 import android.media.AudioManager.PROPERTY_OUTPUT_SAMPLE_RATE
-import android.util.Log
 import android.widget.Toast
 import androidx.core.content.getSystemService
-import androidx.core.net.toUri
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
-import java.io.File
 
 class AudioManager(private val context: Context) {
 
     // pass these to oboe and set as default
     private var defaultSampleRate: Int
     private var defaultFramesPerBurst: Int
+    private var songLength: Long = 0L
     private val coroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+
+    private val _currentPosition: MutableSharedFlow<Float> = MutableSharedFlow(replay = 1)
+    val currentPosition = _currentPosition.asSharedFlow()
 
     companion object {
         init {
@@ -34,14 +36,30 @@ class AudioManager(private val context: Context) {
         defaultFramesPerBurst = am?.getProperty(PROPERTY_OUTPUT_FRAMES_PER_BUFFER)?.toInt() ?: 192
     }
 
-    fun play(uri: String) = coroutineScope.launch {
-        nativePlay(uri)
+    fun play(uri: String, length: Long) {
+        songLength = length
+        coroutineScope.launch {
+            nativePlay(uri)
+        }
     }
 
+    fun pause() = nativePause()
+
+    fun finish() = nativeFinish()
+
+    fun seek(position: Float) = nativeSeek((position * songLength).toLong())
+
     private fun showToast(message: String) {
-        println("OUTPUT: $message")
-        CoroutineScope(Dispatchers.Main).launch {
+        coroutineScope.launch(Dispatchers.Main) {
             Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun onPositionUpdated(position: Long) {
+        coroutineScope.launch {
+            _currentPosition.emit(
+                if (songLength == 0L) 0f else (position.toFloat() / songLength.toFloat())
+            )
         }
     }
 
@@ -51,8 +69,10 @@ class AudioManager(private val context: Context) {
         defaultFramesPerBurst: Int = this.defaultFramesPerBurst
     )
 
-//    private external fun pause()
-//
-//    private external fun finish()
+    private external fun nativePause()
+
+    private external fun nativeFinish()
+
+    private external fun nativeSeek(position: Long)
 
 }

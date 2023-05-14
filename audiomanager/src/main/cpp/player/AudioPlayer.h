@@ -19,17 +19,21 @@ private:
     size_t size;
     int sampleRate;
     int channelCount;
-    int currentFrame;
+    std::atomic<size_t> currentFrame;
     std::shared_ptr<oboe::AudioStream> audioStream;
 
     void init();
+    // maybe it is possible to implement via interface
+    // the same approach as oboe::AudioStreamCallback
+    void (*onPositionUpdatedCallback)(int64_t position);
 
 public:
-    AudioPlayer(DecodedData* decodedData) :
+    AudioPlayer(DecodedData* decodedData, void (*callback)(int64_t position)) :
         data(std::move(decodedData->data)),
         size(decodedData->size),
         sampleRate(decodedData->sampleRate),
-        channelCount(decodedData->channelCount) {
+        channelCount(decodedData->channelCount),
+        onPositionUpdatedCallback(callback) {
         init();
     }
 
@@ -49,5 +53,11 @@ public:
     bool onError(oboe::AudioStream *oboeStream, oboe::Result error) override;
 
     void play();
+
+    void pause();
+
+    void stop();
+
+    void seek(int64_t position);
 
 };

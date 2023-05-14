@@ -24,11 +24,12 @@ import com.sidukov.sparvel.core.functionality.background
 import com.sidukov.sparvel.core.functionality.toMinutesAndSeconds
 import com.sidukov.sparvel.core.theme.SparvelTheme
 import com.sidukov.sparvel.features.home.PlayerState
+import kotlin.math.ceil
 
 @Composable
 fun Timestamps(
-    start: Int,
-    end: Int,
+    start: Long,
+    end: Long,
     modifier: Modifier = Modifier
 ) {
     Row(
@@ -38,12 +39,12 @@ fun Timestamps(
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Text(
-            text = start.toMinutesAndSeconds(),
+            text = start.toInt().toMinutesAndSeconds(),
             style = SparvelTheme.typography.progressTimestamp,
             color = SparvelTheme.colors.text
         )
         Text(
-            text = end.toMinutesAndSeconds(),
+            text = ceil(end / 1000.0).toInt().toMinutesAndSeconds(),
             style = SparvelTheme.typography.progressTimestamp,
             color = SparvelTheme.colors.text
         )
@@ -84,11 +85,13 @@ fun TrackInfo(
 fun PlayerProgress(
     value: Float,
     modifier: Modifier = Modifier,
-    onValueChange: (Float) -> Unit
+    onValueChange: (Float) -> Unit,
+    onValueChangeFinished: () -> Unit,
 ) = Slider(
     modifier = modifier,
     value = value,
     onValueChange = onValueChange,
+    onValueChangeFinished = onValueChangeFinished,
     colors = SliderDefaults.colors(
         activeTrackColor = SparvelTheme.colors.activeTrack,
         inactiveTrackColor = SparvelTheme.colors.inactiveTrack,

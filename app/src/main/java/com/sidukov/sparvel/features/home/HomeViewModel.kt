@@ -13,6 +13,8 @@ import com.sidukov.sparvel.core.model.Track
 import com.sidukov.sparvel.features.home.PlayerState.Paused
 import com.sidukov.sparvel.features.home.PlayerState.Playing
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.withContext
 
 class HomeViewModel(
@@ -24,6 +26,9 @@ class HomeViewModel(
     var uiState by mutableStateOf(HomeScreenState())
         private set
 
+    var songPosition = audioManager.currentPosition.shareIn(viewModelScope, SharingStarted.Lazily)
+    private var currentlyPlayingTrack: Track? = null
+
     fun setScreen(screen: HomeScreen) {
         uiState = uiState.copy(currentScreen = screen)
     }
@@ -32,21 +37,54 @@ class HomeViewModel(
         if (track != uiState.selectedTrack) {
             uiState = uiState.copy(selectedTrack = track)
         }
-
         storageManager.settings.trackId = track.id
+        uiState = uiState.copy(playerState = Playing)
+        play(track)
     }
 
     fun updatePlayerState() {
-        uiState = if (uiState.playerState == Playing) {
-            uiState.copy(playerState = Paused)
-        } else {
-            uiState.selectedTrack?.let(::playTrack)
-            uiState.copy(playerState = Playing)
+        uiState.selectedTrack?.let {
+            uiState = uiState.copy(
+                playerState = if (uiState.playerState == Playing) Paused else Playing
+            )
+            play(it)
         }
     }
 
-    private fun playTrack(track: Track) {
-        audioManager.play(track.fullPath)
+    private fun play(track: Track) {
+        if (currentlyPlayingTrack != track) {
+            finish()
+            audioManager.play(track.fullPath, track.duration)
+            currentlyPlayingTrack = track
+        } else pause()
+    }
+
+    private fun pause() {
+        audioManager.pause()
+    }
+
+    fun seek(position: Float) {
+        audioManager.seek(position)
+    }
+
+    fun finish() {
+        audioManager.finish()
+    }
+
+    fun onRepeatClicked() {
+
+    }
+
+    fun onPreviousClicked() {
+
+    }
+
+    fun onNextClicked() {
+
+    }
+
+    fun onCurrentPlaylistClicked() {
+
     }
 
     suspend fun readTracks(): List<Track> {

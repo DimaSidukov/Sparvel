@@ -10,26 +10,44 @@
 
 static std::unique_ptr<AudioPlayer> audioPlayer;
 
-static JavaVM *gVm = nullptr;
-static jobject gThis = nullptr;
-static jclass gCls = nullptr;
-static jmethodID gMtd = nullptr;
+static JavaVM *virtualMachine = nullptr;
+static jobject thisObject = nullptr;
+static JNIEnv* toastEnv = nullptr;
+static JNIEnv* positionEnv = nullptr;
 
 void showToast(const char *message) {
-    if (!gThis) return;
-    JNIEnv *jniEnv = nullptr;
-    if (gVm->GetEnv((void **) &jniEnv, JNI_VERSION_1_6) != JNI_OK) return;
-    if (!gCls) gCls = jniEnv->GetObjectClass(gThis);
-    if (!gMtd) gMtd = jniEnv->GetMethodID(gCls, "showToast", "(Ljava/lang/String;)V");
+    if (!thisObject) return;
+    if (!toastEnv) {
+        if (virtualMachine->GetEnv((void **) &toastEnv, JNI_VERSION_1_6) != JNI_OK) return;
+    }
+    jclass objectClass = toastEnv->GetObjectClass(thisObject);
+    jmethodID objectMethod = toastEnv->GetMethodID(objectClass, "showToast", "(Ljava/lang/String;)V");
     // if another language selected (russian or french) it makes sense sending a key name
     // and extract it from strings.xml
-    jniEnv->CallVoidMethod(gThis, gMtd, jniEnv->NewStringUTF(message));
-    free(jniEnv);
+    toastEnv->CallVoidMethod(thisObject, objectMethod, toastEnv->NewStringUTF(message));
+}
+
+void onPositionUpdated(int64_t position) {
+    if (!thisObject) return;
+    if (!positionEnv) {
+        if (virtualMachine->GetEnv((void **) &positionEnv, JNI_VERSION_1_6) != JNI_OK) return;
+    }
+    jclass objectClass = positionEnv->GetObjectClass(thisObject);
+    jmethodID objectMethod = positionEnv->GetMethodID(objectClass, "onPositionUpdated", "(J)V");
+    positionEnv->CallVoidMethod(thisObject, objectMethod, position);
 }
 
 JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *vm, void *asReserved) {
-    gVm = vm;
+    virtualMachine = vm;
     return JNI_VERSION_1_6;
+}
+
+// might crash? https://stackoverflow.com/questions/9644450/jni-cleanup-and-daemon-threads-in-android-ndk
+JNIEXPORT void JNICALL JNI_OnUnload(JavaVM *vm, void *asReserved) {
+    free(virtualMachine);
+    free(thisObject);
+    free(toastEnv);
+    free(positionEnv);
 }
 
 extern "C"
@@ -42,9 +60,9 @@ Java_com_sidukov_audiomanager_AudioManager_nativePlay(
         jint default_frames_per_burst
 ) {
 
-    if (!gThis) {
-        env->GetJavaVM(&gVm);
-        gThis = env->NewGlobalRef(thiz);
+    if (!thisObject) {
+        env->GetJavaVM(&virtualMachine);
+        thisObject = env->NewGlobalRef(thiz);
     }
 
     // sample rate should be passed to decoder to resample the audio if its original
@@ -58,7 +76,7 @@ Java_com_sidukov_audiomanager_AudioManager_nativePlay(
         return;
     }
 
-    DecodedData* test = decodeAudioFile(path);
+    DecodedData *test = decodeAudioFile(path);
     if (test->data == nullptr || test->size == 0) {
         showToast("An error occurred while reading the file");
         env->ReleaseStringUTFChars(filePath, path);
@@ -68,6 +86,21 @@ Java_com_sidukov_audiomanager_AudioManager_nativePlay(
 
     gFramesPerCallback = static_cast<int>(default_frames_per_burst);
 
-    audioPlayer = std::make_unique<AudioPlayer>(test);
+    audioPlayer = std::make_unique<AudioPlayer>(test, onPositionUpdated);
 
+}
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_sidukov_audiomanager_AudioManager_nativePause(JNIEnv *env, jobject thiz) {
+    if (audioPlayer) audioPlayer->pause();
+}
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_sidukov_audiomanager_AudioManager_nativeFinish(JNIEnv *env, jobject thiz) {
+    if (audioPlayer) audioPlayer->stop();
+}
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_sidukov_audiomanager_AudioManager_nativeSeek(JNIEnv *env, jobject thiz, jlong position) {
+    if (audioPlayer) audioPlayer->seek(static_cast<int64_t>(position));
 }

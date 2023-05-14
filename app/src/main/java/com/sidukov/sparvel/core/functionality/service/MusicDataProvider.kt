@@ -51,7 +51,7 @@ class MusicDataProvider(private val context: Context) {
                             ALBUM_URI,
                             c.getLong(c.getColumnIndexOrThrow(MediaStore.Audio.Media.ALBUM_ID))
                         ).toString(),
-                        duration = ceil(c.getString(4).toDouble() / 1000).toInt(),
+                        duration = c.getLong(4),
                         year = (c.getString(6) ?: "-1").toInt(),
                         dateAdded = c.getInt(8),
                         fullPath = c.getString(9)

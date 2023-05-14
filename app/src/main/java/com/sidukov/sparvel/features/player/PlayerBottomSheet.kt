@@ -67,7 +67,8 @@ fun PlayerBottomSheet(
                 WindowInsets.systemBars.getTop(LocalDensity.current).dp
     val minHeight = 150.dp
 
-    var playbackTimestamp by remember { mutableStateOf(0.3f) }
+    val playbackTimestamp =
+        viewModel.songPosition.collectAsState(initial = 0f) as MutableState<Float>
     val swipeState = rememberSwipeableState(initialValue = SwipeState.COLLAPSED)
     val scope = rememberCoroutineScope()
 
@@ -194,14 +195,19 @@ fun PlayerBottomSheet(
             ExpandedPlayer(
                 viewModel = viewModel,
                 alpha = expandedAlpha,
-                playbackTimestamp = playbackTimestamp,
+                playbackTimestamp = playbackTimestamp.value,
                 iconColor = iconColor,
                 onCollapseClicked = {
                     scope.launch {
                         swipeState.animateTo(SwipeState.COLLAPSED, tween(animationDuration))
                     }
                 },
-                onSliderValueChanged = { playbackTimestamp = it },
+                onSliderValueChanged = {
+                    playbackTimestamp.value = it
+                },
+                onSliderValueChangeFinished = {
+                    viewModel.seek(playbackTimestamp.value)
+                }
             )
         }
     }
@@ -321,6 +327,7 @@ fun ExpandedPlayer(
     iconColor: Color,
     onCollapseClicked: () -> Unit,
     onSliderValueChanged: (Float) -> Unit,
+    onSliderValueChangeFinished: () -> Unit,
 ) {
 
     Box(
@@ -367,11 +374,10 @@ fun ExpandedPlayer(
                 Spacer(modifier = Modifier.height(50.dp))
                 PlayerProgress(
                     modifier = Modifier.padding(horizontal = 3.dp),
-                    value = playbackTimestamp
-                ) { value ->
-                    onSliderValueChanged(value)
-                    // playbackTimestamp = value
-                }
+                    value = playbackTimestamp,
+                    onValueChange = onSliderValueChanged,
+                    onValueChangeFinished = onSliderValueChangeFinished
+                )
                 Spacer(modifier = Modifier.height(8.dp))
                 Timestamps(
                     start = 0,
@@ -383,19 +389,19 @@ fun ExpandedPlayer(
                     modifier = Modifier.padding(horizontal = 10.dp),
                     playerState = viewModel.uiState.playerState,
                     onRepeatClicked = {
-
+                        viewModel.onRepeatClicked()
                     },
                     onPreviousClicked = {
-
+                        viewModel.onPreviousClicked()
                     },
                     onPlayClicked = {
                         viewModel.updatePlayerState()
                     },
                     onNextClicked = {
-
+                        viewModel.onNextClicked()
                     },
                     onCurrentPlaylistClicked = {
-
+                        viewModel.onCurrentPlaylistClicked()
                     }
                 )
             }
