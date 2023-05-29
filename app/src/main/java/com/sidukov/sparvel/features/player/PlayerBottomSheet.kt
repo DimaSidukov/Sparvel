@@ -66,12 +66,10 @@ fun PlayerBottomSheet(
         LocalConfiguration.current.screenHeightDp.dp +
                 WindowInsets.systemBars.getTop(LocalDensity.current).dp
     val minHeight = 150.dp
-
-    val playbackTimestamp =
-        viewModel.songPosition.collectAsState(initial = 0f) as MutableState<Float>
     val swipeState = rememberSwipeableState(initialValue = SwipeState.COLLAPSED)
     val scope = rememberCoroutineScope()
-
+    val playbackPosition = viewModel.playbackPosition.collectAsState(initial = 0f)
+    val playbackTimestamp = viewModel.playbackTimestamp.collectAsState(initial = 0L)
     val gradientAnimationDuration = 20000
     val gradientStartX = with(LocalDensity.current) {
         LocalConfiguration.current.screenWidthDp.dp.toPx() / 1.4f
@@ -195,6 +193,7 @@ fun PlayerBottomSheet(
             ExpandedPlayer(
                 viewModel = viewModel,
                 alpha = expandedAlpha,
+                playbackPosition = playbackPosition.value,
                 playbackTimestamp = playbackTimestamp.value,
                 iconColor = iconColor,
                 onCollapseClicked = {
@@ -203,10 +202,10 @@ fun PlayerBottomSheet(
                     }
                 },
                 onSliderValueChanged = {
-                    playbackTimestamp.value = it
+                    viewModel.onPositionUpdated(it)
                 },
                 onSliderValueChangeFinished = {
-                    viewModel.seek(playbackTimestamp.value)
+                    viewModel.seek(playbackPosition.value)
                 }
             )
         }
@@ -323,13 +322,13 @@ fun CollapsedPlayer(
 fun ExpandedPlayer(
     viewModel: HomeViewModel,
     alpha: Float,
-    playbackTimestamp: Float,
+    playbackPosition: Float,
+    playbackTimestamp: Long,
     iconColor: Color,
     onCollapseClicked: () -> Unit,
     onSliderValueChanged: (Float) -> Unit,
     onSliderValueChangeFinished: () -> Unit,
 ) {
-
     Box(
         modifier = Modifier.alpha(alpha)
     ) {
@@ -374,13 +373,13 @@ fun ExpandedPlayer(
                 Spacer(modifier = Modifier.height(50.dp))
                 PlayerProgress(
                     modifier = Modifier.padding(horizontal = 3.dp),
-                    value = playbackTimestamp,
+                    value = playbackPosition,
                     onValueChange = onSliderValueChanged,
                     onValueChangeFinished = onSliderValueChangeFinished
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Timestamps(
-                    start = 0,
+                    start = playbackTimestamp,
                     end = viewModel.uiState.selectedTrack!!.duration,
                     modifier = Modifier.padding(horizontal = 10.dp)
                 )

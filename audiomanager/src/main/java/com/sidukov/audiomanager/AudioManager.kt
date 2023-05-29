@@ -18,10 +18,9 @@ class AudioManager(private val context: Context) {
     // pass these to oboe and set as default
     private var defaultSampleRate: Int
     private var defaultFramesPerBurst: Int
-    private var songLength: Long = 0L
     private val coroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
-    private val _currentPosition: MutableSharedFlow<Float> = MutableSharedFlow(replay = 1)
+    private val _currentPosition: MutableSharedFlow<Long> = MutableSharedFlow(replay = 1)
     val currentPosition = _currentPosition.asSharedFlow()
 
     companion object {
@@ -36,8 +35,7 @@ class AudioManager(private val context: Context) {
         defaultFramesPerBurst = am?.getProperty(PROPERTY_OUTPUT_FRAMES_PER_BUFFER)?.toInt() ?: 192
     }
 
-    fun play(uri: String, length: Long) {
-        songLength = length
+    fun play(uri: String) {
         coroutineScope.launch {
             nativePlay(uri)
         }
@@ -47,7 +45,7 @@ class AudioManager(private val context: Context) {
 
     fun finish() = nativeFinish()
 
-    fun seek(position: Float) = nativeSeek((position * songLength).toLong())
+    fun seek(position: Long) = nativeSeek(position)
 
     private fun showToast(message: String) {
         coroutineScope.launch(Dispatchers.Main) {
@@ -57,9 +55,7 @@ class AudioManager(private val context: Context) {
 
     private fun onPositionUpdated(position: Long) {
         coroutineScope.launch {
-            _currentPosition.emit(
-                if (songLength == 0L) 0f else (position.toFloat() / songLength.toFloat())
-            )
+            _currentPosition.emit(position)
         }
     }
 

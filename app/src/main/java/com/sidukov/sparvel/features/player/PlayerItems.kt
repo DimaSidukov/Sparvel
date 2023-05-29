@@ -39,7 +39,7 @@ fun Timestamps(
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Text(
-            text = start.toInt().toMinutesAndSeconds(),
+            text = ceil(start / 1000.0).toInt().toMinutesAndSeconds(),
             style = SparvelTheme.typography.progressTimestamp,
             color = SparvelTheme.colors.text
         )
