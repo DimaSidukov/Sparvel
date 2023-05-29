@@ -18,10 +18,12 @@ class AudioManager(private val context: Context) {
     // pass these to oboe and set as default
     private var defaultSampleRate: Int
     private var defaultFramesPerBurst: Int
-    private val coroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+    private var coroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
-    private val _currentPosition: MutableSharedFlow<Long> = MutableSharedFlow(replay = 1)
+    private val _currentPosition: MutableSharedFlow<Long> = MutableSharedFlow()
     val currentPosition = _currentPosition.asSharedFlow()
+
+    private var shouldUpdatePosition = true
 
     companion object {
         init {
@@ -44,8 +46,14 @@ class AudioManager(private val context: Context) {
     fun pause() = nativePause()
 
     fun finish() = nativeFinish()
+    fun onSeekStarted() {
+        shouldUpdatePosition = false
+    }
 
-    fun seek(position: Long) = nativeSeek(position)
+    fun seek(position: Long) {
+        nativeSeek(position)
+        shouldUpdatePosition = true
+    }
 
     private fun showToast(message: String) {
         coroutineScope.launch(Dispatchers.Main) {
@@ -54,8 +62,10 @@ class AudioManager(private val context: Context) {
     }
 
     private fun onPositionUpdated(position: Long) {
-        coroutineScope.launch {
-            _currentPosition.emit(position)
+        if (shouldUpdatePosition) {
+            coroutineScope.launch {
+                _currentPosition.emit(position)
+            }
         }
     }
 

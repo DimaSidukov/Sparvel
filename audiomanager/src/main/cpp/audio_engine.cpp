@@ -60,6 +60,8 @@ Java_com_sidukov_audiomanager_AudioManager_nativePlay(
         jint default_frames_per_burst
 ) {
 
+    if (audioPlayer) audioPlayer->stop();
+
     if (!thisObject) {
         env->GetJavaVM(&virtualMachine);
         thisObject = env->NewGlobalRef(thiz);

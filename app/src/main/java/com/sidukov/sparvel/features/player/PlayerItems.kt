@@ -86,7 +86,7 @@ fun PlayerProgress(
     value: Float,
     modifier: Modifier = Modifier,
     onValueChange: (Float) -> Unit,
-    onValueChangeFinished: () -> Unit,
+    onValueChangeFinished: () -> Unit
 ) = Slider(
     modifier = modifier,
     value = value,

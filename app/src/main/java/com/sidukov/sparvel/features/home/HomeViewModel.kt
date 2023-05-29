@@ -15,7 +15,6 @@ import com.sidukov.sparvel.features.home.PlayerState.Playing
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.launch
@@ -30,19 +29,15 @@ class HomeViewModel(
     var uiState by mutableStateOf(HomeScreenState())
         private set
 
-    private var isUserInputActive: Boolean = false
-
     val playbackPosition = MutableSharedFlow<Float>().apply flow@{
         viewModelScope.launch {
-            audioManager.currentPosition
-                .filter { !isUserInputActive }
-                .collect { position ->
-                    this@flow.emit(
-                        uiState.selectedTrack?.duration?.let { duration ->
-                            position.toFloat() / duration.toFloat()
-                        } ?: 0f
-                    )
-                }
+            audioManager.currentPosition.collect { position ->
+                this@flow.emit(
+                    uiState.selectedTrack?.duration?.let { duration ->
+                        position.toFloat() / duration.toFloat()
+                    } ?: 0f
+                )
+            }
         }
     }
 
@@ -90,17 +85,21 @@ class HomeViewModel(
         audioManager.pause()
     }
 
-    fun onPositionUpdated(value: Float) {
+    private var newValue: Float = 0f
+
+    fun onPlayerPositionUpdated(value: Float) {
         viewModelScope.launch {
-            if (!isUserInputActive) isUserInputActive = true
+            audioManager.onSeekStarted()
+            newValue = value
             playbackPosition.emit(value)
         }
     }
 
     fun seek(value: Float) {
-        isUserInputActive = false
-        uiState.selectedTrack?.duration?.let {
-            audioManager.seek((value * it).toLong())
+        uiState.selectedTrack?.duration?.let { duration ->
+            audioManager.seek(
+                (value * duration).toLong()
+            )
         }
     }
 

@@ -125,8 +125,6 @@ DecodedData *decodeAudioFile(const char *path) {
         }
     }
 
-    LOGD("REACHED HERE!");
-
 //    LOGD("SIZE NOW: %d", decodedData->size);
 //    for(size_t i = 0; i < decodedData->size; i++) {
 //        for(int j = 0; j < decodedData->channelCount; j++) {

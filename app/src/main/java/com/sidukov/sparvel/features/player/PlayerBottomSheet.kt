@@ -19,6 +19,7 @@ import androidx.compose.material.swipeable
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -69,6 +70,7 @@ fun PlayerBottomSheet(
     val swipeState = rememberSwipeableState(initialValue = SwipeState.COLLAPSED)
     val scope = rememberCoroutineScope()
     val playbackPosition = viewModel.playbackPosition.collectAsState(initial = 0f)
+    var lastUpdatedPosition by rememberSaveable { mutableStateOf(0f) }
     val playbackTimestamp = viewModel.playbackTimestamp.collectAsState(initial = 0L)
     val gradientAnimationDuration = 20000
     val gradientStartX = with(LocalDensity.current) {
@@ -202,10 +204,11 @@ fun PlayerBottomSheet(
                     }
                 },
                 onSliderValueChanged = {
-                    viewModel.onPositionUpdated(it)
+                    viewModel.onPlayerPositionUpdated(it)
+                    lastUpdatedPosition = it
                 },
                 onSliderValueChangeFinished = {
-                    viewModel.seek(playbackPosition.value)
+                    viewModel.seek(lastUpdatedPosition)
                 }
             )
         }
@@ -327,7 +330,7 @@ fun ExpandedPlayer(
     iconColor: Color,
     onCollapseClicked: () -> Unit,
     onSliderValueChanged: (Float) -> Unit,
-    onSliderValueChangeFinished: () -> Unit,
+    onSliderValueChangeFinished: () -> Unit
 ) {
     Box(
         modifier = Modifier.alpha(alpha)

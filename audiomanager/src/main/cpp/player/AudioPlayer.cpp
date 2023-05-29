@@ -50,8 +50,8 @@ void AudioPlayer::init() {
             ->setPerformanceMode(PerformanceMode::LowLatency)
             ->setSharingMode(SharingMode::Shared)
             ->setSampleRate(sampleRate)
-            // oboe performs conversion itself but it might consume a lot of cpu for this task
-            // if it really matters, makes sense do resampling when decoding the audio data
+                    // oboe performs conversion itself but it might consume a lot of cpu for this task
+                    // if it really matters, makes sense do resampling when decoding the audio data
             ->setSampleRateConversionQuality(SampleRateConversionQuality::High)
             ->setChannelCount(channelCount)
             ->setCallback(this)
@@ -69,7 +69,7 @@ void AudioPlayer::play() {
     if (state == oboe::StreamState::Paused
         || state == oboe::StreamState::Open
         || state == oboe::StreamState::Stopped
-    ) {
+            ) {
         audioStream->requestFlush();
     }
     oboe::Result result = audioStream->requestStart();
@@ -87,6 +87,8 @@ void AudioPlayer::pause() {
 
 void AudioPlayer::stop() {
     audioStream->requestStop();
+    onPositionUpdatedCallback(0);
+    currentFrame = 0;
 }
 
 void AudioPlayer::seek(int64_t position) {
