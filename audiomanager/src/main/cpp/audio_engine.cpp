@@ -12,8 +12,8 @@ static std::unique_ptr<AudioPlayer> audioPlayer;
 
 static JavaVM *virtualMachine = nullptr;
 static jobject thisObject = nullptr;
-static JNIEnv* toastEnv = nullptr;
-static JNIEnv* positionEnv = nullptr;
+static JNIEnv *toastEnv = nullptr;
+static JNIEnv *positionEnv = nullptr;
 
 void showToast(const char *message) {
     if (!thisObject) return;
@@ -21,7 +21,8 @@ void showToast(const char *message) {
         if (virtualMachine->GetEnv((void **) &toastEnv, JNI_VERSION_1_6) != JNI_OK) return;
     }
     jclass objectClass = toastEnv->GetObjectClass(thisObject);
-    jmethodID objectMethod = toastEnv->GetMethodID(objectClass, "showToast", "(Ljava/lang/String;)V");
+    jmethodID objectMethod = toastEnv->GetMethodID(objectClass, "showToast",
+                                                   "(Ljava/lang/String;)V");
     // if another language selected (russian or french) it makes sense sending a key name
     // and extract it from strings.xml
     toastEnv->CallVoidMethod(thisObject, objectMethod, toastEnv->NewStringUTF(message));
@@ -29,9 +30,9 @@ void showToast(const char *message) {
 
 void onPositionUpdated(int64_t position) {
     if (!thisObject) return;
-    if (!positionEnv) {
-        if (virtualMachine->GetEnv((void **) &positionEnv, JNI_VERSION_1_6) != JNI_OK) return;
-    }
+    // if (!positionEnv) {
+    if (virtualMachine->GetEnv((void **) &positionEnv, JNI_VERSION_1_6) != JNI_OK) return;
+    // }
     jclass objectClass = positionEnv->GetObjectClass(thisObject);
     jmethodID objectMethod = positionEnv->GetMethodID(objectClass, "onPositionUpdated", "(J)V");
     positionEnv->CallVoidMethod(thisObject, objectMethod, position);
@@ -60,8 +61,6 @@ Java_com_sidukov_audiomanager_AudioManager_nativePlay(
         jint default_frames_per_burst
 ) {
 
-    if (audioPlayer) audioPlayer->stop();
-
     if (!thisObject) {
         env->GetJavaVM(&virtualMachine);
         thisObject = env->NewGlobalRef(thiz);
@@ -78,8 +77,8 @@ Java_com_sidukov_audiomanager_AudioManager_nativePlay(
         return;
     }
 
-    DecodedData *test = decodeAudioFile(path);
-    if (test->data == nullptr || test->size == 0) {
+    DecodedData *decodedData = decodeAudioFile(path);
+    if (decodedData->data == nullptr || decodedData->size == 0) {
         showToast("An error occurred while reading the file");
         env->ReleaseStringUTFChars(filePath, path);
         return;
@@ -88,7 +87,8 @@ Java_com_sidukov_audiomanager_AudioManager_nativePlay(
 
     gFramesPerCallback = static_cast<int>(default_frames_per_burst);
 
-    audioPlayer = std::make_unique<AudioPlayer>(test, onPositionUpdated);
+    audioPlayer = std::make_unique<AudioPlayer>(decodedData, onPositionUpdated);
+    decodedData = nullptr;
 
 }
 extern "C"
@@ -99,7 +99,9 @@ Java_com_sidukov_audiomanager_AudioManager_nativePause(JNIEnv *env, jobject thiz
 extern "C"
 JNIEXPORT void JNICALL
 Java_com_sidukov_audiomanager_AudioManager_nativeFinish(JNIEnv *env, jobject thiz) {
-    if (audioPlayer) audioPlayer->stop();
+    if (audioPlayer) {
+        audioPlayer.reset();
+    }
 }
 extern "C"
 JNIEXPORT void JNICALL

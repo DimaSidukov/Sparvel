@@ -12,29 +12,37 @@
 
 static int gFramesPerCallback = 192;
 
-class AudioPlayer: public oboe::AudioStreamCallback {
+class AudioPlayer : public oboe::AudioStreamCallback {
 
 private:
-    float* data;
+    float *data;
     size_t size;
     int sampleRate;
+    int defaultSampleRate;
     int channelCount;
     std::atomic<size_t> currentFrame;
     std::shared_ptr<oboe::AudioStream> audioStream;
 
     void init();
+
     // maybe it is possible to implement via interface
     // the same approach as oboe::AudioStreamCallback
     void (*onPositionUpdatedCallback)(int64_t position);
 
 public:
-    AudioPlayer(DecodedData* decodedData, void (*callback)(int64_t position)) :
-        data(std::move(decodedData->data)),
-        size(decodedData->size),
-        sampleRate(decodedData->sampleRate),
-        channelCount(decodedData->channelCount),
-        onPositionUpdatedCallback(callback) {
+    AudioPlayer(DecodedData *decodedData, void (*callback)(int64_t position)) :
+            data(std::move(decodedData->data)),
+            size(decodedData->size),
+            sampleRate(decodedData->sampleRate),
+            channelCount(decodedData->channelCount),
+            onPositionUpdatedCallback(callback) {
         init();
+    }
+
+    ~AudioPlayer() {
+        audioStream->requestStop();
+        data = nullptr;
+        onPositionUpdatedCallback(0);
     }
 
     oboe::DataCallbackResult onAudioReady(

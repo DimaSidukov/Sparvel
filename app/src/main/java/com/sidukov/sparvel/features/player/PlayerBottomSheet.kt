@@ -70,7 +70,6 @@ fun PlayerBottomSheet(
     val swipeState = rememberSwipeableState(initialValue = SwipeState.COLLAPSED)
     val scope = rememberCoroutineScope()
     val playbackPosition = viewModel.playbackPosition.collectAsState(initial = 0f)
-    var lastUpdatedPosition by rememberSaveable { mutableStateOf(0f) }
     val playbackTimestamp = viewModel.playbackTimestamp.collectAsState(initial = 0L)
     val gradientAnimationDuration = 20000
     val gradientStartX = with(LocalDensity.current) {
@@ -205,10 +204,9 @@ fun PlayerBottomSheet(
                 },
                 onSliderValueChanged = {
                     viewModel.onPlayerPositionUpdated(it)
-                    lastUpdatedPosition = it
                 },
                 onSliderValueChangeFinished = {
-                    viewModel.seek(lastUpdatedPosition)
+                    viewModel.seek()
                 }
             )
         }

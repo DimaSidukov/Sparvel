@@ -18,7 +18,7 @@ class AudioManager(private val context: Context) {
     // pass these to oboe and set as default
     private var defaultSampleRate: Int
     private var defaultFramesPerBurst: Int
-    private var coroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+    private val coroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
     private val _currentPosition: MutableSharedFlow<Long> = MutableSharedFlow()
     val currentPosition = _currentPosition.asSharedFlow()

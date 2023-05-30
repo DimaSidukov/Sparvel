@@ -26,6 +26,9 @@ class HomeViewModel(
     private val audioManager: AudioManager
 ) : ViewModel() {
 
+
+    private var lastUpdatedPosition = 0f
+
     var uiState by mutableStateOf(HomeScreenState())
         private set
 
@@ -61,6 +64,7 @@ class HomeViewModel(
         }
         storageManager.settings.trackId = track.id
         uiState = uiState.copy(playerState = Playing)
+        finish()
         play(track)
     }
 
@@ -75,7 +79,7 @@ class HomeViewModel(
 
     private fun play(track: Track) {
         if (currentlyPlayingTrack != track) {
-            finish()
+            // finish()
             audioManager.play(track.fullPath)
             currentlyPlayingTrack = track
         } else pause()
@@ -93,12 +97,13 @@ class HomeViewModel(
             newValue = value
             playbackPosition.emit(value)
         }
+        lastUpdatedPosition = value
     }
 
-    fun seek(value: Float) {
+    fun seek() {
         uiState.selectedTrack?.duration?.let { duration ->
             audioManager.seek(
-                (value * duration).toLong()
+                (lastUpdatedPosition * duration).toLong()
             )
         }
     }
