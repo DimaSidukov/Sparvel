@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -21,16 +22,20 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
 import com.sidukov.sparvel.R
 import com.sidukov.sparvel.core.functionality.applyGradient
 import com.sidukov.sparvel.core.functionality.applyIf
+import com.sidukov.sparvel.core.functionality.decodeBitmap
 import com.sidukov.sparvel.core.theme.SparvelTheme
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 sealed class ImageType {
     object Borderless : ImageType()
@@ -46,6 +51,7 @@ fun SparvelImage(
     onImageClicked: (() -> Unit)? = null
 ) {
     var dynamicImageSize by remember { mutableStateOf(IntSize.Zero) }
+    var bitmap by remember { mutableStateOf<ImageBitmap?>(null) }
     val gradient = Brush.verticalGradient(
         colors = listOf(SparvelTheme.colors.background, Color.Transparent),
         startY = dynamicImageSize.height * 0.6f,
@@ -53,13 +59,34 @@ fun SparvelImage(
     )
 
     val isBoxed = imageType == ImageType.Boxed
+    val contentResolver = LocalContext.current.contentResolver
+
+    LaunchedEffect(imageUri) {
+        launch(Dispatchers.Default) {
+            bitmap = imageUri.decodeBitmap(contentResolver)
+        }
+    }
 
     Box(
         modifier = Modifier.applyIf(isBoxed) {
             size(imageSize.dp).clip(RoundedCornerShape(10.dp))
         }
     ) {
-        Box(
+        bitmap?.let {
+            Image(
+                bitmap = bitmap!!,
+                contentDescription = null,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .applyIf(isBoxed) { size(imageSize.dp) }
+                    .applyIf(!isBoxed) { width(imageSize.dp) }
+                    .onGloballyPositioned { dynamicImageSize = it.size }
+                    .applyGradient(needGradient, gradient)
+                    .applyIf(onImageClicked != null) {
+                        clickable(onClick = onImageClicked!!)
+                    }
+            )
+        } ?: Box(
             modifier = Modifier
                 .applyIf(isBoxed) {
                     fillMaxSize()
@@ -88,18 +115,5 @@ fun SparvelImage(
                 colorFilter = ColorFilter.tint(SparvelTheme.colors.secondary)
             )
         }
-        AsyncImage(
-            model = imageUri,
-            contentDescription = null,
-            contentScale = ContentScale.Crop,
-            modifier = Modifier
-                .applyIf(isBoxed) { size(imageSize.dp) }
-                .applyIf(!isBoxed) { width(imageSize.dp) }
-                .onGloballyPositioned { dynamicImageSize = it.size }
-                .applyGradient(needGradient, gradient)
-                .applyIf(onImageClicked != null) {
-                    clickable(onClick = onImageClicked!!)
-                }
-        )
     }
 }
