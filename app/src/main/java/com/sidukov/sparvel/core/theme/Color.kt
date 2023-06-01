@@ -47,7 +47,8 @@ data class SparvelColors(
     val activeTrack: Color,
     val inactiveTrack: Color,
     val rippleColor: Color,
-    val playerDragStrokeColor: Color,
+    val playerDragStroke: Color,
+    val hqAudioChip: Color,
     private val secondaryMaterial: Color,
     private val backgroundMaterial: Color
 ) {
@@ -89,7 +90,8 @@ val LightColors = SparvelColors(
     activeTrack = lightGrey3,
     inactiveTrack = dimGrey2,
     rippleColor = navyBlue,
-    playerDragStrokeColor = black,
+    playerDragStroke = black,
+    hqAudioChip = darkGrey2,
     secondaryMaterial = black,
     backgroundMaterial = white
 )
@@ -122,7 +124,8 @@ val DarkColors = SparvelColors(
     activeTrack = white,
     inactiveTrack = lightGrey4,
     rippleColor = white,
-    playerDragStrokeColor = dimGrey2,
+    playerDragStroke = dimGrey2,
+    hqAudioChip = lightGrey,
     secondaryMaterial = white,
     backgroundMaterial = darkestBlue
 )

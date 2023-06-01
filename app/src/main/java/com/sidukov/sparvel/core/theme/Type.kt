@@ -49,5 +49,6 @@ data class SparvelTypography(
         fontFamily = InterFontFamily,
         fontWeight = FontWeight.Light,
         fontSize = 12.sp
-    )
+    ),
+    val hqAudioChip: TextStyle = LatoTextStyle(FontWeight.Normal, 10.sp)
 )

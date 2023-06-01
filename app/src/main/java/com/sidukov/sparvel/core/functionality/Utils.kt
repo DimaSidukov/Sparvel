@@ -6,14 +6,26 @@ import android.graphics.ImageDecoder
 import android.os.Build
 import android.provider.MediaStore.Images.Media.getBitmap
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.only
+import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawWithContent
-import androidx.compose.ui.graphics.*
+import androidx.compose.ui.graphics.BlendMode
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.asAndroidBitmap
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
@@ -82,6 +94,8 @@ fun Float.normalize(max: Float, min: Float): Float = (this - min) / (max - min)
 fun Int.toMinutesAndSeconds() = String.format("%d:%02d", this / 60, this % 60)
 
 fun Color.firstFiveDigits(): Float = this.value.toString().take(5).toFloat()
+
+fun Track.isHighQualityAudio() = fullPath.matches(Regex(".*(.flac|.wav|.alac|.aiff|.ape|.tta).?$"))
 
 @Composable
 fun ImageBitmap?.deriveIconColor(): Color {

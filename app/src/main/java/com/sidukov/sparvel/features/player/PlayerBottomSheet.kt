@@ -249,7 +249,7 @@ fun CollapsedPlayer(
                     .width(40.dp)
                     .clip(RoundedCornerShape(50))
                     .align(Alignment.CenterHorizontally)
-                    .background(SparvelTheme.colors.playerDragStrokeColor)
+                    .background(SparvelTheme.colors.playerDragStroke)
             )
             Spacer(modifier = Modifier.height(10.dp))
             Box {

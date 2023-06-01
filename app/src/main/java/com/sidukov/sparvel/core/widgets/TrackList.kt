@@ -1,9 +1,18 @@
 package com.sidukov.sparvel.core.widgets
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -26,6 +35,7 @@ import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.sidukov.sparvel.R
 import com.sidukov.sparvel.core.functionality.SelectedTrackPadding
+import com.sidukov.sparvel.core.functionality.isHighQualityAudio
 import com.sidukov.sparvel.core.model.Track
 import com.sidukov.sparvel.core.theme.SparvelTheme
 
@@ -86,18 +96,21 @@ fun TrackList(
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis
                         )
-                        Text(
-                            text = stringResource(
-                                R.string.artist_album_label,
-                                item.artist,
-                                item.album
-                            ),
-                            modifier = Modifier.padding(end = 50.dp),
-                            style = SparvelTheme.typography.collectionInfo,
-                            color = SparvelTheme.colors.secondary,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis
-                        )
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            if (item.isHighQualityAudio()) HighQualityChip()
+                            Text(
+                                text = stringResource(
+                                    R.string.artist_album_label,
+                                    item.artist,
+                                    item.album
+                                ),
+                                modifier = Modifier.padding(end = 50.dp),
+                                style = SparvelTheme.typography.collectionInfo,
+                                color = SparvelTheme.colors.secondary,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis
+                            )
+                        }
                     }
                 }
                 if (selectedTrackId != null && item.id == selectedTrackId) {
@@ -149,4 +162,17 @@ fun TrackList(
             )
         }
     }
+}
+
+@Composable
+fun HighQualityChip() {
+    Text(
+        modifier = Modifier
+            .padding(end = 5.dp)
+            .border((0.7).dp, SparvelTheme.colors.hqAudioChip, RoundedCornerShape(20))
+            .padding(vertical = 1.dp, horizontal = 7.dp),
+        text = "HQ",
+        style = SparvelTheme.typography.hqAudioChip,
+        color = SparvelTheme.colors.hqAudioChip
+    )
 }
