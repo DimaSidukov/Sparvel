@@ -24,6 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
@@ -110,6 +111,8 @@ fun PlayerBottomSheet(
         )
     ).value else 0f
 
+    val playerBackground = SparvelTheme.colors.playerBackground
+
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -162,16 +165,16 @@ fun PlayerBottomSheet(
                     .fillMaxSize()
                     .background(SparvelTheme.colors.background)
                     .blur(150.dp)
-                    .background(
-                        if (apiGreaterThan(ANDROID_12)) Brush.sweepGradient(
-                            SparvelTheme.colors.playerBackground,
-                            Offset(gradientX, gradientY)
-                        ) else {
-                            Brush.verticalGradient(
-                                SparvelTheme.colors.playerBackground
-                            )
-                        }
-                    )
+                    .drawBehind {
+                        drawRect(
+                            if (apiGreaterThan(ANDROID_12)) Brush.sweepGradient(
+                                playerBackground,
+                                Offset(gradientX, gradientY)
+                            ) else {
+                                Brush.verticalGradient(playerBackground)
+                            }
+                        )
+                    }
             )
             Box(
                 modifier = Modifier
