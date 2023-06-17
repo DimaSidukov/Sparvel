@@ -84,8 +84,8 @@ dependencies {
     // Compose animation
     implementation "androidx.compose.animation:animation-graphics:$compose_version"
 
-    // remove it and replace with a simple animatedVectorDrawable, no need overhead with libs
     // Lottie animation
+    // it weighs around 1 MB, delete it and replace svg with animatedVectorDrawable
     implementation 'com.airbnb.android:lottie-compose:6.0.0'
 
     // This one adds @Preview

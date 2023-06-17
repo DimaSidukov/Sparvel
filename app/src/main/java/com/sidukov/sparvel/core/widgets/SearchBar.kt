@@ -2,7 +2,11 @@ package com.sidukov.sparvel.core.widgets
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
@@ -11,8 +15,8 @@ import androidx.compose.foundation.text.selection.LocalTextSelectionColors
 import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.mutableStateOf
@@ -64,7 +68,7 @@ fun SearchBar(
                 onDone = { keyboardController?.hide() }),
             singleLine = true,
             decorationBox = @Composable { textField ->
-                TextFieldDefaults.OutlinedTextFieldDecorationBox(
+                OutlinedTextFieldDefaults.DecorationBox(
                     value = text.value,
                     innerTextField = textField,
                     enabled = true,
@@ -88,19 +92,22 @@ fun SearchBar(
                             tint = SparvelTheme.colors.searchText,
                         )
                     },
+                    colors = OutlinedTextFieldDefaults.colors(),
+                    contentPadding = PaddingValues(0.dp),
                     container = {
-                        TextFieldDefaults.OutlinedBorderContainerBox(
+                        OutlinedTextFieldDefaults.ContainerBox(
                             enabled = true,
                             isError = false,
                             interactionSource = interactionSource,
-                            colors = TextFieldDefaults.outlinedTextFieldColors(
+                            colors = OutlinedTextFieldDefaults.colors(
                                 focusedBorderColor = SparvelTheme.colors.searchBorder,
                                 unfocusedBorderColor = SparvelTheme.colors.searchBorder,
                             ),
-                            shape = RoundedCornerShape(10.dp)
+                            shape = RoundedCornerShape(10.dp),
+                            focusedBorderThickness = OutlinedTextFieldDefaults.FocusedBorderThickness,
+                            unfocusedBorderThickness = OutlinedTextFieldDefaults.UnfocusedBorderThickness,
                         )
                     },
-                    contentPadding = PaddingValues(0.dp)
                 )
             },
             textStyle = SparvelTheme.typography.searchBar.copy(color = SparvelTheme.colors.text)

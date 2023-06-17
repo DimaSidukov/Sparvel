@@ -28,11 +28,13 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.sidukov.sparvel.R
@@ -47,6 +49,7 @@ import com.sidukov.sparvel.core.widgets.Toolbar
 import com.sidukov.sparvel.features.home.HomeViewModel
 import com.sidukov.sparvel.features.home.PlayerState
 import kotlinx.coroutines.launch
+import kotlin.math.roundToInt
 
 private const val ANDROID_12 = android.os.Build.VERSION_CODES.S
 private const val animationDuration = 300
@@ -113,7 +116,9 @@ fun PlayerBottomSheet(
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .offset(y = swipeState.offset.value.dp)
+                .graphicsLayer {
+                    translationY = swipeState.offset.value.dp.roundToPx().dp.value
+                }
                 .align(Alignment.BottomCenter)
                 .shadow(20.dp, clip = true, shape = RoundedCornerShape(5, 5))
                 .clip(

@@ -50,8 +50,7 @@ fun TrackList(
     additionalContent: @Composable () -> Unit = { }
 ) {
     LazyColumn(
-        modifier = Modifier
-            .fillMaxSize()
+        modifier = Modifier.fillMaxSize()
     ) {
         item {
             additionalContent()
