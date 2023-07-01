@@ -5,18 +5,19 @@
 #include "AudioPlayer.h"
 #include "Helpers.h"
 #include <thread>
+#include <pthread.h>
 
 oboe::DataCallbackResult
 AudioPlayer::onAudioReady(oboe::AudioStream *oboeStream, void *audioData, int32_t numFrames) {
     auto *outputBuffer = reinterpret_cast<float *>(audioData);
 
-    if (audioBuffer->size() < numFrames * 2) {
+    if (audioBuffer->getCurrentSize() < numFrames * 2) {
         return oboe::DataCallbackResult::Continue;
     }
 
     for (int i = 0; i < numFrames; i++) {
         for (int j = 0; j < channelCount; j++) {
-            outputBuffer[i * channelCount + j] = audioBuffer->get();
+            outputBuffer[i * channelCount + j] = audioBuffer->get(currentFrame * channelCount + j);
         }
         if (currentFrame % 1000 == 0) {
             int64_t position = convertFramesToMillis(currentFrame, sampleRate);
@@ -75,9 +76,14 @@ void AudioPlayer::init() {
 
     audioBuffer = std::make_shared<AudioBuffer>(arraySize);
 
-    decoder->decodePacket(*audioBuffer);
+    pthread_t tr;
+    pthread_create(&tr, nullptr, decodeWrapper, (void *) this);
 
     play();
+}
+
+void AudioPlayer::decode() {
+    decoder->decodePacket(audioBuffer.get());
 }
 
 void AudioPlayer::play() {
@@ -85,7 +91,7 @@ void AudioPlayer::play() {
     if (state == oboe::StreamState::Paused
         || state == oboe::StreamState::Open
         || state == oboe::StreamState::Stopped
-            ) {
+    ) {
         audioStream->requestFlush();
     }
     oboe::Result result = audioStream->requestStart();

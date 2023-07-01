@@ -8,7 +8,7 @@
 #include <utility>
 #include <oboe/Oboe.h>
 #include <oboe/AudioStream.h>
-#include "DecodingUtilities.h"
+#include "FFmpegDecoder.h"
 
 static int gFramesPerCallback = 192;
 
@@ -25,6 +25,8 @@ private:
     std::shared_ptr<AudioBuffer> audioBuffer;
 
     void init();
+
+    void decode();
 
     // maybe it is possible to implement via interface
     // the same approach as oboe::AudioStreamCallback
@@ -68,5 +70,10 @@ public:
     void stop();
 
     void seek(int64_t position);
+
+    static void* decodeWrapper(void* self) {
+        reinterpret_cast<AudioPlayer*>(self)->decode();
+        return (NULL);
+    }
 
 };

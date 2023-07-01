@@ -2,10 +2,11 @@
 // Created by siduk on 13.05.2023.
 //
 
-#include "DecodingUtilities.h"
-#include "Helpers.h"
+#include "FFmpegDecoder.h"
 
 void FFmpegDecoder::printError(const char *prefix, int errorCode) {
+    #ifdef NDEBUG
+    #else
     if (errorCode != 0) {
         const size_t bufsize = 64;
         char buf[bufsize];
@@ -15,6 +16,7 @@ void FFmpegDecoder::printError(const char *prefix, int errorCode) {
         }
         LOGD("%s (%d: %s)\n", prefix, errorCode, buf);
     }
+    #endif
 }
 
 /**
@@ -64,7 +66,7 @@ void FFmpegDecoder::printStreamInformation(
 /**
  * Receive as many frames as available and handle them.
  */
-int FFmpegDecoder::receiveAndHandle(AudioBuffer& output) {
+int FFmpegDecoder::receiveAndHandle(AudioBuffer* output) {
     int err = 0;
     // Read the packets from the decoder.
     // NOTE: Each packet may generate more than one frame, depending on the codec.
@@ -81,14 +83,14 @@ int FFmpegDecoder::receiveAndHandle(AudioBuffer& output) {
 /**
  * Write the frame to an output file.
  */
-void FFmpegDecoder::handleFrame(AudioBuffer& output) {
+void FFmpegDecoder::handleFrame(AudioBuffer* output) {
     if (av_sample_fmt_is_planar(codecContext->sample_fmt) == 1) {
         // This means that the data of each channel is in its own buffer.
         // => frame->extended_data[i] contains data for the i-th channel.
         for (int s = 0; s < frame->nb_samples; ++s) {
             for (int c = 0; c < codecContext->ch_layout.nb_channels; ++c) {
                 float sample = getSample(codecContext, frame->extended_data[c], s);
-                output.put(sample);
+                output->put(sample);
             }
         }
     } else {
@@ -96,7 +98,7 @@ void FFmpegDecoder::handleFrame(AudioBuffer& output) {
             for (int c = 0; c < codecContext->ch_layout.nb_channels; ++c) {
                 float sample = getSample(codecContext, frame->extended_data[0],
                                          s * codecContext->ch_layout.nb_channels + c);
-                output.put(sample);
+                output->put(sample);
             }
         }
     }
@@ -162,7 +164,7 @@ float FFmpegDecoder::getSample(const AVCodecContext *codecCtx, uint8_t *buffer, 
     return ret;
 }
 
-void FFmpegDecoder::drainDecoder(AudioBuffer& output, int numFrames) {
+void FFmpegDecoder::drainDecoder(AudioBuffer* output, int numFrames) {
     int err;
     // Some codecs may buffer frames. Sending NULL activates drain-mode.
     if ((err = avcodec_send_packet(codecContext, nullptr)) == 0) {
@@ -264,10 +266,11 @@ FFmpegDecoder::FFmpegDecoder(
         return;
     }
 
-    arraySize = 100000;
+    // TODO: extract array size
+    arraySize = 50457280;
 }
 
-void FFmpegDecoder::decodePacket(AudioBuffer& outputPacket) {
+void FFmpegDecoder::decodePacket(AudioBuffer* outputPacket) {
     AVPacket *packet = av_packet_alloc();
 
     int err;
@@ -320,4 +323,6 @@ FFmpegDecoder::~FFmpegDecoder() {
 
     // Close the infile.
     fclose(inFile);
+
+    delete path;
 }

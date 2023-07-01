@@ -47,7 +47,7 @@ add_library( # Sets the name of the library.
         # Provides a relative path to your source file(s).
         # temporary measure, these two should be header files
         player/AudioPlayer.cpp
-        decoder/DecodingUtilities.cpp
+        decoder/FFmpegDecoder.cpp
         utils/AudioBuffer.cpp
 
         audio_engine.cpp

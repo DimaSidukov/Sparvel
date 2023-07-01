@@ -9,6 +9,7 @@
 #include "ffmpeg_headers_wrapper.h"
 #include "Logger.h"
 #include "AudioBuffer.h"
+#include "Helpers.h"
 
 class FFmpegDecoder {
 private:
@@ -22,18 +23,17 @@ private:
 
     void printError(const char *prefix, int errorCode);
 
-    int receiveAndHandle(AudioBuffer&);
+    int receiveAndHandle(AudioBuffer* output);
 
-    void handleFrame(AudioBuffer&);
+    void handleFrame(AudioBuffer* output);
 
     int findAudioStream(const AVFormatContext *formatCtx);
 
-    void
-    printStreamInformation(const AVCodec *codec, const AVCodecContext *codecCtx, int audioStreamIndex);
+    static void printStreamInformation(const AVCodec *codec, const AVCodecContext *codecCtx, int audioStreamIndex);
 
     float getSample(const AVCodecContext *codecCtx, uint8_t *buffer, int sampleIndex);
 
-    void drainDecoder(AudioBuffer& output, int numFrames);
+    void drainDecoder(AudioBuffer* output, int numFrames);
 
 public:
 
@@ -41,5 +41,5 @@ public:
 
     ~FFmpegDecoder();
 
-    void decodePacket(AudioBuffer& outputPacket);
+    void decodePacket(AudioBuffer* outputPacket);
 };

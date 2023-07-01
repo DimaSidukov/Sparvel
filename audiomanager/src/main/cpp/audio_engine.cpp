@@ -3,7 +3,7 @@
 #include <memory>
 #include <android/file_descriptor_jni.h>
 #include "AudioPlayer.h"
-#include "DecodingUtilities.h"
+#include "FFmpegDecoder.h"
 //
 // Created by siduk on 16.04.2023.
 //
