@@ -77,18 +77,12 @@ Java_com_sidukov_audiomanager_AudioManager_nativePlay(
         return;
     }
 
-    DecodedData *decodedData = decodeAudioFile(path);
-    if (decodedData->data == nullptr || decodedData->size == 0) {
-        showToast("An error occurred while reading the file");
-        env->ReleaseStringUTFChars(filePath, path);
-        return;
-    }
-    env->ReleaseStringUTFChars(filePath, path);
-
     gFramesPerCallback = static_cast<int>(default_frames_per_burst);
 
-    audioPlayer = std::make_unique<AudioPlayer>(decodedData, onPositionUpdated);
-    decodedData = nullptr;
+    if (!audioPlayer) audioPlayer = std::make_unique<AudioPlayer>(path, onPositionUpdated);
+    else audioPlayer->update(path);
+
+    env->ReleaseStringUTFChars(filePath, path);
 
 }
 extern "C"

@@ -24,19 +24,19 @@ find_package (oboe REQUIRED CONFIG)
 set(ffmpeg_DIR ffmpeg)
 add_library(avutil SHARED IMPORTED)
 set_target_properties(avutil PROPERTIES IMPORTED_LOCATION
-        ${PROJECT_SOURCE_DIR}/${ffmpeg_DIR}/lib/${ANDROID_ABI}/libavutil.so)
+        ${PROJECT_SOURCE_DIR}/${ffmpeg_DIR}/${ANDROID_ABI}/libavutil.so)
 
 add_library(avformat SHARED IMPORTED)
 set_target_properties(avformat PROPERTIES IMPORTED_LOCATION
-        ${PROJECT_SOURCE_DIR}/${ffmpeg_DIR}/lib/${ANDROID_ABI}/libavformat.so)
+        ${PROJECT_SOURCE_DIR}/${ffmpeg_DIR}/${ANDROID_ABI}/libavformat.so)
 
 add_library(avcodec SHARED IMPORTED)
 set_target_properties(avcodec PROPERTIES IMPORTED_LOCATION
-        ${PROJECT_SOURCE_DIR}/${ffmpeg_DIR}/lib/${ANDROID_ABI}/libavcodec.so)
+        ${PROJECT_SOURCE_DIR}/${ffmpeg_DIR}/${ANDROID_ABI}/libavcodec.so)
 
 add_library(swresample SHARED IMPORTED)
 set_target_properties(swresample PROPERTIES IMPORTED_LOCATION
-        ${PROJECT_SOURCE_DIR}/${ffmpeg_DIR}/lib/${ANDROID_ABI}/libswresample.so)
+        ${PROJECT_SOURCE_DIR}/${ffmpeg_DIR}/${ANDROID_ABI}/libswresample.so)
 
 add_library( # Sets the name of the library.
         audio_engine
@@ -47,16 +47,17 @@ add_library( # Sets the name of the library.
         # Provides a relative path to your source file(s).
         # temporary measure, these two should be header files
         player/AudioPlayer.cpp
-        extractor/DecodingUtilities.cpp
+        decoder/DecodingUtilities.cpp
+        utils/AudioBuffer.cpp
 
         audio_engine.cpp
 )
 
 # Specifying location of ffmpeg headers
-include_directories(${ffmpeg_DIR}/lib/${ANDROID_ABI}/include)
+include_directories(${ffmpeg_DIR}/${ANDROID_ABI}/include)
 
 # Specify folders included into this module
-include_directories(extractor)
+include_directories(decoder)
 include_directories(player)
 include_directories(utils)
 

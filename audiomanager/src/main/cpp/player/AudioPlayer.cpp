@@ -3,25 +3,30 @@
 //
 
 #include "AudioPlayer.h"
-#include "Arithmetics.h"
+#include "Helpers.h"
+#include <thread>
 
 oboe::DataCallbackResult
 AudioPlayer::onAudioReady(oboe::AudioStream *oboeStream, void *audioData, int32_t numFrames) {
-
     auto *outputBuffer = reinterpret_cast<float *>(audioData);
+
+    if (audioBuffer->size() < numFrames * 2) {
+        return oboe::DataCallbackResult::Continue;
+    }
 
     for (int i = 0; i < numFrames; i++) {
         for (int j = 0; j < channelCount; j++) {
-            outputBuffer[i * channelCount + j] = data[currentFrame * channelCount + j];
+            outputBuffer[i * channelCount + j] = audioBuffer->get();
         }
         if (currentFrame % 1000 == 0) {
             int64_t position = convertFramesToMillis(currentFrame, sampleRate);
             onPositionUpdatedCallback(position);
         }
-        if (++currentFrame >= size) {
-            currentFrame = 0;
-            return oboe::DataCallbackResult::Stop;
-        }
+//        if (++currentFrame >= size) {
+//            currentFrame = 0;
+//            return oboe::DataCallbackResult::Stop;
+//        }
+        currentFrame++;
     }
     return oboe::DataCallbackResult::Continue;
 }
@@ -41,6 +46,12 @@ bool AudioPlayer::onError(oboe::AudioStream *oboeStream, oboe::Result error) {
 
 void AudioPlayer::init() {
     using namespace oboe;
+    size_t arraySize;
+    decoder = std::make_unique<FFmpegDecoder>(sampleRate, channelCount, filePath, arraySize);
+    if (sampleRate == -1 || channelCount == -1) {
+        LOGE("Failed to read data from the file");
+        return;
+    }
     Result result = AudioStreamBuilder().setFormat(AudioFormat::Float)
             ->setDirection(Direction::Output)
             ->setFormatConversionAllowed(true)
@@ -61,6 +72,11 @@ void AudioPlayer::init() {
         return;
     }
     currentFrame = 0;
+
+    audioBuffer = std::make_shared<AudioBuffer>(arraySize);
+
+    decoder->decodePacket(*audioBuffer);
+
     play();
 }
 
@@ -93,4 +109,11 @@ void AudioPlayer::stop() {
 
 void AudioPlayer::seek(int64_t position) {
     currentFrame = convertMillisToFrames(position, sampleRate);
+}
+
+void AudioPlayer::update(const char *path) {
+    audioStream->requestStop();
+    audioStream->requestFlush();
+    this->filePath = path;
+    // cleaning the buffer and populating it anew
 }

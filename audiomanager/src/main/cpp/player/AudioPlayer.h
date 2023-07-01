@@ -15,13 +15,14 @@ static int gFramesPerCallback = 192;
 class AudioPlayer : public oboe::AudioStreamCallback {
 
 private:
-    float *data;
-    size_t size;
-    int sampleRate;
+    std::unique_ptr<FFmpegDecoder> decoder;
+    const char* filePath;
+    int sampleRate = -1;
     int defaultSampleRate;
-    int channelCount;
+    int channelCount = -1;
     std::atomic<size_t> currentFrame;
     std::shared_ptr<oboe::AudioStream> audioStream;
+    std::shared_ptr<AudioBuffer> audioBuffer;
 
     void init();
 
@@ -30,19 +31,17 @@ private:
     void (*onPositionUpdatedCallback)(int64_t position);
 
 public:
-    AudioPlayer(DecodedData *decodedData, void (*callback)(int64_t position)) :
-            data(std::move(decodedData->data)),
-            size(decodedData->size),
-            sampleRate(decodedData->sampleRate),
-            channelCount(decodedData->channelCount),
+    AudioPlayer(const char* filePath, void (*callback)(int64_t position)) :
+            filePath(std::move(filePath)),
             onPositionUpdatedCallback(callback) {
         init();
     }
 
     ~AudioPlayer() {
-        audioStream->requestStop();
-        data = nullptr;
         onPositionUpdatedCallback(0);
+        audioStream->requestStop();
+        audioBuffer->reset();
+        decoder.reset();
     }
 
     oboe::DataCallbackResult onAudioReady(
@@ -55,6 +54,8 @@ public:
             oboe::AudioStream *oboeStream,
             oboe::Result error
     ) override;
+
+    void update(const char* path);
 
     void onErrorBeforeClose(oboe::AudioStream *oboeStream, oboe::Result error) override;
 
