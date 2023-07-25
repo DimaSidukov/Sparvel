@@ -5,8 +5,8 @@
 #include "FFmpegDecoder.h"
 
 void FFmpegDecoder::printError(const char *prefix, int errorCode) {
-    #ifdef NDEBUG
-    #else
+#ifdef NDEBUG
+#else
     if (errorCode != 0) {
         const size_t bufsize = 64;
         char buf[bufsize];
@@ -16,7 +16,7 @@ void FFmpegDecoder::printError(const char *prefix, int errorCode) {
         }
         LOGD("%s (%d: %s)\n", prefix, errorCode, buf);
     }
-    #endif
+#endif
 }
 
 /**
@@ -66,7 +66,7 @@ void FFmpegDecoder::printStreamInformation(
 /**
  * Receive as many frames as available and handle them.
  */
-int FFmpegDecoder::receiveAndHandle(AudioBuffer* output) {
+int FFmpegDecoder::receiveAndHandle(AudioBuffer *output) {
     int err = 0;
     // Read the packets from the decoder.
     // NOTE: Each packet may generate more than one frame, depending on the codec.
@@ -83,7 +83,7 @@ int FFmpegDecoder::receiveAndHandle(AudioBuffer* output) {
 /**
  * Write the frame to an output file.
  */
-void FFmpegDecoder::handleFrame(AudioBuffer* output) {
+void FFmpegDecoder::handleFrame(AudioBuffer *output) {
     if (av_sample_fmt_is_planar(codecContext->sample_fmt) == 1) {
         // This means that the data of each channel is in its own buffer.
         // => frame->extended_data[i] contains data for the i-th channel.
@@ -164,7 +164,7 @@ float FFmpegDecoder::getSample(const AVCodecContext *codecCtx, uint8_t *buffer, 
     return ret;
 }
 
-void FFmpegDecoder::drainDecoder(AudioBuffer* output, int numFrames) {
+void FFmpegDecoder::drainDecoder(AudioBuffer *output, int numFrames) {
     int err;
     // Some codecs may buffer frames. Sending NULL activates drain-mode.
     if ((err = avcodec_send_packet(codecContext, nullptr)) == 0) {
@@ -184,7 +184,7 @@ FFmpegDecoder::FFmpegDecoder(
         int &sampleRate,
         int &channelCount,
         const char *filePath,
-        size_t& arraySize) : path(filePath) {
+        size_t &arraySize) : path(filePath) {
     inFile = fopen(filePath, "r");
     if (!inFile) {
         free(inFile);
@@ -266,15 +266,21 @@ FFmpegDecoder::FFmpegDecoder(
         return;
     }
 
-    // TODO: extract array size
-    arraySize = 50457280;
+    auto size = static_cast<long long>(
+            pow(2, av_get_bytes_per_sample(codecContext->sample_fmt))
+            * sampleRate
+            * ((double) (formatContext->duration) / AV_TIME_BASE)
+            * channelCount
+    );
+
+    arraySize = size;
 }
 
-void FFmpegDecoder::decodePacket(AudioBuffer* outputPacket) {
+void FFmpegDecoder::decodePacket(AudioBuffer *outputPacket) {
     AVPacket *packet = av_packet_alloc();
 
     int err;
-    while ((err = av_read_frame(formatContext, packet)) != AVERROR_EOF) {
+    while ((err = av_read_frame(formatContext, packet)) != AVERROR_EOF && !shouldStopExecution) {
         if (err != 0) {
             printError("Read error.", err);
             break;
@@ -305,7 +311,7 @@ void FFmpegDecoder::decodePacket(AudioBuffer* outputPacket) {
             break;
         }
     }
-
+    outputPacket->setFillCompleted();
 }
 
 FFmpegDecoder::~FFmpegDecoder() {
@@ -325,4 +331,8 @@ FFmpegDecoder::~FFmpegDecoder() {
     fclose(inFile);
 
     delete path;
+}
+
+void FFmpegDecoder::stopExecution() {
+    shouldStopExecution = true;
 }

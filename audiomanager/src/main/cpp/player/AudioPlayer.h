@@ -5,6 +5,7 @@
 #pragma once
 
 #include <cstdio>
+#include <thread>
 #include <utility>
 #include <oboe/Oboe.h>
 #include <oboe/AudioStream.h>
@@ -23,6 +24,7 @@ private:
     std::atomic<size_t> currentFrame;
     std::shared_ptr<oboe::AudioStream> audioStream;
     std::shared_ptr<AudioBuffer> audioBuffer;
+    std::thread decodingThread;
 
     void init();
 
@@ -70,10 +72,5 @@ public:
     void stop();
 
     void seek(int64_t position);
-
-    static void* decodeWrapper(void* self) {
-        reinterpret_cast<AudioPlayer*>(self)->decode();
-        return (NULL);
-    }
 
 };

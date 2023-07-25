@@ -23,11 +23,12 @@ AudioPlayer::onAudioReady(oboe::AudioStream *oboeStream, void *audioData, int32_
             int64_t position = convertFramesToMillis(currentFrame, sampleRate);
             onPositionUpdatedCallback(position);
         }
-//        if (++currentFrame >= size) {
-//            currentFrame = 0;
-//            return oboe::DataCallbackResult::Stop;
-//        }
         currentFrame++;
+        if (currentFrame * channelCount >= audioBuffer->getCurrentSize() &&
+            audioBuffer->isFillCompleted()) {
+            currentFrame = 0;
+            return oboe::DataCallbackResult::Stop;
+        }
     }
     return oboe::DataCallbackResult::Continue;
 }
@@ -76,8 +77,7 @@ void AudioPlayer::init() {
 
     audioBuffer = std::make_shared<AudioBuffer>(arraySize);
 
-    pthread_t tr;
-    pthread_create(&tr, nullptr, decodeWrapper, (void *) this);
+    decodingThread = std::thread(&AudioPlayer::decode, this);
 
     play();
 }
@@ -91,7 +91,7 @@ void AudioPlayer::play() {
     if (state == oboe::StreamState::Paused
         || state == oboe::StreamState::Open
         || state == oboe::StreamState::Stopped
-    ) {
+            ) {
         audioStream->requestFlush();
     }
     oboe::Result result = audioStream->requestStart();
@@ -121,5 +121,8 @@ void AudioPlayer::update(const char *path) {
     audioStream->requestStop();
     audioStream->requestFlush();
     this->filePath = path;
-    // cleaning the buffer and populating it anew
+
+    decoder->stopExecution();
+    decodingThread.join();
+    audioBuffer->stopExecution();
 }
